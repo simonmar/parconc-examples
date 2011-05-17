@@ -1,0 +1,24 @@
+let id = \x.x in
+    let x = \f.f id id in
+    let y = \f.f id id in
+    let x = \f . f x x in
+    let x = \f . f x x in
+    let x = \f . f x x in
+    let x = \f . f x x in
+    let x = \f . f x x in
+    let x = \f . f x x in
+    let x = \f . f x x in
+    let x = \f . f x x in
+    let x = \f . f x x in
+    let x = let f = \g . g x in \x . x in
+    let y = \f . f y y in
+    let y = \f . f y y in
+    let y = \f . f y y in
+    let y = \f . f y y in
+    let y = \f . f y y in
+    let y = \f . f y y in
+    let y = \f . f y y in
+    let y = \f . f y y in
+    let y = \f . f y y in
+    let y = let f = \g . g y in \x . x in
+    \f. let g = \a. a x y in f
