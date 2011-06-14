@@ -25,7 +25,7 @@ SAMPLES = \
 all : $(SAMPLES)
 
 GHC = ghc
-GHC_OPTS = -O2 -threaded -rtsopts
+GHC_OPTS = -O2 -threaded -rtsopts -eventlog
 
 % : %.hs
 	$(GHC) $(GHC_OPTS) --make  $< -o $@
