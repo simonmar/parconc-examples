@@ -35,3 +35,6 @@ kmeans/kmeans : kmeans/kmeans.hs
 
 parinfer/parinfer : parinfer/parinfer.hs
 	$(GHC) $(GHC_OPTS) -iparinfer --make  $< -o $@
+
+clean :
+	rm *.o *.hi *.eventlog $(SAMPLES)
