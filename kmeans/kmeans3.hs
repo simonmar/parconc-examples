@@ -1,3 +1,6 @@
+-- Modified version of kmeans.hs: uses divide-and-conquer, and the Par
+-- monad for parallellism.
+
 import System.IO
 import KMeansCommon
 import Data.Array
@@ -6,7 +9,7 @@ import Data.List
 import Data.Function
 import Data.Binary (decodeFile)
 import Debug.Trace
-import Control.Parallel.Strategies
+import Control.Monad.Par
 import Control.DeepSeq
 import System.Environment
 import Data.Time.Clock
@@ -17,11 +20,11 @@ main = do
   clusters <- getClusters "clusters"
   let nclusters = length clusters
   args <- getArgs
-  evaluate (length points)
+  npoints <- evaluate (length points)
   t0 <- getCurrentTime
   final_clusters <- case args of
    ["seq"] -> kmeans_seq nclusters points clusters
-   ["par",n] -> kmeans_par (read n) nclusters points clusters
+   ["par",n] -> kmeans_par (read n) nclusters points clusters npoints
    _other -> error "args"
   t1 <- getCurrentTime
   print final_clusters
@@ -31,22 +34,46 @@ split :: Int -> [a] -> [[a]]
 split numChunks l = splitSize (ceiling $ fromIntegral (length l) / fromIntegral numChunks) l
    where
       splitSize _ [] = []
-      splitSize i v = take i v : splitSize i (drop i v)
+      splitSize i v = xs : splitSize i ys
+        where (xs,ys) = splitAt i v
 
-kmeans_par :: Int -> Int -> [Vector] -> [Cluster] -> IO [Cluster]
-kmeans_par mappers nclusters points clusters = do
-  let chunks = split mappers points
+data Tree a = Leaf a
+            | Node (Tree a) (Tree a)
+
+
+mkPointTree :: Int -> [Vector] -> Int -> Tree [Vector]
+mkPointTree depth points npoints
+  | depth >= threshold = Leaf points
+  | otherwise = Node (mkPointTree (depth+1) xs half)
+                     (mkPointTree (depth+1) ys half)
+         where
+                half = npoints `quot` 2
+                (xs,ys) = splitAt half points
+
+
+threshold = 12 :: Int
+
+kmeans_par :: Int -> Int -> [Vector] -> [Cluster] -> Int -> IO [Cluster]
+kmeans_par mappers nclusters points clusters npoints = do
   let
+      tree = mkPointTree 0 points npoints
+
       loop :: Int -> [Cluster] -> IO [Cluster]
       loop n clusters | n > tooMany = do printf "giving up."; return clusters
       loop n clusters = do
         hPrintf stderr "iteration %d\n" n
         hPutStr stderr (unlines (map show clusters))
         let
-             new_clusterss = map (step nclusters clusters) chunks
-                               `using` parList rdeepseq
+             divconq :: Tree [Vector] -> Par [Cluster]
+             divconq (Leaf points) = return $ step nclusters clusters points
+             divconq (Node left right) = do
+                  i1 <- spawn $ divconq left
+                  i2 <- spawn $ divconq right
+                  c1 <- get i1
+                  c2 <- get i2
+                  return $! reduce nclusters [c1,c2]
 
-             clusters' = reduce nclusters new_clusterss
+             clusters' = runPar $ divconq tree
 
         if clusters' == clusters
            then return clusters
@@ -54,6 +81,8 @@ kmeans_par mappers nclusters points clusters = do
   --
   final <- loop 0 clusters
   return final
+
+
 
 kmeans_seq :: Int -> [Vector] -> [Cluster] -> IO [Cluster]
 kmeans_seq nclusters points clusters = do
