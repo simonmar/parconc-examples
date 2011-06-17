@@ -8,7 +8,6 @@ import Network.HTTP
 import Network.Browser
 import Network.URI
 import Data.ByteString (ByteString)
-import qualified Data.ByteString as B
 
 getURL :: String -> IO ByteString
 getURL url = do
@@ -16,7 +15,7 @@ getURL url = do
     setCheckForProxy True
     setDebugLog Nothing
     setOutHandler (const (return ()))
-    (_, rsp) <- request (getRequest' url)
+    (_, rsp) <- request (getRequest' (escapeURIString isUnescapedInURI url))
     return (rspBody rsp)
   where
    getRequest' :: String -> Request ByteString
