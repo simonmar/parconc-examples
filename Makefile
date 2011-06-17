@@ -19,6 +19,8 @@ SAMPLES = \
   geturlscancel \
   geturlsstm \
   server \
+  bingtranslator \
+  bingtranslatorconc \
   kmeans/kmeans \
   parinfer/parinfer
 
