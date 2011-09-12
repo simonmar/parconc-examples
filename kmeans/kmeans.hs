@@ -1,3 +1,19 @@
+-- K-Means sample from "Parallel and Concurrent Programming in Haskell"
+--
+-- With three versions:
+--   [ kmeans_seq   ]  a sequential version
+--   [ kmeans_strat ]  a parallel version using Control.Parallel.Strategies
+--   [ kmeans_par   ]  a parallel version using Control.Monad.Par
+--
+-- Usage (sequential):
+--   $ ./kmeans-par seq
+--
+-- Usage (Strategies):
+--   $ ./kmeans-par strat 600 +RTS -N4
+
+-- Usage (Par monad):
+--   $ ./kmeans-par par 600 +RTS -N4
+
 import System.IO
 import KMeansCommon
 import Data.Array
@@ -6,7 +22,8 @@ import Data.List
 import Data.Function
 import Data.Binary (decodeFile)
 import Debug.Trace
-import Control.Parallel.Strategies
+import Control.Parallel.Strategies as Strategies
+import Control.Monad.Par as Par
 import Control.DeepSeq
 import System.Environment
 import Data.Time.Clock
@@ -21,11 +38,35 @@ main = do
   t0 <- getCurrentTime
   final_clusters <- case args of
    ["seq"] -> kmeans_seq nclusters points clusters
+   ["strat",n] -> kmeans_strat (read n) nclusters points clusters
    ["par",n] -> kmeans_par (read n) nclusters points clusters
    _other -> error "args"
   t1 <- getCurrentTime
   print final_clusters
   printf "Total time: %.2f\n" (realToFrac (diffUTCTime t1 t0) :: Double)
+
+-- -----------------------------------------------------------------------------
+-- K-Means: repeatedly step until convergence (sequential)
+
+kmeans_seq :: Int -> [Vector] -> [Cluster] -> IO [Cluster]
+kmeans_seq nclusters points clusters = do
+  let
+      loop :: Int -> [Cluster] -> IO [Cluster]
+      loop n clusters | n > tooMany = do printf "giving up."; return clusters
+      loop n clusters = do
+        hPrintf stderr "iteration %d\n" n
+        hPutStr stderr (unlines (map show clusters))
+        let clusters' = step nclusters clusters points
+        if clusters' == clusters
+           then return clusters
+           else loop (n+1) clusters'
+  --
+  loop 0 clusters
+
+tooMany = 50
+
+-- -----------------------------------------------------------------------------
+-- K-Means: repeatedly step until convergence (Strategies)
 
 split :: Int -> [a] -> [[a]] 
 split numChunks l = splitSize (ceiling $ fromIntegral (length l) / fromIntegral numChunks) l
@@ -33,8 +74,8 @@ split numChunks l = splitSize (ceiling $ fromIntegral (length l) / fromIntegral 
       splitSize _ [] = []
       splitSize i v = take i v : splitSize i (drop i v)
 
-kmeans_par :: Int -> Int -> [Vector] -> [Cluster] -> IO [Cluster]
-kmeans_par mappers nclusters points clusters = do
+kmeans_strat :: Int -> Int -> [Vector] -> [Cluster] -> IO [Cluster]
+kmeans_strat mappers nclusters points clusters = do
   let chunks = split mappers points
   let
       loop :: Int -> [Cluster] -> IO [Cluster]
@@ -55,26 +96,37 @@ kmeans_par mappers nclusters points clusters = do
   final <- loop 0 clusters
   return final
 
-kmeans_seq :: Int -> [Vector] -> [Cluster] -> IO [Cluster]
-kmeans_seq nclusters points clusters = do
+-- -----------------------------------------------------------------------------
+-- K-Means: repeatedly step until convergence (Par monad)
+
+kmeans_par :: Int -> Int -> [Vector] -> [Cluster] -> IO [Cluster]
+kmeans_par mappers nclusters points clusters = do
+  let chunks = split mappers points
   let
       loop :: Int -> [Cluster] -> IO [Cluster]
       loop n clusters | n > tooMany = do printf "giving up."; return clusters
       loop n clusters = do
         hPrintf stderr "iteration %d\n" n
         hPutStr stderr (unlines (map show clusters))
-        let clusters' = step nclusters clusters points
+        let
+             new_clusterss = runPar $ Par.parMap (step nclusters clusters) chunks
+
+             clusters' = reduce nclusters new_clusterss
+
         if clusters' == clusters
            then return clusters
            else loop (n+1) clusters'
   --
-  loop 0 clusters
+  final <- loop 0 clusters
+  return final
 
-tooMany = 50
+-- -----------------------------------------------------------------------------
+-- Perform one step of the K-Means algorithm
 
 reduce :: Int -> [[Cluster]] -> [Cluster]
 reduce nclusters css =
-  concatMap combine (elems (accumArray (flip (:)) [] (0,nclusters) [ (clId c, c) | c <- concat css]))
+  concatMap combine $ elems $
+     accumArray (flip (:)) [] (0,nclusters) [ (clId c, c) | c <- concat css]
  where
   combine [] = []
   combine (c:cs) = [foldr combineClusters c cs]
