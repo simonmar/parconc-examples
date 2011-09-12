@@ -1,11 +1,11 @@
 GHC = ghc
-GHC_OPTS = -O2
-
-GenSamples : GenSamples.hs KMeansCommon.hs
-	$(GHC) $(GHC_OPTS) GenSamples
+GHC_OPTS = -O2 -threaded -rtsopts
 
 kmeans : kmeans.hs KMeansCommon.hs
 	$(GHC) $(GHC_OPTS) kmeans
+
+GenSamples : GenSamples.hs KMeansCommon.hs
+	$(GHC) $(GHC_OPTS) GenSamples
 
 points.bin : GenSamples
 	./GenSamples 5 20000 40000
