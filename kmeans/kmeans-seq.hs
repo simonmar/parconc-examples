@@ -1,3 +1,8 @@
+-- K-Means sample from "Parallel and Concurrent Programming in Haskell"
+--
+-- Usage (sequential):
+--   $ ./kmeans-par seq
+
 import System.IO
 import KMeansCommon
 import Data.Array
