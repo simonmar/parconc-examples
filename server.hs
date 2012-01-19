@@ -20,7 +20,8 @@ talk h = do
   loop
  where
   loop = do
-    l <- hGetLine h
-    if l == "end"
-       then hPutStrLn h "Thank you for using the Haskell doubling service."
-       else do hPutStrLn h (show (2 * (read l :: Integer))); loop
+    line <- hGetLine h
+    if line == "end"
+       then hPutStrLn h ("Thank you for using the " ++
+                         "Haskell doubling service.")
+       else do hPutStrLn h (show (2 * (read line :: Integer))); loop
