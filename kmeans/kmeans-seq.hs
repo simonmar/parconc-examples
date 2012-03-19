@@ -24,7 +24,7 @@ main = do
   evaluate (length points)
   t0 <- getCurrentTime
   final_clusters <- case args of
-   ["seq"] -> kmeans_seq nclusters points clusters
+   ["seq"] ->
    -- ["par",n] -> kmeans_par (read n) nclusters points clusters
    _other -> error "args"
   t1 <- getCurrentTime
@@ -53,7 +53,8 @@ kmeans_par :: Int -> Int -> [Vector] -> [Cluster] -> IO [Cluster]
 kmeans_par n nclusters points clusters
    = error "kmeans_par not defined!"
    -- hint: one approach is to divide the points into n sets, call
-   -- step on the sets in parallel and combine the results (how?).
+   -- step on the sets in parallel and combine the results using
+   -- 'reduce', below.
 
 tooMany = 50
 
@@ -81,3 +82,17 @@ makeNewClusters arr =
                         -- no points.  This can happen when a cluster is not
                         -- close to any points.  If we leave these in, then
                         -- the NaNs mess up all the future calculations.
+
+-- Takes the number of clusters, N, and a list of lists of clusters
+-- (each list is length N), and combines the lists to produce a final
+-- list of N clusters.
+--
+-- Useful for parallelising the algorithm!
+--
+reduce :: Int -> [[Cluster]] -> [Cluster]
+reduce nclusters css =
+  concatMap combine $ elems $
+     accumArray (flip (:)) [] (0,nclusters) [ (clId c, c) | c <- concat css]
+ where
+  combine [] = []
+  combine (c:cs) = [foldr combineClusters c cs]
