@@ -58,17 +58,17 @@ Ideas for exercises:
 -}
 
 port :: Int
-port = fromIntegral 1234
+port = 44444
 
 main :: IO ()
-main = do
+main = withSocketsDo $ do
   server <- newServer
   sock <- listenOn (PortNumber (fromIntegral port))
   printf "Listening on port %d\n" port
   forever $ do
-    (handle, host, port) <- accept sock
-    printf "Accepted connection from %s: %s" host (show port)
-    forkIO $ serve server handle `finally` hClose handle
+      (handle, host, port) <- accept sock
+      printf "Accepted connection from %s: %s\n" host (show port)
+      forkIO (serve server handle `finally` hClose handle)
 
 
 -- ---------------------------------------------------------------------------
@@ -88,6 +88,7 @@ newServer = do
 data Message = Notice String
              | Tell ClientName String
              | Broadcast ClientName String
+             | Command String
 
 newClient :: ClientName -> Handle -> STM Client
 newClient name handle = do
@@ -102,8 +103,8 @@ newClient name handle = do
 data Client = Client
   { clientName     :: ClientName
   , clientHandle   :: Handle
-  , clientSendChan :: TChan Message
   , clientKicked   :: TVar (Maybe String)
+  , clientSendChan :: TChan Message
   }
 
 
@@ -125,21 +126,21 @@ tell Server{..} from who msg = do
         Nothing -> return ()
         Just client -> sendMessage client $ Tell from msg
 
-kick :: Server -> Client -> ClientName -> STM ()
-kick Server{..} client who = do
+kick :: Server -> Client -> ClientName -> STM (IO ())
+kick Server{..} client@Client{clientHandle=handle} who = do
     clientmap <- readTVar clients
     case Map.lookup who clientmap of
         Nothing ->
-           sendMessage client $ Notice (who ++ " is not connected")
+           return $ hPutStrLn handle (who ++ " is not connected")
         Just victim -> do
-           writeTVar (clientKicked victim) $ Just ("by " ++ who)
-           sendMessage client $ Notice ("you kicked " ++ who)
+           writeTVar (clientKicked victim) $ Just ("by " ++ clientName client)
+           return $ hPutStrLn handle ("you kicked " ++ who)
 
 -- -----------------------------------------------------------------------------
 -- The main server
 
-serve :: Server -> Handle -> IO ()
-serve server@Server{..} handle = do
+talk :: Server -> Handle -> IO ()
+talk server@Server{..} handle = do
     hSetNewlineMode handle universalNewlineMode
         -- Swallow carriage returns sent by telnet clients
     hSetBuffering handle LineBuffering
@@ -186,35 +187,38 @@ runClient server@Server{..} client@Client{..}
             Nothing -> do
                 msg <- readTChan clientSendChan
                 return $ do
-                    handleMessage client msg
-                    send
+                    continue <- handleMessage server client msg
+                    when continue $ send
 
     receive = do
        msg <- hGetLine clientHandle
+       atomically $ sendMessage client $ Command msg
+       receive
+
+handleMessage :: Server -> Client -> Message -> IO Bool
+handleMessage server client@Client{..} message =
+  case message of
+     Notice msg         -> output $ "*** " ++ msg
+     Tell name msg      -> output $ "*" ++ name ++ "*: " ++ msg
+     Broadcast name msg -> output $ "<" ++ name ++ ">: " ++ msg
+     Command msg ->
        case words msg of
            ["/kick", who] -> do
-               atomically $ kick server client who
-               receive
+               join $ atomically $ kick server client who
+               return True
            "/tell" : who : what -> do
                atomically $ tell server clientName who (unwords what)
-               receive
-           ["/quit"] -> return ()
+               return True
+           ["/quit"] ->
+               return False
            ('/':_):_ -> do
-               atomically $ sendMessage client $
-                               Notice ("Unrecognised command: " ++ msg)
-               receive
+               hPutStrLn clientHandle $ "Unrecognised command: " ++ msg
+               return True
            _ -> do
                atomically $ broadcast server $ Broadcast clientName msg
-               receive
-
-
-handleMessage :: Client -> Message -> IO ()
-handleMessage Client{..} message =
-    hPutStrLn clientHandle $
-        case message of
-            Notice msg         -> "*** " ++ msg
-            Tell name msg      -> "*" ++ name ++ "*: " ++ msg
-            Broadcast name msg -> "<" ++ name ++ ">: " ++ msg
+               return True
+ where
+   output s = do hPutStrLn clientHandle s; return True
 
 -- ----------------------------------------------------------------------------
 -- Utils

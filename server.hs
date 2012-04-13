@@ -5,14 +5,16 @@ import System.IO
 import Text.Printf
 import Control.Exception
 
-main =
-   withSocketsDo $ do
-   mask $ \restore -> do
-     s <- listenOn (PortNumber 44444)
-     forever $ do
-       (h,host,_) <- accept s
-       printf "new client: %s\n" host
-       forkIO (restore (talk h) `finally` hClose h)
+port :: Int
+port = 44444
+
+main = withSocketsDo $ do
+  sock <- listenOn (PortNumber (fromIntegral port))
+  printf "Listening on port %d\n" port
+  forever $ do
+     (handle, host, port) <- accept sock
+     printf "Accepted connection from %s: %s\n" host (show port)
+     forkIO (talk handle `finally` hClose handle)
 
 talk :: Handle -> IO ()
 talk h = do
