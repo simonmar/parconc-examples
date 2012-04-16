@@ -49,6 +49,11 @@ Ideas for exercises:
 
   - add a "/names" command to list the currently connected users
 
+  - add a timeout to the "What is your name?" question
+
+  - broadcast is inefficient because it uses an unbounded transaction.
+    Use a broadcast channel instead (TChan + dupTChan).
+
   - add a "/nick" command to change the current client's name.
     Careful! The name is stored as an immutable value in the Client
     record.  What is the best way to make it modifiable?
@@ -68,7 +73,7 @@ main = withSocketsDo $ do
   forever $ do
       (handle, host, port) <- accept sock
       printf "Accepted connection from %s: %s\n" host (show port)
-      forkIO (serve server handle `finally` hClose handle)
+      forkIO (talk server handle `finally` hClose handle)
 
 
 -- ---------------------------------------------------------------------------
@@ -145,34 +150,37 @@ talk server@Server{..} handle = do
         -- Swallow carriage returns sent by telnet clients
     hSetBuffering handle LineBuffering
     readName
- where
+  where
     readName = do
       hPutStrLn handle "What is your name?"
       name <- hGetLine handle
       if null name
          then readName
          else mask $ \restore -> do
-                ok <- atomically $ checkAddClient name
+                ok <- checkAddClient server name handle
                 case ok of
                   Nothing -> restore $ do
-                     printf "The name %s is in use, please choose another" name
+                     hPrintf handle
+                        "The name %s is in use, please choose another\n" name
                      readName
                   Just client ->
                      restore (runClient server client)
-                       `finally` deleteClient name
+                       `finally` removeClient server name
 
-    checkAddClient name = do
-        clientmap <- readTVar clients
-        if Map.member name clientmap
-           then return Nothing
-           else do client <- newClient name handle
-                   modifyTVar' clients $ Map.insert name client
-                   broadcast server $ Notice $ name ++ " has connected"
-                   return (Just client)
+checkAddClient :: Server -> ClientName -> Handle -> IO (Maybe Client)
+checkAddClient server@Server{..} name handle = atomically $ do
+    clientmap <- readTVar clients
+    if Map.member name clientmap
+       then return Nothing
+       else do client <- newClient name handle
+               modifyTVar' clients $ Map.insert name client
+               broadcast server $ Notice $ name ++ " has connected"
+               return (Just client)
 
-    deleteClient name = atomically $ do
-        modifyTVar' clients $ Map.delete name
-        broadcast server $ Notice $ name ++ " has disconnected"
+removeClient :: Server -> ClientName -> IO ()
+removeClient server@Server{..} name = atomically $ do
+    modifyTVar' clients $ Map.delete name
+    broadcast server $ Notice $ name ++ " has disconnected"
 
 
 runClient :: Server -> Client -> IO ()
