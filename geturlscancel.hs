@@ -29,10 +29,9 @@ data Async a = Async ThreadId (MVar (Either SomeException a))
 
 async :: IO a -> IO (Async a)
 async action = do
-   var <- newEmptyMVar
-   t <- forkIO ((do r <- action; putMVar var (Right r))
-                  `catch` \e -> putMVar var (Left e))
-   return (Async t var)
+   m <- newEmptyMVar
+   t <- forkIO (do r <- try action; putMVar m r)
+   return (Async t m)
 
 wait :: Async a -> IO (Either SomeException a)
 wait (Async t var) = readMVar var
