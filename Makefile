@@ -23,7 +23,10 @@ SAMPLES = \
   bingtranslator \
   bingtranslatorconc \
   kmeans/kmeans \
-  parinfer/parinfer
+  parinfer/parinfer \
+  chat/chat
+
+# -----------------------------------------------------------------------------
 
 all : $(SAMPLES)
 
@@ -38,6 +41,9 @@ kmeans/kmeans : kmeans/kmeans.hs
 
 parinfer/parinfer : parinfer/parinfer.hs
 	$(GHC) $(GHC_OPTS) -iparinfer --make  $< -o $@
+
+chat/chat : chat/Main.hs
+	$(GHC) $(GHC_OPTS) -ichat --make $< -o $@
 
 clean :
 	rm *.o *.hi *.eventlog $(SAMPLES)

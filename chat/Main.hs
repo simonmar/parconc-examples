@@ -8,6 +8,8 @@
 {-# LANGUAGE RecordWildCards #-}
 module Main where
 
+import ConcurrentUtils
+
 import Control.Concurrent
 import Control.Concurrent.STM
 import qualified Data.Map as Map
@@ -62,9 +64,7 @@ Ideas for exercises:
     certain number of messages in a given time.
 -}
 
-port :: Int
-port = 44444
-
+-- <<main
 main :: IO ()
 main = withSocketsDo $ do
   server <- newServer
@@ -73,14 +73,29 @@ main = withSocketsDo $ do
   forever $ do
       (handle, host, port) <- accept sock
       printf "Accepted connection from %s: %s\n" host (show port)
-      forkIO (talk server handle `finally` hClose handle)
+      forkFinally (talk server handle)
+                  (\_ -> hClose handle)
+
+port :: Int
+port = 44444
+-- >>
 
 
 -- ---------------------------------------------------------------------------
 -- Data structures and initialisation
 
+-- <<Client
 type ClientName = String
 
+data Client = Client
+  { clientName     :: ClientName
+  , clientHandle   :: Handle
+  , clientKicked   :: TVar (Maybe String)
+  , clientSendChan :: TChan Message
+  }
+-- >>
+
+-- <<Server
 data Server = Server
   { clients :: TVar (Map ClientName Client)
   }
@@ -89,11 +104,14 @@ newServer :: IO Server
 newServer = do
   c <- newTVarIO Map.empty
   return Server { clients = c }
+-- >>
 
+-- <<Message
 data Message = Notice String
              | Tell ClientName String
              | Broadcast ClientName String
              | Command String
+-- >>
 
 newClient :: ClientName -> Handle -> STM Client
 newClient name handle = do
@@ -105,24 +123,22 @@ newClient name handle = do
                 , clientKicked   = k
                 }
 
-data Client = Client
-  { clientName     :: ClientName
-  , clientHandle   :: Handle
-  , clientKicked   :: TVar (Maybe String)
-  , clientSendChan :: TChan Message
-  }
-
 
 -- -----------------------------------------------------------------------------
 -- Basic operations
 
+-- <<broadcast
 broadcast :: Server -> Message -> STM ()
-broadcast Server{..} msg =
-    readTVar clients >>= F.mapM_ (\client -> sendMessage client msg)
+broadcast Server{..} msg = do
+    clientmap <- readTVar clients
+    F.mapM_ (\client -> sendMessage client msg) clientmap
+-- >>
 
+-- <<sendMessage
 sendMessage :: Client -> Message -> STM ()
 sendMessage Client{..} msg =
     writeTChan clientSendChan msg
+-- >>
 
 tell :: Server -> ClientName -> ClientName -> String -> STM ()
 tell Server{..} from who msg = do
@@ -151,6 +167,7 @@ talk server@Server{..} handle = do
     hSetBuffering handle LineBuffering
     readName
   where
+-- <<readName
     readName = do
       hPutStrLn handle "What is your name?"
       name <- hGetLine handle
@@ -166,7 +183,9 @@ talk server@Server{..} handle = do
                   Just client ->
                      restore (runClient server client)
                        `finally` removeClient server name
+-- >>
 
+-- <<checkAddClient
 checkAddClient :: Server -> ClientName -> Handle -> IO (Maybe Client)
 checkAddClient server@Server{..} name handle = atomically $ do
     clientmap <- readTVar clients
@@ -176,16 +195,19 @@ checkAddClient server@Server{..} name handle = atomically $ do
                modifyTVar' clients $ Map.insert name client
                broadcast server $ Notice $ name ++ " has connected"
                return (Just client)
+-- >>
 
+-- <<removeClient
 removeClient :: Server -> ClientName -> IO ()
 removeClient server@Server{..} name = atomically $ do
     modifyTVar' clients $ Map.delete name
     broadcast server $ Notice $ name ++ " has disconnected"
+-- >>
 
-
+-- <<runClient
 runClient :: Server -> Client -> IO ()
 runClient server@Server{..} client@Client{..}
- = concurrently send receive
+ = race_ send receive
  where
     send = join $ atomically $ do
         k <- readTVar clientKicked
@@ -202,7 +224,9 @@ runClient server@Server{..} client@Client{..}
        msg <- hGetLine clientHandle
        atomically $ sendMessage client $ Command msg
        receive
+-- >>
 
+-- <<handleMessage
 handleMessage :: Server -> Client -> Message -> IO Bool
 handleMessage server client@Client{..} message =
   case message of
@@ -227,6 +251,7 @@ handleMessage server client@Client{..} message =
                return True
  where
    output s = do hPutStrLn clientHandle s; return True
+-- >>
 
 -- ----------------------------------------------------------------------------
 -- Utils
