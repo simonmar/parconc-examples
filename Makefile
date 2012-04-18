@@ -17,6 +17,7 @@ SAMPLES = \
   fork \
   geturls \
   geturlscancel \
+  geturlsfirst \
   geturlsstm \
   server \
   bingtranslator \
