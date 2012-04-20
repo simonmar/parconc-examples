@@ -5,7 +5,9 @@
 #
 # Requisites:
 #    - Haskell Platform
-#    - monad-par package (cabal install monad-par)
+#    - cabal install xml
+#    - for monad-par examples: cabal install monad-par 
+#    - for remote examples: cabal install remote derive
 #
 # To build all samples, just type "make".
 
@@ -24,7 +26,9 @@ SAMPLES = \
   bingtranslatorconc \
   kmeans/kmeans \
   parinfer/parinfer \
-  chat/chat
+  chat/chat \
+  remote-ping/ping \
+  remote-chat/chat
 
 # -----------------------------------------------------------------------------
 
@@ -44,6 +48,12 @@ parinfer/parinfer : parinfer/parinfer.hs
 
 chat/chat : chat/Main.hs
 	$(GHC) $(GHC_OPTS) -ichat --make $< -o $@
+
+remote-ping/ping : remote-ping/ping.hs
+	$(GHC) $(GHC_OPTS) -iremote-ping --make $< -o $@
+
+remote-chat/chat : remote-chat/chat.hs
+	$(GHC) $(GHC_OPTS) -iremote-chat --make $< -o $@
 
 clean :
 	rm *.o *.hi *.eventlog $(SAMPLES)
