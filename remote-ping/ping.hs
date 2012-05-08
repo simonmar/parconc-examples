@@ -25,7 +25,9 @@ pingServer = forever $ do
       mypid <- getSelfPid
       send from (Pong mypid)
     _ -> return ()
+-- >>
 
+-- <<remotable
 $( remotable ['pingServer] )
 -- >>
 
@@ -53,7 +55,7 @@ initialProcess "MASTER" = do
   say "All pongs successfully received"
   terminate
 
-
+waitForPongs :: [ProcessId] -> ProcessM ()
 waitForPongs [] = return ()
 waitForPongs ps = do
   m <- expect
