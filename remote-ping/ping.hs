@@ -18,13 +18,10 @@ $( derive makeBinary ''Message )
 
 -- <<pingServer
 pingServer :: ProcessM ()
-pingServer = forever $ do
-  m <- expect
-  case m of
-    Ping from -> do
-      mypid <- getSelfPid
-      send from (Pong mypid)
-    _ -> return ()
+pingServer = do
+  Ping from <- expect
+  mypid <- getSelfPid
+  send from (Pong mypid)
 -- >>
 
 -- <<remotable
@@ -34,38 +31,21 @@ $( remotable ['pingServer] )
 -- <<master
 master :: ProcessM ()
 master = do
-  peers <- getPeers
+  node <- getSelfNode
 
-  let workers = findPeerByRole peers "WORKER"
-
-  ps <- forM workers $ \nid -> do
-          say $ printf "spawning on %s" (show nid)
-          spawn nid pingServer__closure
+  say $ printf "spawning on %s" (show node)
+  pid <- spawn node pingServer__closure
 
   mypid <- getSelfPid
+  say $ printf "pinging %s" (show pid)
+  send pid (Ping mypid)
 
-  forM_ ps $ \pid -> do
-    say $ printf "pinging %s" (show pid)
-    send pid (Ping mypid)
-
-  waitForPongs ps
-
-  say "All pongs successfully received"
+  Pong _ <- expect
+  say "pong."
   terminate
-
-waitForPongs :: [ProcessId] -> ProcessM ()
-waitForPongs [] = return ()
-waitForPongs ps = do
-  m <- expect
-  case m of
-    Pong p -> waitForPongs (filter (/= p) ps)
-    _  -> say "MASTER received ping" >> terminate
 -- >>
 
 -- <<main
-main = remoteInit (Just "config") [Main.__remoteCallMetaData] initialProcess
-
-initialProcess :: String -> ProcessM ()
-initialProcess "WORKER" = receiveWait []
-initialProcess "MASTER" = master
+main = remoteInit (Just "config") [Main.__remoteCallMetaData] $
+         \_ -> master
 -- >>
