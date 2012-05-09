@@ -31,11 +31,9 @@ pingServer = forever $ do
 $( remotable ['pingServer] )
 -- >>
 
--- <<initialProcess
-initialProcess :: String -> ProcessM ()
-initialProcess "WORKER" = receiveWait []
-
-initialProcess "MASTER" = do
+-- <<master
+master :: ProcessM ()
+master = do
   peers <- getPeers
 
   let workers = findPeerByRole peers "WORKER"
@@ -66,5 +64,8 @@ waitForPongs ps = do
 
 -- <<main
 main = remoteInit (Just "config") [Main.__remoteCallMetaData] initialProcess
--- >>
 
+initialProcess :: String -> ProcessM ()
+initialProcess "WORKER" = receiveWait []
+initialProcess "MASTER" = master
+-- >>
