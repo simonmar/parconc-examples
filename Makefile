@@ -28,7 +28,8 @@ SAMPLES = \
   parinfer/parinfer \
   chat/chat \
   remote-ping/ping \
-  remote-ping-multi/ping-multi \
+  remote-ping/ping-multi \
+  remote-ping/ping-tc \
   remote-chat/chat
 
 # -----------------------------------------------------------------------------
@@ -53,8 +54,11 @@ chat/chat : chat/Main.hs
 remote-ping/ping : remote-ping/ping.hs
 	$(GHC) $(GHC_OPTS) -iremote-ping --make $< -o $@
 
-remote-ping-multi/ping-multi : remote-ping-multi/ping-multi.hs
-	$(GHC) $(GHC_OPTS) -iremote-ping-multi --make $< -o $@
+remote-ping/ping-multi : remote-ping/ping-multi.hs
+	$(GHC) $(GHC_OPTS) -iremote-ping --make $< -o $@
+
+remote-ping/ping-tc : remote-ping/ping-tc.hs
+	$(GHC) $(GHC_OPTS) -iremote-ping --make $< -o $@
 
 remote-chat/chat : remote-chat/chat.hs
 	$(GHC) $(GHC_OPTS) -iremote-chat --make $< -o $@
