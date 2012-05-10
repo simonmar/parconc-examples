@@ -9,7 +9,7 @@ import Data.Binary
 import Data.Typeable
 
 -- <<Message
-data Message = Ping ProcessId
+data Message = Ping (SendPort Message)
              | Pong ProcessId
   deriving Typeable
 
@@ -19,9 +19,9 @@ $( derive makeBinary ''Message )
 -- <<pingServer
 pingServer :: ProcessM ()
 pingServer = do
-  Ping from <- expect
+  Ping chan <- expect
   mypid <- getSelfPid
-  send from (Pong mypid)
+  sendChannel chan (Pong mypid)
 -- >>
 
 -- <<remotable
@@ -41,21 +41,24 @@ master = do
 
   mypid <- getSelfPid
 
-  forM_ ps $ \pid -> do
+  ports <- forM ps $ \pid -> do
     say $ printf "pinging %s" (show pid)
-    send pid (Ping mypid)
+    (sendport,recvport) <- newChannel
+    send pid (Ping sendport)
+    return recvport
 
-  waitForPongs ps
+  oneport <- mergePortsBiased ports
+  waitForPongs oneport ps
 
   say "All pongs successfully received"
   terminate
 
-waitForPongs :: [ProcessId] -> ProcessM ()
-waitForPongs [] = return ()
-waitForPongs ps = do
-  m <- expect
+waitForPongs :: ReceivePort Message -> [ProcessId] -> ProcessM ()
+waitForPongs port [] = return ()
+waitForPongs port ps = do
+  m <- receiveChannel port
   case m of
-    Pong p -> waitForPongs (filter (/= p) ps)
+    Pong p -> waitForPongs port (filter (/= p) ps)
     _  -> say "MASTER received ping" >> terminate
 -- >>
 
