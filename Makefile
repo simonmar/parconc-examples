@@ -30,7 +30,10 @@ SAMPLES = \
   remote-ping/ping \
   remote-ping/ping-multi \
   remote-ping/ping-tc \
-  remote-chat/chat
+  remote-chat/chat \
+  remote-db/db \
+  remote-db/db2 \
+  remote-db/db4
 
 # -----------------------------------------------------------------------------
 
@@ -63,5 +66,14 @@ remote-ping/ping-tc : remote-ping/ping-tc.hs
 remote-chat/chat : remote-chat/chat.hs
 	$(GHC) $(GHC_OPTS) -iremote-chat --make $< -o $@
 
+remote-db/db : remote-db/db.hs
+	$(GHC) $(GHC_OPTS) -iremote-db --make $< -o $@
+
+remote-db/db2 : remote-db/db2.hs
+	$(GHC) $(GHC_OPTS) -iremote-db --make $< -o $@
+
+remote-db/db4 : remote-db/db4.hs
+	$(GHC) $(GHC_OPTS) -iremote-db --make $< -o $@
+
 clean :
-	rm *.o *.hi *.eventlog $(SAMPLES)
+	rm -f *.o *.hi *.eventlog $(SAMPLES)
