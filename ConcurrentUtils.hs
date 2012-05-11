@@ -1,4 +1,4 @@
-{-# LANGUAGE CPP #-}
+{-# LANGUAGE CPP, MagicHash, UnboxedTuples #-}
 
 module ConcurrentUtils (
     -- * Variants of forkIO
@@ -26,6 +26,10 @@ import Control.Concurrent
 import Prelude hiding (catch)
 import Control.Monad
 import Control.Applicative
+
+import GHC.Exts
+import GHC.IO hiding (finally)
+import GHC.Conc
 
 -- -----------------------------------------------------------------------------
 -- Fork that executes an action at the end
@@ -71,14 +75,20 @@ instance Ord (Async a) where
 async :: IO a -> IO (Async a)
 async action = do
    var <- newEmptyTMVarIO
-   t <- forkFinally action (\r -> atomically $ putTMVar var r)
+   -- t <- forkFinally action (\r -> atomically $ putTMVar var r)
+   -- slightly faster:
+   t <- mask $ \restore ->
+          rawForkIO $ do r <- try (restore action); atomically $ putTMVar var r
    return (Async t var)
 
--- | spawn an asynchronous action in a separate thread, and pass it to
--- the supplied function.  When the function returns or throws an
--- exception, 'cancel' is called on the @Async@.
+-- | spawn an asynchronous action in a separate thread, and pass its
+-- @Async@ handle to the supplied function.  When the function returns
+-- or throws an exception, 'cancel' is called on the @Async@.
 --
 -- > withAsync action inner = bracket (async action) cancel inner
+--
+-- This is a useful variant of 'async' that ensures an @Async@ is
+-- never left running unintentionally.
 --
 withAsync :: IO a -> (Async a -> IO b) -> IO b
 -- The bracket version works, but is slow.  We can do better by
@@ -86,10 +96,11 @@ withAsync :: IO a -> (Async a -> IO b) -> IO b
 withAsync action inner = do
   var <- newEmptyTMVarIO
   mask $ \restore -> do
-    t <- forkIO $ try (restore action) >>= \r -> atomically $ putTMVar var r
-    r <- restore (inner (Async t var)) `catchAll`
-            \e -> throwTo t ThreadKilled >> throwIO e
-    throwTo t ThreadKilled
+    t <- rawForkIO $ try (restore action) >>= \r -> atomically $ putTMVar var r
+    let async = Async t var
+    r <- restore (inner async) `catchAll`
+            \e -> do cancel async; throwIO e
+    cancel async
     return r
 
 -- | wait for an asynchronous action to complete, and return either
@@ -277,6 +288,9 @@ race left right = concurrently' left right collect
             Left ex -> throwIO ex
             Right r -> return r
 
+race_ :: IO a -> IO b -> IO ()
+race_ left right = void $ race left right
+
 concurrently :: IO a -> IO b -> IO (a,b)
 concurrently left right = concurrently' left right (collect [])
   where
@@ -314,3 +328,9 @@ catchAll = catch
 tryAll :: IO a -> IO (Either SomeException a)
 tryAll = try
 
+-- A version of forkIO that does not include the outer exception
+-- handler: saves a bit of time when we will be installing our own
+-- exception handler.
+rawForkIO :: IO () -> IO ThreadId
+rawForkIO action = IO $ \ s ->
+   case (fork# action s) of (# s1, tid #) -> (# s1, ThreadId tid #)
