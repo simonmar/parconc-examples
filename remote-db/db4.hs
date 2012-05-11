@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 import Remote
-import Database  (Database, createDB, get, set, rcdata)
+import DatabaseRepl  (Database, createDB, get, set, rcdata)
 import Worker
 import Control.Monad.IO.Class
 import Control.Monad

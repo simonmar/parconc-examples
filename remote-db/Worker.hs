@@ -9,7 +9,6 @@ import Control.Concurrent
 import Data.DeriveTH
 import Data.Binary
 import Data.Typeable
-import Data.ByteString
 
 import qualified Data.Map as Map
 import Data.Map (Map)
@@ -23,8 +22,8 @@ instance Send ProcessId a where
 instance Send (SendPort a) a where
    (!) = sendChannel
 
-type Key   = ByteString
-type Value = ByteString
+type Key   = String -- should really use ByteString
+type Value = String
 
 data Request
   = Set Key Value

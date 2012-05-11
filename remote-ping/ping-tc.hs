@@ -9,7 +9,7 @@ import Data.Binary
 import Data.Typeable
 
 -- <<Message
-data Message = Ping (SendPort Message)
+data Message = Ping (SendPort ProcessId)
   deriving Typeable
 
 $( derive makeBinary ''Message )
