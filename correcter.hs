@@ -5,12 +5,12 @@ import Control.Concurrent.STM
 import Data.Char
 
 main = do
-  tvar <- newTVarIO ""
-  forkIO (render tvar)
-  forkIO (correcter tvar)
   hSetBuffering stdin  NoBuffering
   hSetBuffering stdout NoBuffering
   hSetEcho stdin False
+  tvar <- newTVarIO ""
+  forkIO (render tvar)
+  forkIO (correcter tvar)
   forever $ do
     c <- getChar
     atomically $ do
