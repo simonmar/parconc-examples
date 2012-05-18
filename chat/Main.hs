@@ -47,21 +47,9 @@ Notes
   - if two clients simultaneously kick a third client, only one will be
     successful
 
-Ideas for exercises:
+See doc/lab-exercises.tex for some ideas for enhancements that you
+could try.
 
-  - add a "/names" command to list the currently connected users
-
-  - add a timeout to the "What is your name?" question
-
-  - broadcast is inefficient because it uses an unbounded transaction.
-    Use a broadcast channel instead (TChan + dupTChan).
-
-  - add a "/nick" command to change the current client's name.
-    Careful! The name is stored as an immutable value in the Client
-    record.  What is the best way to make it modifiable?
-
-  - flood prevention: prevent a client from issuing more than a
-    certain number of messages in a given time.
 -}
 
 -- <<main
