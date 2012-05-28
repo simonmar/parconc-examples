@@ -19,7 +19,6 @@ import Control.Exception
 import Network
 import Control.Monad
 import Text.Printf
-import qualified Data.Foldable  as F
 
 {-
 Notes
@@ -119,7 +118,7 @@ newClient name handle = do
 broadcast :: Server -> Message -> STM ()
 broadcast Server{..} msg = do
     clientmap <- readTVar clients
-    F.mapM_ (\client -> sendMessage client msg) clientmap
+    mapM_ (\client -> sendMessage client msg) (Map.elems clientmap)
 -- >>
 
 -- <<sendMessage
