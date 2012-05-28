@@ -179,7 +179,7 @@ checkAddClient server@Server{..} name handle = atomically $ do
     if Map.member name clientmap
        then return Nothing
        else do client <- newClient name handle
-               modifyTVar' clients $ Map.insert name client
+               writeTVar clients (Map.insert name client clientmap)
                broadcast server $ Notice $ name ++ " has connected"
                return (Just client)
 -- >>
