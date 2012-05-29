@@ -207,10 +207,9 @@ runClient server@Server{..} client@Client{..}
                     continue <- handleMessage server client msg
                     when continue $ send
 
-    receive = do
+    receive = forever $ do
        msg <- hGetLine clientHandle
        atomically $ sendMessage client $ Command msg
-       receive
 -- >>
 
 -- <<handleMessage
