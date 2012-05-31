@@ -109,7 +109,7 @@ checkAddClient server@Server{..} client = do
     let name = clientName client
     if Map.member name clientmap
        then return False
-       else do modifyTVar' clients $ Map.insert name client
+       else do writeTVar clients (Map.insert name client clientmap)
                broadcastLocal server $ Notice $ name ++ " has connected"
                return True
 
@@ -121,16 +121,16 @@ deleteClient server@Server{..} name = do
 -- <<broadcast
 broadcast :: Server -> Message -> STM ()
 broadcast server@Server{..} msg = do
-    pids <- readTVar servers
-    mapM_ (\p -> sendRemote server p (MsgBroadcast msg)) pids
+    sendRemoteAll server (MsgBroadcast msg)
     broadcastLocal server msg
 
 broadcastLocal :: Server -> Message -> STM ()
 broadcastLocal server@Server{..} msg = do
     clientmap <- readTVar clients
-    F.mapM_ (\client -> case client of
-                            ClientLocal c -> sendLocal c msg
-                            _ -> return ()) clientmap
+    mapM_ sendIfLocal (Map.elems clientmap)
+  where
+    sendIfLocal (ClientLocal c)  = sendLocal c msg
+    sendIfLocal (ClientRemote _) = return ()
 -- >>
 
 sendLocal :: LocalClient -> Message -> STM ()
@@ -153,9 +153,9 @@ sendToName server@Server{..} name msg = do
         Just client -> sendToClient server client msg >> return True
 
 sendRemoteAll :: Server -> PMessage -> STM ()
-sendRemoteAll Server{..} pmsg = do
+sendRemoteAll server@Server{..} pmsg = do
     pids <- readTVar servers
-    mapM_ (\pid -> writeTChan proxychan (send pid pmsg)) pids
+    mapM_ (\pid -> sendRemote server pid pmsg) pids
 
 tell :: Server -> LocalClient -> ClientName -> String -> IO ()
 tell server@Server{..} LocalClient{..} who str = do
