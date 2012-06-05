@@ -16,6 +16,7 @@ SAMPLES = \
   sudoku2 \
   sudoku3 \
   sudoku4 \
+  sudoku5 \
   fork \
   geturls \
   geturlscancel \
