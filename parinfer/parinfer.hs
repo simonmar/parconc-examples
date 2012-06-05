@@ -22,8 +22,6 @@ main =  do
     Nothing -> die "failed to parse"
     Just t  -> do
       let r = runPar (inferTop Map.empty t)
-      evaluate (deep r)
-
-deep x = deepseq x x
+      evaluate (force r)
 
 die s = hPutStrLn stderr s >> exitWith (ExitFailure 1)
