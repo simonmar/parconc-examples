@@ -94,7 +94,7 @@ iter c z =
      z' = next c (lift (x,y))
   in
   (dot z' >* 4.0) ?
-     ( lift (x,y,i)
+     ( z
      , lift (A.fst z', A.snd z', i+1)
      )
 
