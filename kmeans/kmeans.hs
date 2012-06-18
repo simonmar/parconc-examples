@@ -28,8 +28,9 @@ import Control.DeepSeq
 import System.Environment
 import Data.Time.Clock
 import Control.Exception
+import Control.Concurrent
 
-main = do
+main = runInUnboundThread $ do
   points <- decodeFile "points.bin"
   clusters <- getClusters "clusters"
   let nclusters = length clusters
