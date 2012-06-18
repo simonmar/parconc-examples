@@ -54,8 +54,8 @@ kmeans_seq nclusters points clusters = do
       loop :: Int -> [Cluster] -> IO [Cluster]
       loop n clusters | n > tooMany = do printf "giving up."; return clusters
       loop n clusters = do
-        hPrintf stderr "iteration %d\n" n
-        hPutStr stderr (unlines (map show clusters))
+        hPrintf stdout "iteration %d\n" n
+        hPutStr stdout (unlines (map show clusters))
         let clusters' = step nclusters clusters points
         if clusters' == clusters
            then return clusters
@@ -81,8 +81,8 @@ kmeans_strat mappers nclusters points clusters = do
       loop :: Int -> [Cluster] -> IO [Cluster]
       loop n clusters | n > tooMany = do printf "giving up."; return clusters
       loop n clusters = do
-        hPrintf stderr "iteration %d\n" n
-        hPutStr stderr (unlines (map show clusters))
+        hPrintf stdout "iteration %d\n" n
+        hPutStr stdout (unlines (map show clusters))
         let
              new_clusterss = map (step nclusters clusters) chunks
                                `using` parList rdeepseq
@@ -106,8 +106,8 @@ kmeans_par mappers nclusters points clusters = do
       loop :: Int -> [Cluster] -> IO [Cluster]
       loop n clusters | n > tooMany = do printf "giving up."; return clusters
       loop n clusters = do
-        hPrintf stderr "iteration %d\n" n
-        hPutStr stderr (unlines (map show clusters))
+        hPrintf stdout "iteration %d\n" n
+        hPutStr stdout (unlines (map show clusters))
         let
              new_clusterss = runPar $ Par.parMap (step nclusters clusters) chunks
 
