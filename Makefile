@@ -18,6 +18,9 @@ SAMPLES = \
   sudoku4 \
   sudoku5 \
   fork \
+  mvar1 \
+  mvar2 \
+  logger \
   geturls \
   geturlscancel \
   geturlsfirst \
