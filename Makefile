@@ -24,7 +24,8 @@ SAMPLES = \
   mvar2 \
   mvar3 \
   logger \
-  geturls \
+  geturls1 \
+  geturls2 \
   geturlscancel \
   geturlsfirst \
   geturlsstm \
