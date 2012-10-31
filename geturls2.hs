@@ -1,12 +1,3 @@
--- (c) Simon Marlow 2011, see the file LICENSE for copying terms.
---
--- Sample geturls.hs (CEFP summer school notes, 2011)
---
--- Downloading multiple URLs concurrently, timing the downloads
---
--- Compile with:
---    ghc -threaded --make geturls.hs
-
 import GetURL
 import TimeIt
 
@@ -19,27 +10,26 @@ import qualified Data.ByteString as B
 -----------------------------------------------------------------------------
 -- Our Async API:
 
+-- <<async
 data Async a = Async (MVar a)
 
 async :: IO a -> IO (Async a)
 async action = do
-   var <- newEmptyMVar
-   forkIO (action >>= putMVar var)
-   return (Async var)
+  var <- newEmptyMVar
+  forkIO (do r <- action; putMVar var r)
+  return (Async var)
 
 wait :: Async a -> IO a
 wait (Async var) = readMVar var
+-- >>
 
 -----------------------------------------------------------------------------
 
-sites = ["http://www.google.com",
-         "http://www.bing.com",
-         "http://www.yahoo.com",
-         "http://www.wikipedia.com/wiki/Spade",
-         "http://www.wikipedia.com/wiki/Shovel"]
-
-main = mapM (async.http) sites >>= mapM wait
- where
-   http url = do
-     (page, time) <- timeit $ getURL url
-     printf "downloaded: %s (%d bytes, %.2fs)\n" url (B.length page) time
+-- <<main
+main = do
+  a1 <- async (getURL "http://www.wikipedia.org/wiki/Shovel")
+  a2 <- async (getURL "http://www.wikipedia.org/wiki/Spade")
+  r1 <- wait a1
+  r2 <- wait a2
+  print (B.length r1, B.length r2)
+-- >>

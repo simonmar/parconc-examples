@@ -26,6 +26,7 @@ SAMPLES = \
   logger \
   geturls1 \
   geturls2 \
+  geturls3 \
   geturlscancel \
   geturlsfirst \
   geturlsstm \
