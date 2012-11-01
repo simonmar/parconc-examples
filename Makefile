@@ -27,6 +27,9 @@ SAMPLES = \
   geturls1 \
   geturls2 \
   geturls3 \
+  geturls4 \
+  chan \
+  chan2 \
   geturlscancel \
   geturlsfirst \
   geturlsstm \
