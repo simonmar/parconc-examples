@@ -28,6 +28,8 @@ SAMPLES = \
   geturls2 \
   geturls3 \
   geturls4 \
+  geturls5 \
+  geturls6 \
   chan \
   chan2 \
   geturlscancel \
