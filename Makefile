@@ -32,6 +32,8 @@ SAMPLES = \
   geturls6 \
   chan \
   chan2 \
+  deadlock1 \
+  deadlock2 \
   geturlscancel \
   geturlsfirst \
   geturlsstm \
