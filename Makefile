@@ -34,6 +34,8 @@ SAMPLES = \
   chan2 \
   deadlock1 \
   deadlock2 \
+  threadperf1 \
+  threadperf2 \
   geturlscancel \
   geturlsfirst \
   geturlsstm \
@@ -51,6 +53,9 @@ SAMPLES = \
   remote-db/db2 \
   remote-db/db4
 
+# This one needs a bigger stack due to replicateM not being tail-recursive
+threadperf2_HC_OPTS = -with-rtsopts=-K32m
+
 # -----------------------------------------------------------------------------
 
 all : $(SAMPLES)
@@ -59,7 +64,7 @@ GHC = ghc
 GHC_OPTS = -O2 -threaded -rtsopts -eventlog
 
 % : %.hs
-	$(GHC) $(GHC_OPTS) --make  $< -o $@
+	$(GHC) $(GHC_OPTS) --make $($*_HC_OPTS) $< -o $@
 
 kmeans/kmeans : kmeans/kmeans.hs
 	$(GHC) $(GHC_OPTS) -ikmeans --make  $< -o $@
