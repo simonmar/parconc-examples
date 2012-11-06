@@ -32,6 +32,7 @@ SAMPLES = \
   geturls6 \
   chan \
   chan2 \
+  chan3 \
   deadlock1 \
   deadlock2 \
   threadperf1 \

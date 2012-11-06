@@ -25,19 +25,27 @@ import Prelude hiding (catch)
 -----------------------------------------------------------------------------
 -- Our Async API:
 
+-- <<Async
 data Async a = Async ThreadId (MVar (Either SomeException a))
+-- >>
 
+-- <<async
 async :: IO a -> IO (Async a)
 async action = do
    m <- newEmptyMVar
    t <- forkIO (do r <- try action; putMVar m r)
    return (Async t m)
+-- >>
 
-wait :: Async a -> IO (Either SomeException a)
-wait (Async t var) = readMVar var
+-- <<waitCatch
+waitCatch :: Async a -> IO (Either SomeException a)
+waitCatch (Async _ var) = readMVar var
+-- >>
 
+-- <<cancel
 cancel :: Async a -> IO ()
 cancel (Async t var) = throwTo t ThreadKilled
+-- >>
 
 -----------------------------------------------------------------------------
 
@@ -47,18 +55,22 @@ sites = ["http://www.google.com",
          "http://www.wikipedia.com/wiki/Spade",
          "http://www.wikipedia.com/wiki/Shovel"]
 
-main = do
-  as <- mapM (async.http) sites
+timeDownload :: String -> IO ()
+timeDownload url = do
+  (page, time) <- timeit $ getURL url
+  printf "downloaded: %s (%d bytes, %.2fs)\n" url (B.length page) time
 
-  forkIO $ do
+-- <<main
+main = do
+  as <- mapM (async . timeDownload) sites                     -- <1>
+
+  forkIO $ do                                                 -- <2>
      hSetBuffering stdin NoBuffering
      forever $ do
         c <- getChar
         when (c == 'q') $ mapM_ cancel as
 
-  rs <- mapM wait as
-  printf "%d/%d finished\n" (length (rights rs)) (length rs)
- where
-   http url = do
-     (page, time) <- timeit $ getURL url
-     printf "downloaded: %s (%d bytes, %.2fs)\n" url (B.length page) time
+  rs <- mapM waitCatch as                                     -- <3>
+  printf "%d/%d succeeded\n" (length (rights rs)) (length rs) -- <4>
+-- >>
+

@@ -11,18 +11,18 @@ import qualified Data.ByteString as B
 -- Our Async API:
 
 -- <<async
-data Async a = Async (MVar (Either SomeException a))
+data Async a = Async (MVar (Either SomeException a)) -- <1>
 
 async :: IO a -> IO (Async a)
 async action = do
   var <- newEmptyMVar
-  forkIO (do r <- try action; putMVar var r)  -- <1>
+  forkIO (do r <- try action; putMVar var r)  -- <2>
   return (Async var)
 
-waitCatch :: Async a -> IO (Either SomeException a) -- <2>
+waitCatch :: Async a -> IO (Either SomeException a) -- <3>
 waitCatch (Async var) = readMVar var
 
-wait :: Async a -> IO a -- <3>
+wait :: Async a -> IO a -- <4>
 wait a = do
   r <- waitCatch a
   case r of
