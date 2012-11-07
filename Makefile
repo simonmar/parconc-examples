@@ -38,6 +38,10 @@ SAMPLES = \
   threadperf1 \
   threadperf2 \
   geturlscancel \
+  geturlscancel2 \
+  timeout \
+  catch-mask \
+  catch-mask2 \
   geturlsfirst \
   geturlsstm \
   server \
