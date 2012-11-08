@@ -42,6 +42,8 @@ SAMPLES = \
   timeout \
   catch-mask \
   catch-mask2 \
+  windowman \
+  tmvar \
   geturlsfirst \
   geturlsstm \
   server \
