@@ -47,6 +47,6 @@ timeDownload url = do
   printf "downloaded: %s (%d bytes, %.2fs)\n" url (B.length page) time
 
 main = do
- as <- mapM (async . timeDownload) sites
- mapM wait as
+ as <- mapM (async . timeDownload) sites  -- <1>
+ mapM wait as                             -- <2>
 -- >>

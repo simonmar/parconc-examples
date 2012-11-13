@@ -1,7 +1,8 @@
 import Control.Concurrent
 import GetURL
-import Data.ByteString as B
+import qualified Data.ByteString as B
 import Text.Printf
+import Control.Monad
 
 -- <<main
 sites = ["http://www.google.com",
@@ -22,5 +23,6 @@ main = do
 
   (url, r) <- takeMVar m
   printf "%s was first (%d bytes)\n" url (B.length r)
+  replicateM_ (length sites - 1) (takeMVar m)
 -- >>
 
