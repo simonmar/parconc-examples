@@ -53,15 +53,28 @@ waitSTM a = do
     Right a -> return a
 -- >>
 
+-- <<wait
+wait :: Async a -> IO a
+wait = atomically . waitSTM
+-- >>
+
 -- <<cancel
 cancel :: Async a -> IO ()
 cancel (Async t _) = throwTo t ThreadKilled
 -- >>
 
+-- <<waitEither
+waitEither :: Async a -> Async b -> IO (Either a b)
+waitEither a b = atomically $
+  fmap Left (waitSTM a)
+    `orElse`
+  fmap Right (waitSTM b)
+-- >>
+
 -- <<waitAny
 waitAny :: [Async a] -> IO a
 waitAny asyncs =
-  atomically $ foldr orElse retry (map waitSTM asyncs)
+  atomically $ foldr orElse retry $ map waitSTM asyncs
 -- >>
 
 -----------------------------------------------------------------------------
@@ -77,6 +90,7 @@ main = do
   as <- mapM (async . download) sites
   (url,_) <- waitAny as
   printf "%s was first\n" url
+  mapM_ wait as
  where
   download url = do
      contents <- getURL url

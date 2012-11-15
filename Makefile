@@ -45,6 +45,8 @@ SAMPLES = \
   windowman \
   tmvar \
   geturlsfirst \
+  TList \
+  TQueue \
   geturlsstm \
   server \
   bingtranslator \
