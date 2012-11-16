@@ -30,6 +30,9 @@ SAMPLES = \
   geturls4 \
   geturls5 \
   geturls6 \
+  geturls7 \
+  geturls8 \
+  geturls9 \
   chan \
   chan2 \
   chan3 \
@@ -48,6 +51,7 @@ SAMPLES = \
   TList \
   TQueue \
   geturlsstm \
+  Async \
   server \
   bingtranslator \
   bingtranslatorconc \
