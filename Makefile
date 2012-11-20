@@ -53,6 +53,7 @@ SAMPLES = \
   geturlsstm \
   Async \
   server \
+  server2 \
   bingtranslator \
   bingtranslatorconc \
   kmeans/kmeans \
