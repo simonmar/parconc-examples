@@ -12,6 +12,7 @@ import ConcurrentUtils
 
 import Control.Concurrent
 import Control.Concurrent.STM
+import Control.Concurrent.Async
 import qualified Data.Map as Map
 import Data.Map (Map)
 import System.IO
@@ -60,8 +61,7 @@ main = withSocketsDo $ do
   forever $ do
       (handle, host, port) <- accept sock
       printf "Accepted connection from %s: %s\n" host (show port)
-      forkFinally (talk server handle)
-                  (\_ -> hClose handle)
+      forkFinally (talk handle server) (\_ -> hClose handle)
 
 port :: Int
 port = 44444
@@ -82,6 +82,18 @@ data Client = Client
   }
 -- >>
 
+-- <<newClient
+newClient :: ClientName -> Handle -> STM Client
+newClient name handle = do
+  c <- newTChan
+  k <- newTVar Nothing
+  return Client { clientName     = name
+                , clientHandle   = handle
+                , clientSendChan = c
+                , clientKicked   = k
+                }
+-- >>
+
 -- <<Server
 data Server = Server
   { clients :: TVar (Map ClientName Client)
@@ -100,116 +112,106 @@ data Message = Notice String
              | Command String
 -- >>
 
-newClient :: ClientName -> Handle -> STM Client
-newClient name handle = do
-  c <- newTChan
-  k <- newTVar Nothing
-  return Client { clientName     = name
-                , clientHandle   = handle
-                , clientSendChan = c
-                , clientKicked   = k
-                }
-
-
 -- -----------------------------------------------------------------------------
 -- Basic operations
 
 -- <<broadcast
 broadcast :: Server -> Message -> STM ()
 broadcast Server{..} msg = do
-    clientmap <- readTVar clients
-    mapM_ (\client -> sendMessage client msg) (Map.elems clientmap)
+  clientmap <- readTVar clients
+  mapM_ (\client -> sendMessage client msg) (Map.elems clientmap)
 -- >>
 
 -- <<sendMessage
 sendMessage :: Client -> Message -> STM ()
 sendMessage Client{..} msg =
-    writeTChan clientSendChan msg
+  writeTChan clientSendChan msg
 -- >>
 
 tell :: Server -> ClientName -> ClientName -> String -> STM ()
 tell Server{..} from who msg = do
-    clientmap <- readTVar clients
-    case Map.lookup who clientmap of
-        Nothing -> return ()
-        Just client -> sendMessage client $ Tell from msg
+  clientmap <- readTVar clients
+  case Map.lookup who clientmap of
+    Nothing -> return ()
+    Just client -> sendMessage client $ Tell from msg
 
 kick :: Server -> Client -> ClientName -> STM (IO ())
 kick Server{..} client@Client{clientHandle=handle} who = do
-    clientmap <- readTVar clients
-    case Map.lookup who clientmap of
-        Nothing ->
-           return $ hPutStrLn handle (who ++ " is not connected")
-        Just victim -> do
-           writeTVar (clientKicked victim) $ Just ("by " ++ clientName client)
-           return $ hPutStrLn handle ("you kicked " ++ who)
+  clientmap <- readTVar clients
+  case Map.lookup who clientmap of
+    Nothing ->
+      return $ hPutStrLn handle (who ++ " is not connected")
+    Just victim -> do
+      writeTVar (clientKicked victim) $ Just ("by " ++ clientName client)
+      return $ hPutStrLn handle ("you kicked " ++ who)
 
 -- -----------------------------------------------------------------------------
 -- The main server
 
-talk :: Server -> Handle -> IO ()
-talk server@Server{..} handle = do
-    hSetNewlineMode handle universalNewlineMode
-        -- Swallow carriage returns sent by telnet clients
-    hSetBuffering handle LineBuffering
-    readName
-  where
+talk :: Handle -> Server -> IO ()
+talk handle server@Server{..} = do
+  hSetNewlineMode handle universalNewlineMode
+      -- Swallow carriage returns sent by telnet clients
+  hSetBuffering handle LineBuffering
+  readName
+ where
 -- <<readName
-    readName = do
-      hPutStrLn handle "What is your name?"
-      name <- hGetLine handle
-      if null name
-         then readName
-         else mask $ \restore -> do
-                ok <- checkAddClient server name handle
-                case ok of
-                  Nothing -> restore $ do
-                     hPrintf handle
-                        "The name %s is in use, please choose another\n" name
-                     readName
-                  Just client ->
-                     restore (runClient server client)
-                       `finally` removeClient server name
+  readName = do
+    hPutStrLn handle "What is your name?"
+    name <- hGetLine handle
+    if null name
+      then readName
+      else mask $ \restore -> do        -- <1>
+             ok <- checkAddClient server name handle
+             case ok of
+               Nothing -> restore $ do  -- <2>
+                  hPrintf handle
+                     "The name %s is in use, please choose another\n" name
+                  readName
+               Just client ->
+                  restore (runClient server client) -- <3>
+                      `finally` removeClient server name
 -- >>
 
 -- <<checkAddClient
 checkAddClient :: Server -> ClientName -> Handle -> IO (Maybe Client)
 checkAddClient server@Server{..} name handle = atomically $ do
-    clientmap <- readTVar clients
-    if Map.member name clientmap
-       then return Nothing
-       else do client <- newClient name handle
-               writeTVar clients (Map.insert name client clientmap)
-               broadcast server $ Notice $ name ++ " has connected"
-               return (Just client)
+  clientmap <- readTVar clients
+  if Map.member name clientmap
+    then return Nothing
+    else do client <- newClient name handle
+            writeTVar clients $ Map.insert name client clientmap
+            broadcast server  $ Notice (name ++ " has connected")
+            return (Just client)
 -- >>
 
 -- <<removeClient
 removeClient :: Server -> ClientName -> IO ()
 removeClient server@Server{..} name = atomically $ do
-    modifyTVar' clients $ Map.delete name
-    broadcast server $ Notice $ name ++ " has disconnected"
+  modifyTVar' clients $ Map.delete name
+  broadcast server $ Notice (name ++ " has disconnected")
 -- >>
 
 -- <<runClient
 runClient :: Server -> Client -> IO ()
-runClient server@Server{..} client@Client{..}
- = race_ send receive
+runClient serv@Server{..} client@Client{..} = do
+  race server receive
+  return ()
  where
-    send = join $ atomically $ do
-        k <- readTVar clientKicked
-        case k of
-            Just reason -> return $
-                hPutStrLn clientHandle $ "You have been kicked: " ++ reason
-            Nothing -> do
-                msg <- readTChan clientSendChan
-                return $ do
-                    continue <- handleMessage server client msg
-                    when continue $ send
+  receive = forever $ do
+    msg <- hGetLine clientHandle
+    atomically $ sendMessage client (Command msg)
 
-    receive = forever $ do
-       msg <- hGetLine clientHandle
-       atomically $ sendMessage client $ Command msg
+  server = join $ atomically $ do
+    k <- readTVar clientKicked
+    case k of
+      Just reason -> return $
+        hPutStrLn clientHandle $ "You have been kicked: " ++ reason
+      Nothing -> do
+        msg <- readTChan clientSendChan
+        return $ do
+            continue <- handleMessage serv client msg
+            when continue $ server
 -- >>
 
 -- <<handleMessage
@@ -238,23 +240,3 @@ handleMessage server client@Client{..} message =
  where
    output s = do hPutStrLn clientHandle s; return True
 -- >>
-
--- ----------------------------------------------------------------------------
--- Utils
-
--- | @concurrently left right@ runs @left@ and @right@ in separate
--- threads.  When either @left@ or @right@ completes, whether
--- successfully or by throwing an exception, the other thread is
--- killed with @killThread@, and the call to @concurrently@ returns.
-
-concurrently :: IO () -> IO () -> IO ()
-concurrently left right = do
-    done <- newEmptyMVar
-    mask $ \restore -> do
-        let
-            spawn x = forkIO $ restore x `finally` tryPutMVar done ()
-            stop threads = mapM_ killThread threads
-        --
-        tids <- mapM spawn [left,right]
-        restore (takeMVar done) `onException` stop tids
-        stop tids

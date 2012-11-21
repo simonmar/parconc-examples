@@ -58,7 +58,7 @@ SAMPLES = \
   bingtranslatorconc \
   kmeans/kmeans \
   parinfer/parinfer \
-  chat/chat \
+  chat \
   remote-ping/ping \
   remote-ping/ping-multi \
   remote-ping/ping-tc \
