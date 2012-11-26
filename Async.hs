@@ -17,7 +17,7 @@ import Control.Exception
 import Control.Concurrent (ThreadId, forkIO)
 
 -- <<Async
-data Async a = Async ThreadId (TMVar (Either SomeException a))
+data Async a = Async ThreadId (STM (Either SomeException a))
 -- >>
 
 forkFinally :: IO a -> (Either SomeException a -> IO ()) -> IO ThreadId
@@ -30,7 +30,17 @@ async :: IO a -> IO (Async a)
 async action = do
   var <- newEmptyTMVarIO
   t <- forkFinally action (atomically . putTMVar var)
-  return (Async t var)
+  return (Async t (readTMVar var))
+-- >>
+
+-- <<Functor
+instance Functor Async where
+  fmap f (Async t stm) = Async t stm'
+    where stm' = do
+            r <- stm
+            case r of
+              Left e  -> return (Left e)
+              Right a -> return (Right (f a))
 -- >>
 
 --- <<watchCatch
@@ -40,7 +50,7 @@ waitCatch = atomically . waitCatchSTM
 
 -- <<waitCatchSTM
 waitCatchSTM :: Async a -> STM (Either SomeException a)
-waitCatchSTM (Async _ var) = readTMVar var
+waitCatchSTM (Async _ stm) = stm
 -- >>
 
 -- <<waitSTM
