@@ -1,6 +1,6 @@
 module TQueue (TQueue, newTQueue, writeTQueue, readTQueue) where
 
-import Control.Concurrent.STM
+import Control.Concurrent.STM (STM, TVar, newTVar, readTVar, writeTVar, retry)
 
 -- <<TQueue
 data TQueue a = TQueue (TVar [a]) (TVar [a])
