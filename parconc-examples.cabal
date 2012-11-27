@@ -246,6 +246,18 @@ executable chat
                  , stm ==2.4.*
                  , network ==2.3.*
 
+executable distrib-ping
+  main-is: distrib-ping/ping.hs
+  build-depends:   base ==4.5.*,
+                   containers ==0.4.*,
+                   stm ==2.4.*,
+                   async ==2.0.*,
+                   network ==2.3.*,
+                   binary ==0.5.*,
+                   distributed-process ==0.4.*,
+                   distributed-process-simplelocalnet ==0.2.*,
+                   derive ==2.5.*,
+                   transformers ==0.3.*
 
 
 --executable dist-chat
