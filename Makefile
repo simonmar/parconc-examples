@@ -59,13 +59,17 @@ SAMPLES = \
   kmeans/kmeans \
   parinfer/parinfer \
   chat \
-  remote-ping/ping \
-  remote-ping/ping-multi \
-  remote-ping/ping-tc \
-  remote-chat/chat \
-  remote-db/db \
-  remote-db/db2 \
-  remote-db/db4
+  findseq \
+  findpar \
+  findpar2 \
+  findpar3 \
+  distrib-ping/ping \
+  distrib-ping/ping-multi \
+  distrib-ping/ping-tc \
+  distrib-chat/chat \
+  distrib-db/db \
+  distrib-db/db2 \
+  distrib-db/db4
 
 # This one needs a bigger stack due to replicateM not being tail-recursive
 threadperf2_HC_OPTS = -with-rtsopts=-K32m
