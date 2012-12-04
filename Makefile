@@ -43,6 +43,7 @@ SAMPLES = \
   geturlscancel \
   geturlscancel2 \
   timeout \
+  timeout2 \
   catch-mask \
   catch-mask2 \
   windowman \

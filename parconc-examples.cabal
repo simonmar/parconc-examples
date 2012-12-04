@@ -172,6 +172,11 @@ executable  timeout
   main-is: timeout.hs
   build-depends:   base ==4.5.*
 
+executable  timeout2
+  main-is: timeout.hs
+  build-depends:   base ==4.5.*
+                 , async ==2.0.*
+
 executable  catch-mask
   main-is: catch-mask.hs
   build-depends:   base ==4.5.*
