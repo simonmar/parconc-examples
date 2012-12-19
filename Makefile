@@ -120,7 +120,7 @@ distrib-ping/ping-fail : distrib-ping/ping-fail.hs
 distrib-chat/chat : distrib-chat/chat.hs
 	$(GHC) $(GHC_OPTS) -idistrib-chat --make $< -o $@
 
-distrib-chat/chat-fail : distrib-chat/chat.hs
+distrib-chat/chat-fail : distrib-chat/chat-fail.hs
 	$(GHC) $(GHC_OPTS) -idistrib-chat --make $< -o $@
 
 distrib-db/db : distrib-db/db.hs

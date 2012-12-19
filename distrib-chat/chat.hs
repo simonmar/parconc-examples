@@ -72,12 +72,12 @@ derive makeBinary ''Message
 
 -- <<PMessage
 data PMessage
-  = MsgNewClient ClientName ProcessId
+  = MsgServers            [ProcessId]
+  | MsgSend               ClientName Message
+  | MsgBroadcast          Message
+  | MsgKick               ClientName ClientName
+  | MsgNewClient          ClientName ProcessId
   | MsgClientDisconnected ClientName ProcessId
-  | MsgKick ClientName ClientName
-  | MsgBroadcast Message
-  | MsgSend ClientName Message
-  | MsgServers [ProcessId]
   deriving Typeable
 
 derive makeBinary ''PMessage
@@ -105,27 +105,41 @@ newServer pids = do
 -- -----------------------------------------------------------------------------
 -- Basic operations
 
-checkAddClient :: Server -> Client -> STM Bool
-checkAddClient server@Server{..} client = do
+-- <<sendLocal
+sendLocal :: LocalClient -> Message -> STM ()
+sendLocal LocalClient{..} msg = writeTChan clientSendChan msg
+-- >>
+
+-- <<sendRemote
+sendRemote :: Server -> ProcessId -> PMessage -> STM ()
+sendRemote Server{..} pid pmsg = writeTChan proxychan (send pid pmsg)
+-- >>
+
+-- <<sendMessage
+sendMessage :: Server -> Client -> Message -> STM ()
+sendMessage server (ClientLocal client) msg =
+    sendLocal client msg
+sendMessage server (ClientRemote client) msg =
+    sendRemote server (clientHome client) (MsgSend (remoteName client) msg)
+-- >>
+
+-- <<sendToName
+sendToName :: Server -> ClientName -> Message -> STM Bool
+sendToName server@Server{..} name msg = do
     clientmap <- readTVar clients
-    let name = clientName client
-    if Map.member name clientmap
-       then return False
-       else do writeTVar clients (Map.insert name client clientmap)
-               broadcastLocal server $ Notice $ name ++ " has connected"
-               return True
+    case Map.lookup name clientmap of
+        Nothing     -> return False
+        Just client -> sendMessage server client msg >> return True
+-- >>
 
-deleteClient :: Server -> ClientName -> STM ()
-deleteClient server@Server{..} name = do
-    modifyTVar' clients $ Map.delete name
-    broadcastLocal server $ Notice $ name ++ " has disconnected"
+-- <<sendRemoteAll
+sendRemoteAll :: Server -> PMessage -> STM ()
+sendRemoteAll server@Server{..} pmsg = do
+    pids <- readTVar servers
+    mapM_ (\pid -> sendRemote server pid pmsg) pids
+-- >>
 
--- <<broadcast
-broadcast :: Server -> Message -> STM ()
-broadcast server@Server{..} msg = do
-    sendRemoteAll server (MsgBroadcast msg)
-    broadcastLocal server msg
-
+-- <<broadcastLocal
 broadcastLocal :: Server -> Message -> STM ()
 broadcastLocal server@Server{..} msg = do
     clientmap <- readTVar clients
@@ -135,48 +149,35 @@ broadcastLocal server@Server{..} msg = do
     sendIfLocal (ClientRemote _) = return ()
 -- >>
 
-sendLocal :: LocalClient -> Message -> STM ()
-sendLocal LocalClient{..} msg = writeTChan clientSendChan msg
+-- <<broadcast
+broadcast :: Server -> Message -> STM ()
+broadcast server@Server{..} msg = do
+    sendRemoteAll server (MsgBroadcast msg)
+    broadcastLocal server msg
+-- >>
 
-sendRemote :: Server -> ProcessId -> PMessage -> STM ()
-sendRemote Server{..} pid pmsg = writeTChan proxychan (send pid pmsg)
-
-sendToClient :: Server -> Client -> Message -> STM ()
-sendToClient server (ClientLocal client) msg =
-    sendLocal client msg
-sendToClient server (ClientRemote client) msg =
-    sendRemote server (clientHome client) (MsgSend (remoteName client) msg)
-
-sendToName :: Server -> ClientName -> Message -> STM Bool
-sendToName server@Server{..} name msg = do
-    clientmap <- readTVar clients
-    case Map.lookup name clientmap of
-        Nothing     -> return False
-        Just client -> sendToClient server client msg >> return True
-
-sendRemoteAll :: Server -> PMessage -> STM ()
-sendRemoteAll server@Server{..} pmsg = do
-    pids <- readTVar servers
-    mapM_ (\pid -> sendRemote server pid pmsg) pids
-
+-- <<tell
 tell :: Server -> LocalClient -> ClientName -> String -> IO ()
-tell server@Server{..} LocalClient{..} who str = do
-    ok <- atomically $ sendToName server who (Tell localName str)
-    if ok
-       then return ()
-       else hPutStrLn clientHandle (who ++ " is not connected.")
+tell server@Server{..} LocalClient{..} who msg = do
+  ok <- atomically $ sendToName server who (Tell localName msg)
+  if ok
+     then return ()
+     else hPutStrLn clientHandle (who ++ " is not connected.")
+-- >>
 
+-- <<kick
 kick :: Server -> ClientName -> ClientName -> STM ()
 kick server@Server{..} who by = do
-    clientmap <- readTVar clients
-    case Map.lookup who clientmap of
-        Nothing ->
-            void $ sendToName server by (Notice $ "you kicked " ++ who)
-        Just (ClientLocal victim) -> do
-            writeTVar (clientKicked victim) $ Just ("by " ++ by)
-            void $ sendToName server by (Notice $ "you kicked " ++ who)
-        Just (ClientRemote victim) -> do
-            sendRemote server (clientHome victim) (MsgKick who by)
+  clientmap <- readTVar clients
+  case Map.lookup who clientmap of
+    Nothing ->
+      void $ sendToName server by (Notice $ who ++ " is not connected")
+    Just (ClientLocal victim) -> do
+      writeTVar (clientKicked victim) $ Just ("by " ++ by)
+      void $ sendToName server by (Notice $ "you kicked " ++ who)
+    Just (ClientRemote victim) -> do
+      sendRemote server (clientHome victim) (MsgKick who by)
+-- >>
 
 -- -----------------------------------------------------------------------------
 -- Handle a local client
@@ -208,6 +209,21 @@ talk server@Server{..} handle = do
                        `finally` disconnectLocalClient server name
 -- >>
 
+checkAddClient :: Server -> Client -> STM Bool
+checkAddClient server@Server{..} client = do
+    clientmap <- readTVar clients
+    let name = clientName client
+    if Map.member name clientmap
+       then return False
+       else do writeTVar clients (Map.insert name client clientmap)
+               broadcastLocal server $ Notice $ name ++ " has connected"
+               return True
+
+deleteClient :: Server -> ClientName -> STM ()
+deleteClient server@Server{..} name = do
+    modifyTVar' clients $ Map.delete name
+    broadcastLocal server $ Notice $ name ++ " has disconnected"
+
 disconnectLocalClient :: Server -> ClientName -> IO ()
 disconnectLocalClient server@Server{..} name = atomically $ do
      deleteClient server name
@@ -215,24 +231,24 @@ disconnectLocalClient server@Server{..} name = atomically $ do
 
 -- <<runClient
 runClient :: Server -> LocalClient -> IO ()
-runClient server@Server{..} client@LocalClient{..}
- = race_ send receive
+runClient serv@Server{..} client@LocalClient{..} = do
+  race server receive
+  return ()
  where
-    send = join $ atomically $ do
-        k <- readTVar clientKicked
-        case k of
-            Just reason -> return $
-                hPutStrLn clientHandle $ "You have been kicked: " ++ reason
-            Nothing -> do
-                msg <- readTChan clientSendChan
-                return $ do
-                    continue <- handleMessage server client msg
-                    when continue $ send
+  receive = forever $ do
+    msg <- hGetLine clientHandle
+    atomically $ sendLocal client (Command msg)
 
-    receive = do
-       msg <- hGetLine clientHandle
-       atomically $ sendLocal client $ Command msg
-       receive
+  server = join $ atomically $ do
+    k <- readTVar clientKicked
+    case k of
+      Just reason -> return $
+        hPutStrLn clientHandle $ "You have been kicked: " ++ reason
+      Nothing -> do
+        msg <- readTChan clientSendChan
+        return $ do
+            continue <- handleMessage serv client msg
+            when continue $ server
 -- >>
 
 -- <<handleMessage
@@ -265,6 +281,7 @@ handleMessage server client@LocalClient{..} message =
 -- -----------------------------------------------------------------------------
 -- Main server
 
+-- <<socketListener
 socketListener :: Server -> Int -> IO ()
 socketListener server port = withSocketsDo $ do
   sock <- listenOn (PortNumber (fromIntegral port))
@@ -274,48 +291,49 @@ socketListener server port = withSocketsDo $ do
       printf "Accepted connection from %s: %s\n" host (show port)
       forkFinally (talk server handle)
                   (\_ -> hClose handle)
+-- >>
 
--- listen for actions from the proxychan and perform them
+-- <<proxy
 proxy :: Server -> Process ()
 proxy Server{..} = forever $ join $ liftIO $ atomically $ readTChan proxychan
+-- >>
 
-chatSlave :: Int -> Process ()
-chatSlave port = chatServer port []
+-- <<chatServer
+chatServer :: Int -> Process ()
+chatServer port = do
+  server <- newServer []
+  liftIO $ forkIO (socketListener server port)           -- <1>
+  spawnLocal (proxy server)                              -- <2>
+  forever $ do m <- expect; handleRemoteMessage server m -- <3>
+-- >>
 
-chatServer :: Int -> [ProcessId] -> Process ()
-chatServer port pids = do
-  server <- newServer pids
-  liftIO $ forkIO (socketListener server port)
-  spawnLocal (proxy server)
-  forever (handleRemoteMessage server)
+-- <<handleRemoteMessage
+handleRemoteMessage :: Server -> PMessage -> Process ()
+handleRemoteMessage server@Server{..} m = liftIO $ atomically $
+  case m of
+    MsgServers pids  -> writeTVar servers (filter (/= spid) pids) -- <1>
+    MsgSend name msg -> void $ sendToName server name msg         -- <2>
+    MsgBroadcast msg -> broadcastLocal server msg                 -- <2>
+    MsgKick who by   -> kick server who by                        -- <2>
 
-handleRemoteMessage :: Server -> Process ()
-handleRemoteMessage server@Server{..} = do
-  m <- expect
-  liftIO $ atomically $
-    case m of
-      MsgServers pids -> writeTVar servers (filter (/= spid) pids)
-  
-      MsgNewClient name pid -> do
-          ok <- checkAddClient server (ClientRemote (RemoteClient name pid))
-          when (not ok) $
-              sendRemote server pid (MsgKick name "SYSTEM")
+    MsgNewClient name pid -> do                                   -- <3>
+        ok <- checkAddClient server (ClientRemote (RemoteClient name pid))
+        when (not ok) $
+          sendRemote server pid (MsgKick name "SYSTEM")
 
-      MsgClientDisconnected name pid -> do
-           clientmap <- readTVar clients
-           case Map.lookup name clientmap of
-              Nothing -> return ()
-              Just (ClientRemote (RemoteClient _ pid')) | pid == pid' ->
-                deleteClient server name
-              Just _ ->
-                return ()
-  
-      MsgBroadcast msg -> broadcastLocal server msg
-      MsgSend name msg -> void $ sendToName server name msg
-      MsgKick who by   -> kick server who by
+    MsgClientDisconnected name pid -> do                          -- <4>
+         clientmap <- readTVar clients
+         case Map.lookup name clientmap of
+            Nothing -> return ()
+            Just (ClientRemote (RemoteClient _ pid')) | pid == pid' ->
+              deleteClient server name
+            Just _ ->
+              return ()
+-- >>
 
-remotable ['chatSlave]
+remotable ['chatServer]
 
+-- <<main
 port :: Int
 port = 44444
 
@@ -324,15 +342,14 @@ master peers = do
 
   let run nid port = do
          say $ printf "spawning on %s" (show nid)
-         spawn nid ($(mkClosure 'chatSlave) port)
+         spawn nid ($(mkClosure 'chatServer) port)
 
   pids <- zipWithM run peers [port+1..]
   mypid <- getSelfPid
-  forM_ pids $ \pid -> do
-    send pid (MsgServers (mypid:pids))
+  let all_pids = mypid : pids
+  mapM_ (\pid -> send pid (MsgServers all_pids)) all_pids
 
-  chatServer port (filter (/= mypid) pids)
-
+  chatServer port
 
 main = distribMain master Main.__remoteTable
 -- >>

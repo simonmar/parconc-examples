@@ -128,22 +128,31 @@ sendMessage Client{..} msg =
   writeTChan clientSendChan msg
 -- >>
 
-tell :: Server -> ClientName -> ClientName -> String -> STM ()
-tell Server{..} from who msg = do
+-- <<sendToName
+sendToName :: Server -> ClientName -> Message -> STM Bool
+sendToName server@Server{..} name msg = do
   clientmap <- readTVar clients
-  case Map.lookup who clientmap of
-    Nothing -> return ()
-    Just client -> sendMessage client $ Tell from msg
+  case Map.lookup name clientmap of
+    Nothing     -> return False
+    Just client -> sendMessage client msg >> return True
+-- >>
 
-kick :: Server -> Client -> ClientName -> STM (IO ())
-kick Server{..} client@Client{clientHandle=handle} who = do
+tell :: Server -> Client -> ClientName -> String -> IO ()
+tell server@Server{..} Client{..} who msg = do
+  ok <- atomically $ sendToName server who (Tell clientName msg)
+  if ok
+     then return ()
+     else hPutStrLn clientHandle (who ++ " is not connected.")
+
+kick :: Server -> ClientName -> ClientName -> STM ()
+kick server@Server{..} who by = do
   clientmap <- readTVar clients
   case Map.lookup who clientmap of
     Nothing ->
-      return $ hPutStrLn handle (who ++ " is not connected")
+      void $ sendToName server by (Notice $ who ++ " is not connected")
     Just victim -> do
-      writeTVar (clientKicked victim) $ Just ("by " ++ clientName client)
-      return $ hPutStrLn handle ("you kicked " ++ who)
+      writeTVar (clientKicked victim) $ Just ("by " ++ by)
+      void $ sendToName server by (Notice $ "you kicked " ++ who)
 
 -- -----------------------------------------------------------------------------
 -- The main server
@@ -224,10 +233,10 @@ handleMessage server client@Client{..} message =
      Command msg ->
        case words msg of
            ["/kick", who] -> do
-               join $ atomically $ kick server client who
+               atomically $ kick server who clientName
                return True
            "/tell" : who : what -> do
-               atomically $ tell server clientName who (unwords what)
+               tell server client who (unwords what)
                return True
            ["/quit"] ->
                return False
