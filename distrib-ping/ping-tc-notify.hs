@@ -12,20 +12,19 @@ import Data.Typeable
 import DistribUtils
 
 -- <<Message
-data Message = Ping ProcessId
-             | Pong ProcessId
-  deriving Typeable                     -- <1>
+data Message = Ping (SendPort ProcessId)
+  deriving Typeable
 
-derive makeBinary ''Message             -- <2>
+derive makeBinary ''Message
 -- >>
 
 -- <<pingServer
 pingServer :: Process ()
 pingServer = do
-  Ping from <- expect                              -- <1>
-  say $ printf "ping received from %s" (show from) -- <2>
-  mypid <- getSelfPid                              -- <3>
-  send from (Pong mypid)                           -- <4>
+  Ping chan <- expect
+  say $ printf "ping received from %s" (show chan)
+  mypid <- getSelfPid
+  sendChan chan mypid
 -- >>
 
 -- <<remotable
@@ -40,24 +39,30 @@ master peers = do
           say $ printf "spawning on %s" (show nid)
           spawn nid $(mkStaticClosure 'pingServer)
 
+  mapM_ monitor ps
+
   mypid <- getSelfPid
 
-  forM_ ps $ \pid -> do                              -- <3>
+  ports <- forM ps $ \pid -> do
     say $ printf "pinging %s" (show pid)
-    send pid (Ping mypid)
+    (sendport,recvport) <- newChan
+    send pid (Ping sendport)
+    return recvport
 
-  waitForPongs ps                                    -- <4>
+  let loop [] = return ()
+      loop (port:ps) = do
+        receiveWait
+          [ match $ \(ProcessMonitorNotification ref pid reason) -> do
+              say (show pid ++ " died: " ++ show reason)
+              loop (port:ps)
+          , matchChan port $ \p -> do
+             say "pong on channel"
+             loop ps
+          ]
+  loop ports
 
   say "All pongs successfully received"
   terminate
-
-waitForPongs :: [ProcessId] -> Process ()            -- <5>
-waitForPongs [] = return ()
-waitForPongs ps = do
-  m <- expect
-  case m of
-    Pong p -> waitForPongs (filter (/= p) ps)
-    _  -> say "MASTER received ping" >> terminate
 -- >>
 
 -- <<main

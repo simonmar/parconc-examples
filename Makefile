@@ -67,10 +67,15 @@ SAMPLES = \
   distrib-ping/ping \
   distrib-ping/ping-multi \
   distrib-ping/ping-tc \
+  distrib-ping/ping-tc-merge \
+  distrib-ping/ping-tc-notify \
+  distrib-ping/ping-fail \
   distrib-chat/chat \
-  distrib-db/db \
-  distrib-db/db2 \
-  distrib-db/db4
+  distrib-chat/chat-fail 
+
+#  distrib-db/db \
+#  distrib-db/db2 \
+#  distrib-db/db4
 
 # This one needs a bigger stack due to replicateM not being tail-recursive
 threadperf2_HC_OPTS = -with-rtsopts=-K32m
@@ -79,7 +84,7 @@ threadperf2_HC_OPTS = -with-rtsopts=-K32m
 
 all : $(SAMPLES)
 
-GHC = ghc
+GHC = ghc -package-conf $$HOME/ext/code/distributed-process/cabal-dev/packages-7.4.1.conf
 GHC_OPTS = -O2 -threaded -rtsopts -eventlog
 
 % : %.hs
@@ -94,26 +99,38 @@ parinfer/parinfer : parinfer/parinfer.hs
 chat/chat : chat/Main.hs
 	$(GHC) $(GHC_OPTS) -ichat --make $< -o $@
 
-remote-ping/ping : remote-ping/ping.hs
-	$(GHC) $(GHC_OPTS) -iremote-ping --make $< -o $@
+distrib-ping/ping : distrib-ping/ping.hs
+	$(GHC) $(GHC_OPTS) -idistrib-ping --make $< -o $@
 
-remote-ping/ping-multi : remote-ping/ping-multi.hs
-	$(GHC) $(GHC_OPTS) -iremote-ping --make $< -o $@
+distrib-ping/ping-multi : distrib-ping/ping-multi.hs
+	$(GHC) $(GHC_OPTS) -idistrib-ping --make $< -o $@
 
-remote-ping/ping-tc : remote-ping/ping-tc.hs
-	$(GHC) $(GHC_OPTS) -iremote-ping --make $< -o $@
+distrib-ping/ping-tc : distrib-ping/ping-tc.hs
+	$(GHC) $(GHC_OPTS) -idistrib-ping --make $< -o $@
 
-remote-chat/chat : remote-chat/chat.hs
-	$(GHC) $(GHC_OPTS) -iremote-chat --make $< -o $@
+distrib-ping/ping-tc-merge : distrib-ping/ping-tc-merge.hs
+	$(GHC) $(GHC_OPTS) -idistrib-ping --make $< -o $@
 
-remote-db/db : remote-db/db.hs
-	$(GHC) $(GHC_OPTS) -iremote-db --make $< -o $@
+distrib-ping/ping-tc-notify : distrib-ping/ping-tc-notify.hs
+	$(GHC) $(GHC_OPTS) -idistrib-ping --make $< -o $@
 
-remote-db/db2 : remote-db/db2.hs
-	$(GHC) $(GHC_OPTS) -iremote-db --make $< -o $@
+distrib-ping/ping-fail : distrib-ping/ping-fail.hs
+	$(GHC) $(GHC_OPTS) -idistrib-ping --make $< -o $@
 
-remote-db/db4 : remote-db/db4.hs
-	$(GHC) $(GHC_OPTS) -iremote-db --make $< -o $@
+distrib-chat/chat : distrib-chat/chat.hs
+	$(GHC) $(GHC_OPTS) -idistrib-chat --make $< -o $@
+
+distrib-chat/chat-fail : distrib-chat/chat.hs
+	$(GHC) $(GHC_OPTS) -idistrib-chat --make $< -o $@
+
+distrib-db/db : distrib-db/db.hs
+	$(GHC) $(GHC_OPTS) -idistrib-db --make $< -o $@
+
+distrib-db/db2 : distrib-db/db2.hs
+	$(GHC) $(GHC_OPTS) -idistrib-db --make $< -o $@
+
+distrib-db/db4 : distrib-db/db4.hs
+	$(GHC) $(GHC_OPTS) -idistrib-db --make $< -o $@
 
 clean :
-	rm -f *.o *.hi *.eventlog $(SAMPLES)
+	rm -f *.o *.hi */*.o */*.hi *.eventlog $(SAMPLES)

@@ -1,57 +1,60 @@
 {-# LANGUAGE TemplateHaskell, DeriveDataTypeable #-}
-import Remote
-import Control.Monad.IO.Class
-import Control.Monad
+{-# OPTIONS_GHC -Wall #-}
+import Control.Distributed.Process
+import Control.Distributed.Process.Closure
+
 import Text.Printf
-import Control.Concurrent
 import Data.DeriveTH
 import Data.Binary
 import Data.Typeable
+
+import DistribUtils
 
 -- <<Message
 data Message = Ping ProcessId
              | Pong ProcessId
   deriving Typeable
 
-$( derive makeBinary ''Message )
+derive makeBinary ''Message
 -- >>
 
 -- <<pingServer
-pingServer :: ProcessM ()
+pingServer :: Process ()
 pingServer = do
   Ping from <- expect
+  say $ printf "ping received from %s" (show from)
   mypid <- getSelfPid
   send from (Pong mypid)
 -- >>
 
 -- <<remotable
-$( remotable ['pingServer] )
+remotable ['pingServer]
 -- >>
 
-master :: ProcessM ()
+master :: Process ()
 master = do
   node <- getSelfNode
 
   say $ printf "spawning on %s" (show node)
-  pid <- spawn node pingServer__closure
+  pid <- spawn node $(mkStaticClosure 'pingServer)
 
   mypid <- getSelfPid
-  say $ printf "pinging %s" (show pid)
+  say $ printf "sending ping to %s" (show pid)
 
 -- <<withMonitor
   withMonitor pid $ do
-    send pid (Pong mypid)
+    send pid (Pong mypid)               -- <1>
     receiveWait
       [ match $ \(Pong _) -> do
          say "pong."
          terminate
-      , match $ \(ProcessMonitorException pid reason) -> do
-         say (printf "process %s died: %s" (show pid) (show reason))
+      , match $ \(ProcessMonitorNotification _ref deadpid reason) -> do
+         say (printf "process %s died: %s" (show deadpid) (show reason))
          terminate
       ]
 -- >>
 
 -- <<main
-main = remoteInit (Just "config") [Main.__remoteCallMetaData] $
-         \_ -> master
+main :: IO ()
+main = distribMain (\_ -> master) Main.__remoteTable
 -- >>

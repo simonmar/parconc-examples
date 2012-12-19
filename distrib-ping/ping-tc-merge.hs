@@ -47,12 +47,17 @@ master peers = do
     send pid (Ping sendport)            -- <2>
     return recvport
 
-  forM_ ports $ \port -> do             -- <3>
-     _ <- receiveChan port
-     return ()
+  oneport <- mergePortsBiased ports
+  waitForPongs oneport ps
 
   say "All pongs successfully received"
   terminate
+
+waitForPongs :: ReceivePort ProcessId -> [ProcessId] -> Process ()
+waitForPongs _ [] = return ()
+waitForPongs port ps = do
+  pid <- receiveChan port
+  waitForPongs port (filter (/= pid) ps)
 -- >>
 
 -- <<main

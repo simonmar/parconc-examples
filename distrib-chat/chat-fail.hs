@@ -2,6 +2,9 @@
 {-# LANGUAGE RecordWildCards #-}
 import Control.Distributed.Process hiding (mask, finally)
 import Control.Distributed.Process.Closure
+import qualified Control.Distributed.Process.Node as Node
+import Control.Distributed.Process.Node (initRemoteTable)
+import Control.Distributed.Process.Backend.SimpleLocalnet
 import Control.Concurrent.Async
 import Control.Monad.IO.Class
 import Control.Monad
@@ -17,9 +20,14 @@ import qualified Data.Map as Map
 import Data.Map (Map)
 import qualified Data.Foldable  as F
 import Control.Exception
+import System.Environment
 
 import ConcurrentUtils
 import DistribUtils
+
+import Data.Time.Clock (getCurrentTime)
+import Data.Time.Format (formatTime)
+import System.Locale (defaultTimeLocale)
 
 -- ---------------------------------------------------------------------------
 -- Data structures and initialisation
@@ -66,7 +74,7 @@ data Message = Notice String
              | Command String
   deriving Typeable
 
-derive makeBinary ''Message
+$( derive makeBinary ''Message )
 -- >>
 
 
@@ -77,10 +85,10 @@ data PMessage
   | MsgKick ClientName ClientName
   | MsgBroadcast Message
   | MsgSend ClientName Message
-  | MsgServers [ProcessId]
+  | MsgServerHere ProcessId [String]
   deriving Typeable
 
-derive makeBinary ''PMessage
+$( derive makeBinary ''PMessage )
 -- >>
 
 
@@ -91,6 +99,9 @@ data Server = Server
   , servers   :: TVar [ProcessId]
   , spid      :: ProcessId
   }
+
+localClientNames :: Map ClientName Client -> [ClientName]
+localClientNames m = [ localName c | ClientLocal c <- Map.elems m ]
 
 newServer :: [ProcessId] -> Process Server
 newServer pids = do
@@ -287,52 +298,100 @@ chatServer port pids = do
   server <- newServer pids
   liftIO $ forkIO (socketListener server port)
   spawnLocal (proxy server)
-  forever (handleRemoteMessage server)
+  forever $
+    receiveWait [
+      match (handleServerMessage server),
+      match (handleProcessMonitorNotification server),
+      matchIf (\(WhereIsReply l _) -> l == "chatServer")
+              (handleWhereIsReply server)
+     ]
 
-handleRemoteMessage :: Server -> Process ()
-handleRemoteMessage server@Server{..} = do
-  m <- expect
-  liftIO $ atomically $
-    case m of
-      MsgServers pids -> writeTVar servers (filter (/= spid) pids)
-  
-      MsgNewClient name pid -> do
-          ok <- checkAddClient server (ClientRemote (RemoteClient name pid))
-          when (not ok) $
-              sendRemote server pid (MsgKick name "SYSTEM")
+handleWhereIsReply _ (WhereIsReply _ Nothing) = return ()
+handleWhereIsReply server@Server{..} (WhereIsReply _ (Just pid)) = do
+  liftIO $ atomically $ do
+    old_pids <- readTVar servers
+    if (pid `elem` old_pids)
+       then return ()
+       else do
+         clientmap <- readTVar clients
+         sendRemote server pid (MsgServerHere spid (localClientNames clientmap))
 
-      MsgClientDisconnected name pid -> do
-           clientmap <- readTVar clients
-           case Map.lookup name clientmap of
-              Nothing -> return ()
-              Just (ClientRemote (RemoteClient _ pid')) | pid == pid' ->
-                deleteClient server name
-              Just _ ->
-                return ()
+handleProcessMonitorNotification server@Server{..}
+                                (ProcessMonitorNotification _ pid _) = do
+  say (printf "server on %s has died" (show pid))
+  liftIO $ atomically $ do
+    old_pids <- readTVar servers
+    writeTVar servers (filter (/= pid) old_pids)
+    clientmap <- readTVar clients
+    let
+        now_disconnected (ClientRemote RemoteClient{..}) = clientHome == pid
+        now_disconnected _ = False
+
+        disconnected_clients = Map.filter now_disconnected clientmap
+
+    writeTVar clients (Map.filter (not . now_disconnected) clientmap)
+    mapM_ (deleteClient server) (Map.keys disconnected_clients)
+
+handleServerMessage server@Server{..} m =
+      case m of
+        MsgServerHere pid local_clients -> do
+          liftIO $ atomically $ writeTChan proxychan (say (printf "%s received server here from %s" (show spid) (show pid)))
+          join $ liftIO $ atomically $ do
+            old_pids <- readTVar servers
+            writeTVar servers (pid : filter (/= pid) old_pids)
+            clientmap <- readTVar clients
+            let new_clientmap =
+                   Map.union clientmap (Map.fromList
+                     [ (n, ClientRemote (RemoteClient n pid))
+                     | n <- local_clients ])
+            writeTVar clients new_clientmap
+            when (pid `notElem` old_pids) $ sendRemote server pid (MsgServerHere spid (localClientNames new_clientmap))
+            return (when (pid `notElem` old_pids) $ void $ monitor pid)
   
-      MsgBroadcast msg -> broadcastLocal server msg
-      MsgSend name msg -> void $ sendToName server name msg
-      MsgKick who by   -> kick server who by
+        MsgNewClient name pid -> liftIO $ atomically $ do
+            ok <- checkAddClient server (ClientRemote (RemoteClient name pid))
+            when (not ok) $
+                sendRemote server pid (MsgKick name "SYSTEM")
+
+        MsgClientDisconnected name pid -> liftIO $ atomically $ do
+             clientmap <- readTVar clients
+             case Map.lookup name clientmap of
+                Nothing -> return ()
+                Just (ClientRemote (RemoteClient _ pid')) | pid == pid' ->
+                  deleteClient server name
+                Just _ ->
+                  return ()
+
+        MsgBroadcast msg -> liftIO $ atomically $ broadcastLocal server msg
+        MsgSend name msg -> liftIO $ atomically $ void $ sendToName server name msg
+        MsgKick who by   -> liftIO $ atomically $ kick server who by
 
 remotable ['chatSlave]
 
 port :: Int
 port = 44444
 
-master :: [NodeId] -> Process ()
-master peers = do
+master :: Backend -> String -> Process ()
+master backend port = do
 
-  let run nid port = do
-         say $ printf "spawning on %s" (show nid)
-         spawn nid ($(mkClosure 'chatSlave) port)
+  mynode <- getSelfNode
 
-  pids <- zipWithM run peers [port+1..]
+  peers0 <- liftIO $ findPeers backend 1000000
+  let peers = filter (/= mynode) peers0
+
+  say ("peers are " ++ show peers)
+
   mypid <- getSelfPid
-  forM_ pids $ \pid -> do
-    send pid (MsgServers (mypid:pids))
+  register "chatServer" mypid
 
-  chatServer port (filter (/= mypid) pids)
+  forM_ peers $ \peer -> do
+    whereisRemoteAsync peer "chatServer"
+
+  chatServer (read port :: Int) []
 
 
-main = distribMain master Main.__remoteTable
--- >>
+main = do
+ [port, chat_port] <- getArgs
+ backend <- initializeBackend "localhost" port (Main.__remoteTable initRemoteTable)
+ node <- newLocalNode backend
+ Node.runProcess node (master backend chat_port)

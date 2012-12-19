@@ -51,5 +51,5 @@ master = do
 
 -- <<main
 main :: IO ()
-main = distribMain master Main.__remoteTable
+main = distribMain (\_ -> master) Main.__remoteTable
 -- >>
