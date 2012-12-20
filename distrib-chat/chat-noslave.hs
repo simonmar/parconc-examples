@@ -74,7 +74,7 @@ derive makeBinary ''Message
 
 -- <<PMessage
 data PMessage
-  = MsgServerJoined       ProcessId [ClientName]
+  = MsgServerInfo         Bool ProcessId [ClientName]
   | MsgSend               ClientName Message
   | MsgBroadcast          Message
   | MsgKick               ClientName ClientName
@@ -306,28 +306,27 @@ proxy Server{..} = forever $ join $ liftIO $ atomically $ readTChan proxychan
 chatServer :: Int -> Process ()
 chatServer port = do
   server <- newServer []
-  liftIO $ forkIO (socketListener server port)           -- <1>
-  spawnLocal (proxy server)                              -- <2>
+  liftIO $ forkIO (socketListener server port)
+  spawnLocal (proxy server)
   forever $
-    receiveWait [
-      match (handleRemoteMessage server),
-      match (handleProcessMonitorNotification server),
-      matchIf (\(WhereIsReply l _) -> l == "chatServer")
-              (handleWhereIsReply server)
-     ]
+    receiveWait
+      [ match $ handleRemoteMessage server
+      , match $ handleMonitorNotification server
+      , matchIf (\(WhereIsReply l _) -> l == "chatServer") $
+                handleWhereIsReply server
+      , matchAny $ \_ -> return ()      -- discard unknown messages
+      ]
 
 handleWhereIsReply _ (WhereIsReply _ Nothing) = return ()
-handleWhereIsReply server@Server{..} (WhereIsReply _ (Just pid)) = do
+handleWhereIsReply server@Server{..} (WhereIsReply _ (Just pid)) =
   liftIO $ atomically $ do
-    old_pids <- readTVar servers
-    if (pid `elem` old_pids)
-       then return ()
-       else do
-         clientmap <- readTVar clients
-         sendRemote server pid (MsgServerJoined spid (localClientNames clientmap))
+    clientmap <- readTVar clients
+    -- send our own server info,and request a response:
+    sendRemote server pid (MsgServerInfo True spid (localClientNames clientmap))
 
-handleProcessMonitorNotification server@Server{..}
-                                (ProcessMonitorNotification _ pid _) = do
+handleMonitorNotification :: Server -> ProcessMonitorNotification -> Process ()
+handleMonitorNotification
+       server@Server{..} (ProcessMonitorNotification _ pid _) = do
   say (printf "server on %s has died" (show pid))
   liftIO $ atomically $ do
     old_pids <- readTVar servers
@@ -345,20 +344,7 @@ handleProcessMonitorNotification server@Server{..}
 handleRemoteMessage :: Server -> PMessage -> Process ()
 handleRemoteMessage server@Server{..} m =
   case m of
-    MsgServerJoined pid local_clients -> do
-      liftIO $ printf "%s received server here from %s" (show spid) (show pid)
-      join $ liftIO $ atomically $ do
-        old_pids <- readTVar servers
-        writeTVar servers (pid : filter (/= pid) old_pids)
-        clientmap <- readTVar clients
-        let new_clientmap =
-               Map.union clientmap (Map.fromList
-                 [ (n, ClientRemote (RemoteClient n pid))
-                 | n <- local_clients ])
-        writeTVar clients new_clientmap
-        when (pid `notElem` old_pids) $ sendRemote server pid (MsgServerJoined spid (localClientNames new_clientmap))
-        return (when (pid `notElem` old_pids) $ void $ monitor pid)
-
+    MsgServerInfo rsvp pid clients -> newServerInfo server rsvp pid clients
     MsgSend name msg -> liftIO $ atomically $ void $ sendToName server name msg
     MsgBroadcast msg -> liftIO $ atomically $ broadcastLocal server msg
     MsgKick who by   -> liftIO $ atomically $ kick server who by
@@ -376,6 +362,28 @@ handleRemoteMessage server@Server{..} m =
               deleteClient server name
             Just _ ->
               return ()
+
+newServerInfo :: Server -> Bool -> ProcessId -> [ClientName] -> Process ()
+newServerInfo server@Server{..} rsvp pid remote_clients = do
+  liftIO $ printf "%s received server info from %s\n" (show spid) (show pid)
+  join $ liftIO $ atomically $ do
+    old_pids <- readTVar servers
+    writeTVar servers (pid : filter (/= pid) old_pids)
+
+    clientmap <- readTVar clients
+
+    let new_clientmap = Map.union clientmap $ Map.fromList
+               [ (n, ClientRemote (RemoteClient n pid)) | n <- remote_clients ]
+            -- ToDo: should remove other remote clients with this pid
+            -- ToDo: also deal with conflicts
+    writeTVar clients new_clientmap
+
+    when rsvp $ do
+      sendRemote server pid
+         (MsgServerInfo False spid (localClientNames new_clientmap))
+
+    -- monitor the new server
+    return (when (pid `notElem` old_pids) $ void $ monitor pid)
 
 remotable ['chatServer]
 
@@ -403,7 +411,8 @@ master backend port = do
 -- <<main
 main = do
  [port, chat_port] <- getArgs
- backend <- initializeBackend "localhost" port (Main.__remoteTable initRemoteTable)
+ backend <- initializeBackend "localhost" port
+                              (Main.__remoteTable initRemoteTable)
  node <- newLocalNode backend
  Node.runProcess node (master backend chat_port)
 -- >>
