@@ -22,7 +22,7 @@ import Data.Char
 import qualified Data.Map as Map
 import Data.Map (Map)
 
-import Worker
+import WorkerSample
 
 import Prelude hiding (catch)
 import Control.Exception hiding (catch)
@@ -82,4 +82,4 @@ get db k = do
   db ! Get k s
   receiveChan r
 
-rcdata = Worker.__remoteTable
+rcdata = WorkerSample.__remoteTable

@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell, DeriveDataTypeable, MultiParamTypeClasses, FlexibleInstances  #-}
-module Worker where
+module WorkerSample where
 
 import Control.Distributed.Process
 import Control.Distributed.Process.Serializable
