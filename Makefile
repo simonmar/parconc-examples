@@ -71,11 +71,10 @@ SAMPLES = \
   distrib-ping/ping-tc-notify \
   distrib-ping/ping-fail \
   distrib-chat/chat \
-  distrib-chat/chat-fail 
+  distrib-chat/chat-noslave \
+  distrib-db/db
 
-#  distrib-db/db \
 #  distrib-db/db2 \
-#  distrib-db/db4
 
 # This one needs a bigger stack due to replicateM not being tail-recursive
 threadperf2_HC_OPTS = -with-rtsopts=-K32m
@@ -123,7 +122,7 @@ distrib-chat/chat : distrib-chat/chat.hs
 distrib-chat/chat-noslave : distrib-chat/chat-noslave.hs
 	$(GHC) $(GHC_OPTS) -idistrib-chat --make $< -o $@
 
-distrib-db/db : distrib-db/db.hs
+distrib-db/db : distrib-db/db.hs distrib-db/Database.hs
 	$(GHC) $(GHC_OPTS) -idistrib-db --make $< -o $@
 
 distrib-db/db2 : distrib-db/db2.hs

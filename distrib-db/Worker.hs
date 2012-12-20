@@ -1,7 +1,10 @@
 {-# LANGUAGE TemplateHaskell, DeriveDataTypeable, MultiParamTypeClasses, FlexibleInstances  #-}
 module Worker where
 
-import Remote
+import Control.Distributed.Process
+import Control.Distributed.Process.Serializable
+import Control.Distributed.Process.Closure
+
 import Control.Monad.IO.Class
 import Control.Monad
 import Text.Printf
@@ -14,13 +17,13 @@ import qualified Data.Map as Map
 import Data.Map (Map)
 
 class Send c a where
-   (!) :: Serializable a => c -> a -> ProcessM ()
+   (!) :: Serializable a => c -> a -> Process ()
 
 instance Send ProcessId a where
    (!) = send
 
 instance Send (SendPort a) a where
-   (!) = sendChannel
+   (!) = sendChan
 
 type Key   = String -- should really use ByteString
 type Value = String
@@ -32,7 +35,7 @@ data Request
 
 $( derive makeBinary ''Request )
 
-worker :: ProcessM ()
+worker :: Process ()
 worker = go Map.empty
   where
   go store = do
@@ -44,4 +47,4 @@ worker = go Map.empty
         port ! (Map.lookup k store)
         go store
 
-$( remotable ['worker] )
+remotable ['worker]

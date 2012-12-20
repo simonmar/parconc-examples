@@ -1,20 +1,19 @@
 {-# LANGUAGE OverloadedStrings #-}
-import Remote
-import DatabaseDistrib  (Database, createDB, get, set, rcdata)
-import Worker
+
+import Control.Distributed.Process
 import Control.Monad.IO.Class
 import Control.Monad
 import System.IO
 
-main = remoteInit (Just "config") rcdata initialProcess
+import DistribUtils
 
-initialProcess :: String -> ProcessM ()
-initialProcess "WORKER" = receiveWait []
-initialProcess "MASTER" = master
+import Database  (Database, createDB, get, set, rcdata)
 
-master :: ProcessM ()
-master = do
-  db <- createDB
+main = distribMain master rcdata
+
+master :: [NodeId] -> Process ()
+master peers = do
+  db <- createDB peers
 
   f <- liftIO $ readFile "Database.hs"
   let ws = words f
