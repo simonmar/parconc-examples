@@ -39,16 +39,14 @@ master peers = do
           say $ printf "spawning on %s" (show nid)
           spawn nid $(mkStaticClosure 'pingServer)
 
-  mapM_ monitor ps
-
   ports <- forM ps $ \pid -> do
     say $ printf "pinging %s" (show pid)
-    (sendport,recvport) <- newChan      -- <1>
-    send pid (Ping sendport)            -- <2>
+    (sendport,recvport) <- newChan
+    send pid (Ping sendport)
     return recvport
 
-  oneport <- mergePortsBiased ports
-  waitForPongs oneport ps
+  oneport <- mergePortsBiased ports     -- <1>
+  waitForPongs oneport ps               -- <2>
 
   say "All pongs successfully received"
   terminate
