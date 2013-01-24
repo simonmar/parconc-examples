@@ -79,8 +79,8 @@ withAsync io operation = bracket (async io) cancel operation
 -----------------------------------------------------------------------------
 
 -- <<main
-main = do
-  withAsync (getURL "http://www.wikipedia.org/wiki/Shovel") $ \a1 -> do
+main =
+  withAsync (getURL "http://www.wikipedia.org/wiki/Shovel") $ \a1 ->
   withAsync (getURL "http://www.wikipedia.org/wiki/Spade")  $ \a2 -> do
   r1 <- wait a1
   r2 <- wait a2
