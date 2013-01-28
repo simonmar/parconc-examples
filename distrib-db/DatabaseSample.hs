@@ -1,4 +1,5 @@
-{-# LANGUAGE TemplateHaskell, DeriveDataTypeable, OverloadedStrings #-}
+{-# LANGUAGE TemplateHaskell, DeriveDataTypeable, OverloadedStrings,
+    DeriveGeneric #-}
 module DatabaseSample (
        Database,
        createDB,
@@ -13,7 +14,7 @@ import Control.Monad.IO.Class
 import Control.Monad
 import Text.Printf
 import Control.Concurrent hiding (newChan)
-import Data.DeriveTH
+import GHC.Generics (Generic)
 import qualified Data.Binary
 import Data.Typeable
 import System.IO.Error hiding (catch)

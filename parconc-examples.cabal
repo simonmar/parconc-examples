@@ -344,72 +344,84 @@ executable ping
   main-is: distrib-ping/ping.hs
   build-depends:   base ==4.5.*
                  , network ==2.3.*
-                 , binary ==0.5.*
-                 , distributed-process ==0.4.*
+                 , binary >= 0.6.3 && < 0.7
+                 , distributed-process >= 0.4.2 && < 0.5
                  , distributed-process-simplelocalnet ==0.2.*
                  , distributed-static ==0.2.*
-                 , derive ==2.5.*
                  , template-haskell ==2.7.0.0
+  if impl(ghc <= 7.6)
+      -- prior to ghc-7.4 generics lived in ghc-prim
+      build-depends: ghc-prim
   default-language: Haskell2010
 
 executable ping-multi
   main-is: distrib-ping/ping-multi.hs
   build-depends:   base ==4.5.*
                  , network ==2.3.*
-                 , binary ==0.5.*
-                 , distributed-process ==0.4.*
+                 , binary >= 0.6.3 && < 0.7
+                 , distributed-process >= 0.4.2 && < 0.5
                  , distributed-process-simplelocalnet ==0.2.*
                  , distributed-static ==0.2.*
-                 , derive ==2.5.*
                  , template-haskell ==2.7.0.0
+  if impl(ghc <= 7.6)
+      -- prior to ghc-7.4 generics lived in ghc-prim
+      build-depends: ghc-prim
   default-language: Haskell2010
 
 executable ping-tc
   main-is: distrib-ping/ping-tc.hs
   build-depends:   base ==4.5.*
                  , network ==2.3.*
-                 , binary ==0.5.*
-                 , distributed-process ==0.4.*
+                 , binary >= 0.6.3 && < 0.7
+                 , distributed-process >= 0.4.2 && < 0.5
                  , distributed-process-simplelocalnet ==0.2.*
                  , distributed-static ==0.2.*
-                 , derive ==2.5.*
                  , template-haskell ==2.7.0.0
+  if impl(ghc <= 7.6)
+      -- prior to ghc-7.4 generics lived in ghc-prim
+      build-depends: ghc-prim
   default-language: Haskell2010
 
 executable ping-tc-merge
   main-is: distrib-ping/ping-tc-merge.hs
   build-depends:   base ==4.5.*
                  , network ==2.3.*
-                 , binary ==0.5.*
-                 , distributed-process ==0.4.*
+                 , binary >= 0.6.3 && < 0.7
+                 , distributed-process >= 0.4.2 && < 0.5
                  , distributed-process-simplelocalnet ==0.2.*
                  , distributed-static ==0.2.*
-                 , derive ==2.5.*
                  , template-haskell ==2.7.0.0
+  if impl(ghc <= 7.6)
+      -- prior to ghc-7.4 generics lived in ghc-prim
+      build-depends: ghc-prim
   default-language: Haskell2010
 
 executable ping-tc-notify
   main-is: distrib-ping/ping-tc-notify.hs
   build-depends:   base ==4.5.*
                  , network ==2.3.*
-                 , binary ==0.5.*
-                 , distributed-process ==0.4.*
+                 , binary >= 0.6.3 && < 0.7
+                 , distributed-process >= 0.4.2 && < 0.5
                  , distributed-process-simplelocalnet ==0.2.*
                  , distributed-static ==0.2.*
-                 , derive ==2.5.*
                  , template-haskell ==2.7.0.0
+  if impl(ghc <= 7.6)
+      -- prior to ghc-7.4 generics lived in ghc-prim
+      build-depends: ghc-prim
   default-language: Haskell2010
 
 executable ping-fail
   main-is: distrib-ping/ping-fail.hs
   build-depends:   base ==4.5.*
                  , network ==2.3.*
-                 , binary ==0.5.*
-                 , distributed-process ==0.4.*
+                 , binary >= 0.6.3 && < 0.7
+                 , distributed-process >= 0.4.2 && < 0.5
                  , distributed-process-simplelocalnet ==0.2.*
                  , distributed-static ==0.2.*
-                 , derive ==2.5.*
                  , template-haskell ==2.7.0.0
+  if impl(ghc <= 7.6)
+      -- prior to ghc-7.4 generics lived in ghc-prim
+      build-depends: ghc-prim
   default-language: Haskell2010
 
 executable distrib-chat
@@ -419,13 +431,15 @@ executable distrib-chat
                  , stm ==2.4.*
                  , async ==2.0.*
                  , network ==2.3.*
-                 , binary ==0.5.*
-                 , distributed-process ==0.4.*
+                 , binary >= 0.6.3 && < 0.7
+                 , distributed-process >= 0.4.2 && < 0.5
                  , distributed-process-simplelocalnet ==0.2.*
                  , distributed-static ==0.2.*
-                 , derive ==2.5.*
                  , transformers ==0.3.*
                  , template-haskell ==2.7.0.0
+  if impl(ghc <= 7.6)
+      -- prior to ghc-7.4 generics lived in ghc-prim
+      build-depends: ghc-prim
   default-language: Haskell2010
 
 executable distrib-chat-noslave
@@ -435,13 +449,15 @@ executable distrib-chat-noslave
                  , stm ==2.4.*
                  , async ==2.0.*
                  , network ==2.3.*
-                 , binary ==0.5.*
-                 , distributed-process ==0.4.*
+                 , binary >= 0.6.3 && < 0.7
+                 , distributed-process >= 0.4.2 && < 0.5
                  , distributed-process-simplelocalnet ==0.2.*
                  , distributed-static ==0.2.*
-                 , derive ==2.5.*
                  , transformers ==0.3.*
                  , template-haskell ==2.7.0.0
+  if impl(ghc <= 7.6)
+      -- prior to ghc-7.4 generics lived in ghc-prim
+      build-depends: ghc-prim
   default-language: Haskell2010
 
 executable distrib-db
@@ -452,13 +468,15 @@ executable distrib-db
                  , stm ==2.4.*
                  , async ==2.0.*
                  , network ==2.3.*
-                 , binary ==0.5.*
-                 , distributed-process ==0.4.*
+                 , binary >= 0.6.3 && < 0.7
+                 , distributed-process >= 0.4.2 && < 0.5
                  , distributed-process-simplelocalnet ==0.2.*
                  , distributed-static ==0.2.*
-                 , derive ==2.5.*
                  , transformers ==0.3.*
                  , template-haskell ==2.7.0.0
+  if impl(ghc <= 7.6)
+      -- prior to ghc-7.4 generics lived in ghc-prim
+      build-depends: ghc-prim
   default-language: Haskell2010
 
 -- ToDo:

@@ -1,19 +1,19 @@
-{-# LANGUAGE TemplateHaskell, DeriveDataTypeable #-}
+{-# LANGUAGE TemplateHaskell, DeriveDataTypeable, DeriveGeneric #-}
 import Remote
 import Control.Monad.IO.Class
 import Control.Monad
 import Text.Printf
 import Control.Concurrent
-import Data.DeriveTH
+import GHC.Generics (Generic)
 import Data.Binary
 import Data.Typeable
 
 -- <<Message
 data Message = Ping (SendPort Message)
              | Pong ProcessId
-  deriving Typeable
+  deriving (Typeable, Generic)
 
-$( derive makeBinary ''Message )
+instance Binary Message
 -- >>
 
 -- <<pingServer

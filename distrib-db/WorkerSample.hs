@@ -1,4 +1,5 @@
-{-# LANGUAGE TemplateHaskell, DeriveDataTypeable, MultiParamTypeClasses, FlexibleInstances  #-}
+{-# LANGUAGE TemplateHaskell, DeriveDataTypeable, MultiParamTypeClasses,
+     FlexibleInstances, DeriveGeneric  #-}
 module WorkerSample where
 
 import Control.Distributed.Process
@@ -9,7 +10,7 @@ import Control.Monad.IO.Class
 import Control.Monad
 import Text.Printf
 import Control.Concurrent
-import Data.DeriveTH
+import GHC.Generics (Generic)
 import Data.Binary
 import Data.Typeable
 
@@ -31,9 +32,9 @@ type Value = String
 data Request
   = Set Key Value
   | Get Key (SendPort (Maybe Value))
-  deriving Typeable
+  deriving (Typeable, Generic)
 
-$( derive makeBinary ''Request )
+instance Binary Request
 
 worker :: Process ()
 worker = go Map.empty

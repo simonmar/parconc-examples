@@ -1,4 +1,4 @@
-{-# LANGUAGE TemplateHaskell, DeriveDataTypeable #-}
+{-# LANGUAGE TemplateHaskell, DeriveDataTypeable, DeriveGeneric #-}
 {-# LANGUAGE RecordWildCards #-}
 import Control.Distributed.Process hiding (mask, finally)
 import Control.Distributed.Process.Closure
@@ -9,7 +9,7 @@ import Control.Monad.IO.Class
 import Control.Monad
 import Text.Printf
 import Control.Concurrent
-import Data.DeriveTH
+import GHC.Generics (Generic)
 import Data.Binary
 import Data.Typeable
 import Network
@@ -66,9 +66,9 @@ data Message = Notice String
              | Tell ClientName String
              | Broadcast ClientName String
              | Command String
-  deriving Typeable
+  deriving (Typeable, Generic)
 
-derive makeBinary ''Message
+instance Binary Message
 -- >>
 
 
@@ -80,9 +80,9 @@ data PMessage
   | MsgKick               ClientName ClientName
   | MsgNewClient          ClientName ProcessId
   | MsgClientDisconnected ClientName ProcessId
-  deriving Typeable
+  deriving (Typeable, Generic)
 
-derive makeBinary ''PMessage
+instance Binary PMessage
 -- >>
 
 

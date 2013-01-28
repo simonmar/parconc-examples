@@ -1,11 +1,11 @@
-{-# LANGUAGE TemplateHaskell, DeriveDataTypeable #-}
+{-# LANGUAGE TemplateHaskell, DeriveDataTypeable, DeriveGeneric #-}
 {-# OPTIONS_GHC -Wall #-}
 import Control.Distributed.Process
 import Control.Distributed.Process.Closure
 
 import Control.Monad
 import Text.Printf
-import Data.DeriveTH
+import GHC.Generics (Generic)
 import Data.Binary
 import Data.Typeable
 
@@ -14,9 +14,9 @@ import DistribUtils
 -- <<Message
 data Message = Ping ProcessId
              | Pong ProcessId
-  deriving Typeable                     -- <1>
+  deriving (Typeable, Generic)          -- <1>
 
-derive makeBinary ''Message             -- <2>
+instance Binary Message                 -- <2>
 -- >>
 
 -- <<pingServer
