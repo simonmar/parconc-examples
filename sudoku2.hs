@@ -5,16 +5,23 @@ import Control.Parallel.Strategies
 import Control.DeepSeq
 import Data.Maybe
 
+-- <<main
 main :: IO ()
 main = do
-    [f] <- getArgs
-    grids <- fmap lines $ readFile f
+  [f] <- getArgs
+  file <- readFile f
 
-    let (as,bs) = splitAt (length grids `div` 2) grids
+  let puzzles = lines file
 
-    print $ length $ filter isJust $ runEval $ do
-       as' <- rpar (force (map solve as))
-       bs' <- rpar (force (map solve bs))
-       rseq as'
-       rseq bs'
-       return (as' ++ bs')
+      (as,bs) = splitAt (length puzzles `div` 2) puzzles -- <1>
+
+      solutions = runEval $ do
+                    as' <- rpar (force (map solve as))   -- <2>
+                    bs' <- rpar (force (map solve bs))   -- <2>
+                    rseq as'                             -- <3>
+                    rseq bs'                             -- <3>
+                    return (as' ++ bs')                  -- <4>
+
+  print (length (filter isJust solutions))
+-- >>
+

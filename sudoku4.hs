@@ -2,15 +2,19 @@ import Sudoku
 import Control.Exception
 import System.Environment
 import Control.Parallel.Strategies hiding (parMap)
-import Control.DeepSeq
 import Data.Maybe
 
+-- <<main
 main :: IO ()
 main = do
-    [f] <- getArgs
-    grids <- fmap lines $ readFile f
-    evaluate (length grids)
-    print $ length $ filter isJust $ runEval $ parMap solve grids
+  [f] <- getArgs
+  file <- readFile f
+
+  let puzzles   = lines file
+      solutions = runEval (parMap solve puzzles)
+
+  print (length (filter isJust solutions))
+-- >>
 
 parMap :: (a -> b) -> [a] -> Eval [b]
 parMap f [] = return []
