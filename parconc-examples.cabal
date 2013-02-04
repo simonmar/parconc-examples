@@ -13,53 +13,53 @@ cabal-version:       >=1.10
 
 executable  fork
   main-is: fork.hs
-  build-depends:   base ==4.5.*
+  build-depends:   base >= 4.5 && < 4.7
   default-language: Haskell2010
 
 executable  reminders
   main-is: reminders.hs
-  build-depends:   base ==4.5.*
+  build-depends:   base >= 4.5 && < 4.7
   default-language: Haskell2010
 
 executable  reminders2
   main-is: reminders2.hs
-  build-depends:   base ==4.5.*
+  build-depends:   base >= 4.5 && < 4.7
   default-language: Haskell2010
 
 executable  mvar1
   main-is: mvar1.hs
-  build-depends:   base ==4.5.*
+  build-depends:   base >= 4.5 && < 4.7
   default-language: Haskell2010
 
 executable  mvar2
   main-is: mvar2.hs
-  build-depends:   base ==4.5.*
+  build-depends:   base >= 4.5 && < 4.7
   default-language: Haskell2010
 
 executable  mvar3
   main-is: mvar3.hs
-  build-depends:   base ==4.5.*
+  build-depends:   base >= 4.5 && < 4.7
   default-language: Haskell2010
 
 executable  logger
   main-is: logger.hs
-  build-depends:   base ==4.5.*
+  build-depends:   base >= 4.5 && < 4.7
   default-language: Haskell2010
 
 executable geturls1
   main-is: geturls1.hs
-  build-depends:   base ==4.5.*
-                 , containers ==0.4.*
+  build-depends:   base >= 4.5 && < 4.7
+                 , containers >= 0.4 && < 0.6
                  , network ==2.3.*
                  , HTTP ==4000.2.*
-                 , bytestring ==0.9.*
+                 , bytestring >= 0.9 && < 0.11
   default-language: Haskell2010
 
 executable  geturls2
   main-is: geturls2.hs
-  build-depends:   base ==4.5.*
+  build-depends:   base >= 4.5 && < 4.7
                  , stm ==2.4.*
-                 , bytestring ==0.9.*
+                 , bytestring >= 0.9 && < 0.11
                  , time ==1.4.*
                  , network ==2.3.*
                  , HTTP ==4000.2.*
@@ -67,9 +67,9 @@ executable  geturls2
 
 executable  geturls3
   main-is: geturls3.hs
-  build-depends:   base ==4.5.*
+  build-depends:   base >= 4.5 && < 4.7
                  , stm ==2.4.*
-                 , bytestring ==0.9.*
+                 , bytestring >= 0.9 && < 0.11
                  , time ==1.4.*
                  , network ==2.3.*
                  , HTTP ==4000.2.*
@@ -77,9 +77,9 @@ executable  geturls3
 
 executable  geturls4
   main-is: geturls4.hs
-  build-depends:   base ==4.5.*
+  build-depends:   base >= 4.5 && < 4.7
                  , stm ==2.4.*
-                 , bytestring ==0.9.*
+                 , bytestring >= 0.9 && < 0.11
                  , time ==1.4.*
                  , network ==2.3.*
                  , HTTP ==4000.2.*
@@ -87,9 +87,9 @@ executable  geturls4
 
 executable  geturls5
   main-is: geturls5.hs
-  build-depends:   base ==4.5.*
+  build-depends:   base >= 4.5 && < 4.7
                  , stm ==2.4.*
-                 , bytestring ==0.9.*
+                 , bytestring >= 0.9 && < 0.11
                  , time ==1.4.*
                  , network ==2.3.*
                  , HTTP ==4000.2.*
@@ -97,9 +97,9 @@ executable  geturls5
 
 executable  geturls6
   main-is: geturls6.hs
-  build-depends:   base ==4.5.*
+  build-depends:   base >= 4.5 && < 4.7
                  , stm ==2.4.*
-                 , bytestring ==0.9.*
+                 , bytestring >= 0.9 && < 0.11
                  , time ==1.4.*
                  , network ==2.3.*
                  , HTTP ==4000.2.*
@@ -107,9 +107,9 @@ executable  geturls6
 
 executable  geturls7
   main-is: geturls7.hs
-  build-depends:   base ==4.5.*
+  build-depends:   base >= 4.5 && < 4.7
                  , stm ==2.4.*
-                 , bytestring ==0.9.*
+                 , bytestring >= 0.9 && < 0.11
                  , time ==1.4.*
                  , network ==2.3.*
                  , HTTP ==4000.2.*
@@ -117,9 +117,9 @@ executable  geturls7
 
 executable  geturls8
   main-is: geturls8.hs
-  build-depends:   base ==4.5.*
+  build-depends:   base >= 4.5 && < 4.7
                  , stm ==2.4.*
-                 , bytestring ==0.9.*
+                 , bytestring >= 0.9 && < 0.11
                  , time ==1.4.*
                  , network ==2.3.*
                  , HTTP ==4000.2.*
@@ -127,9 +127,9 @@ executable  geturls8
 
 executable  geturls9
   main-is: geturls9.hs
-  build-depends:   base ==4.5.*
+  build-depends:   base >= 4.5 && < 4.7
                  , stm ==2.4.*
-                 , bytestring ==0.9.*
+                 , bytestring >= 0.9 && < 0.11
                  , time ==1.4.*
                  , network ==2.3.*
                  , HTTP ==4000.2.*
@@ -137,44 +137,44 @@ executable  geturls9
 
 executable  chan
   main-is: chan.hs
-  build-depends:   base ==4.5.*
+  build-depends:   base >= 4.5 && < 4.7
   default-language: Haskell2010
 
 executable  chan2
   main-is: chan2.hs
-  build-depends:   base ==4.5.*
+  build-depends:   base >= 4.5 && < 4.7
   default-language: Haskell2010
 
 executable  chan3
   main-is: chan3.hs
-  build-depends:   base ==4.5.*
+  build-depends:   base >= 4.5 && < 4.7
   default-language: Haskell2010
 
 executable  deadlock1
   main-is: deadlock1.hs
-  build-depends:   base ==4.5.*
+  build-depends:   base >= 4.5 && < 4.7
   default-language: Haskell2010
 
 executable  deadlock2
   main-is: deadlock2.hs
-  build-depends:   base ==4.5.*
+  build-depends:   base >= 4.5 && < 4.7
   default-language: Haskell2010
 
 executable  threadperf1
   main-is: threadperf1.hs
-  build-depends:   base ==4.5.*
+  build-depends:   base >= 4.5 && < 4.7
   default-language: Haskell2010
 
 executable  threadperf2
   main-is: threadperf2.hs
-  build-depends:   base ==4.5.*
+  build-depends:   base >= 4.5 && < 4.7
   default-language: Haskell2010
 
 executable  geturlscancel
   main-is: geturlscancel.hs
-  build-depends:   base ==4.5.*
+  build-depends:   base >= 4.5 && < 4.7
                  , stm ==2.4.*
-                 , bytestring ==0.9.*
+                 , bytestring >= 0.9 && < 0.11
                  , time ==1.4.*
                  , network ==2.3.*
                  , HTTP ==4000.2.*
@@ -182,9 +182,9 @@ executable  geturlscancel
 
 executable  geturlscancel2
   main-is: geturlscancel2.hs
-  build-depends:   base ==4.5.*
+  build-depends:   base >= 4.5 && < 4.7
                  , stm ==2.4.*
-                 , bytestring ==0.9.*
+                 , bytestring >= 0.9 && < 0.11
                  , time ==1.4.*
                  , network ==2.3.*
                  , HTTP ==4000.2.*
@@ -192,43 +192,43 @@ executable  geturlscancel2
 
 executable  timeout
   main-is: timeout.hs
-  build-depends:   base ==4.5.*
+  build-depends:   base >= 4.5 && < 4.7
   default-language: Haskell2010
 
 executable  timeout2
   main-is: timeout.hs
-  build-depends:   base ==4.5.*
+  build-depends:   base >= 4.5 && < 4.7
                  , async ==2.0.*
   default-language: Haskell2010
 
 executable  catch-mask
   main-is: catch-mask.hs
-  build-depends:   base ==4.5.*
+  build-depends:   base >= 4.5 && < 4.7
   default-language: Haskell2010
 
 executable  catch-mask2
   main-is: catch-mask2.hs
-  build-depends:   base ==4.5.*
+  build-depends:   base >= 4.5 && < 4.7
   default-language: Haskell2010
 
 executable  windowman
   main-is: windowman.hs
-  build-depends:   base ==4.5.*
-                 , containers ==0.4.*
+  build-depends:   base >= 4.5 && < 4.7
+                 , containers >= 0.4 && < 0.6
                  , stm ==2.4.*
   default-language: Haskell2010
 
 executable  tmvar
   main-is: tmvar.hs
-  build-depends:   base ==4.5.*
+  build-depends:   base >= 4.5 && < 4.7
                  , stm ==2.4.*
   default-language: Haskell2010
 
 executable  geturlsfirst
   main-is: geturlsfirst.hs
-  build-depends:   base ==4.5.*
+  build-depends:   base >= 4.5 && < 4.7
                  , stm ==2.4.*
-                 , bytestring ==0.9.*
+                 , bytestring >= 0.9 && < 0.11
                  , time ==1.4.*
                  , HTTP ==4000.2.*
                  , network ==2.3.*
@@ -236,8 +236,8 @@ executable  geturlsfirst
 
 executable  bingtranslator
   main-is: bingtranslator.hs
-  build-depends:   base ==4.5.*
-                 , bytestring ==0.9.*
+  build-depends:   base >= 4.5 && < 4.7
+                 , bytestring >= 0.9 && < 0.11
                  , time ==1.4.*
                  , HTTP ==4000.2.*
                  , network ==2.3.*
@@ -247,8 +247,8 @@ executable  bingtranslator
 
 executable  bingtranslatorconc
   main-is: bingtranslatorconc.hs
-  build-depends:   base ==4.5.*
-                 , bytestring ==0.9.*
+  build-depends:   base >= 4.5 && < 4.7
+                 , bytestring >= 0.9 && < 0.11
                  , time ==1.4.*
                  , HTTP ==4000.2.*
                  , network ==2.3.*
@@ -258,21 +258,21 @@ executable  bingtranslatorconc
 
 executable  TList
   main-is: TList.hs
-  build-depends:   base ==4.5.*
+  build-depends:   base >= 4.5 && < 4.7
                  , stm ==2.4.*
   default-language: Haskell2010
 
 executable  TQueue
   main-is: TQueue.hs
-  build-depends:   base ==4.5.*
+  build-depends:   base >= 4.5 && < 4.7
                  , stm ==2.4.*
   default-language: Haskell2010
 
 executable  geturlsstm
   main-is: geturlsstm.hs
-  build-depends:   base ==4.5.*
+  build-depends:   base >= 4.5 && < 4.7
                  , stm ==2.4.*
-                 , bytestring ==0.9.*
+                 , bytestring >= 0.9 && < 0.11
                  , time ==1.4.*
                  , network ==2.3.*
                  , HTTP ==4000.2.*
@@ -280,20 +280,20 @@ executable  geturlsstm
 
 executable  Async
   main-is: Async.hs
-  build-depends:   base ==4.5.*
+  build-depends:   base >= 4.5 && < 4.7
                  , stm ==2.4.*
   default-language: Haskell2010
 
 executable  server
   main-is: server.hs
-  build-depends:   base ==4.5.*
+  build-depends:   base >= 4.5 && < 4.7
                  , stm ==2.4.*
                  , network ==2.3.*
   default-language: Haskell2010
 
 executable  server2
   main-is: server2.hs
-  build-depends:   base ==4.5.*
+  build-depends:   base >= 4.5 && < 4.7
                  , stm ==2.4.*
                  , async ==2.0.*
                  , network ==2.3.*
@@ -301,8 +301,8 @@ executable  server2
 
 executable chat
   main-is: chat.hs
-  build-depends:   base ==4.5.*
-                 , containers ==0.4.*
+  build-depends:   base >= 4.5 && < 4.7
+                 , containers >= 0.4 && < 0.6
                  , async ==2.0.*
                  , stm ==2.4.*
                  , network ==2.3.*
@@ -310,39 +310,39 @@ executable chat
 
 executable findseq
   main-is: findseq.hs
-  build-depends:   base ==4.5.*
+  build-depends:   base >= 4.5 && < 4.7
                  , filepath ==1.3.*
-                 , directory ==1.1.*
+                 , directory >= 1.1 && < 1.3
   default-language: Haskell2010
 
 executable findpar
   main-is: findpar.hs
-  build-depends:   base ==4.5.*
+  build-depends:   base >= 4.5 && < 4.7
                  , filepath ==1.3.*
-                 , directory ==1.1.*
+                 , directory >= 1.1 && < 1.3
                  , async ==2.0.*
   default-language: Haskell2010
 
 executable findpar2
   main-is: findpar2.hs
-  build-depends:   base ==4.5.*
+  build-depends:   base >= 4.5 && < 4.7
                  , filepath ==1.3.*
-                 , directory ==1.1.*
+                 , directory >= 1.1 && < 1.3
                  , async ==2.0.*
   default-language: Haskell2010
 
 executable findpar3
   main-is: findpar3.hs
-  build-depends:   base ==4.5.*
+  build-depends:   base >= 4.5 && < 4.7
                  , filepath ==1.3.*
-                 , directory ==1.1.*
+                 , directory >= 1.1 && < 1.3
                  , async ==2.0.*
                  , stm ==2.4.*
   default-language: Haskell2010
 
 executable ping
   main-is: distrib-ping/ping.hs
-  build-depends:   base ==4.5.*
+  build-depends:   base >= 4.5 && < 4.7
                  , network ==2.3.*
                  , binary >= 0.6.3 && < 0.7
                  , distributed-process >= 0.4.2 && < 0.5
@@ -356,7 +356,7 @@ executable ping
 
 executable ping-multi
   main-is: distrib-ping/ping-multi.hs
-  build-depends:   base ==4.5.*
+  build-depends:   base >= 4.5 && < 4.7
                  , network ==2.3.*
                  , binary >= 0.6.3 && < 0.7
                  , distributed-process >= 0.4.2 && < 0.5
@@ -370,7 +370,7 @@ executable ping-multi
 
 executable ping-tc
   main-is: distrib-ping/ping-tc.hs
-  build-depends:   base ==4.5.*
+  build-depends:   base >= 4.5 && < 4.7
                  , network ==2.3.*
                  , binary >= 0.6.3 && < 0.7
                  , distributed-process >= 0.4.2 && < 0.5
@@ -384,7 +384,7 @@ executable ping-tc
 
 executable ping-tc-merge
   main-is: distrib-ping/ping-tc-merge.hs
-  build-depends:   base ==4.5.*
+  build-depends:   base >= 4.5 && < 4.7
                  , network ==2.3.*
                  , binary >= 0.6.3 && < 0.7
                  , distributed-process >= 0.4.2 && < 0.5
@@ -398,7 +398,7 @@ executable ping-tc-merge
 
 executable ping-tc-notify
   main-is: distrib-ping/ping-tc-notify.hs
-  build-depends:   base ==4.5.*
+  build-depends:   base >= 4.5 && < 4.7
                  , network ==2.3.*
                  , binary >= 0.6.3 && < 0.7
                  , distributed-process >= 0.4.2 && < 0.5
@@ -412,7 +412,7 @@ executable ping-tc-notify
 
 executable ping-fail
   main-is: distrib-ping/ping-fail.hs
-  build-depends:   base ==4.5.*
+  build-depends:   base >= 4.5 && < 4.7
                  , network ==2.3.*
                  , binary >= 0.6.3 && < 0.7
                  , distributed-process >= 0.4.2 && < 0.5
@@ -426,8 +426,8 @@ executable ping-fail
 
 executable distrib-chat
   main-is: distrib-chat/chat.hs
-  build-depends:   base ==4.5.*
-                 , containers ==0.4.*
+  build-depends:   base >= 4.5 && < 4.7
+                 , containers >= 0.4 && < 0.6
                  , stm ==2.4.*
                  , async ==2.0.*
                  , network ==2.3.*
@@ -444,8 +444,8 @@ executable distrib-chat
 
 executable distrib-chat-noslave
   main-is: distrib-chat/chat-noslave.hs
-  build-depends:   base ==4.5.*
-                 , containers ==0.4.*
+  build-depends:   base >= 4.5 && < 4.7
+                 , containers >= 0.4 && < 0.6
                  , stm ==2.4.*
                  , async ==2.0.*
                  , network ==2.3.*
@@ -463,8 +463,8 @@ executable distrib-chat-noslave
 executable distrib-db
   main-is: db.hs
   hs-source-dirs: . distrib-db
-  build-depends:   base ==4.5.*
-                 , containers ==0.4.*
+  build-depends:   base >= 4.5 && < 4.7
+                 , containers >= 0.4 && < 0.6
                  , stm ==2.4.*
                  , async ==2.0.*
                  , network ==2.3.*
@@ -481,14 +481,14 @@ executable distrib-db
 
 executable sudoku1
   main-is: sudoku1.hs
-  build-depends:   base ==4.5.*
+  build-depends:   base >= 4.5 && < 4.7
                  , parallel ==3.2.*
                  , array ==0.4.*
   default-language: Haskell2010
 
 executable sudoku2
   main-is: sudoku2.hs
-  build-depends:   base ==4.5.*
+  build-depends:   base >= 4.5 && < 4.7
                  , parallel ==3.2.*
                  , array ==0.4.*
                  , deepseq ==1.3.*
@@ -496,14 +496,14 @@ executable sudoku2
 
 executable sudoku3
   main-is: sudoku3.hs
-  build-depends:   base ==4.5.*
+  build-depends:   base >= 4.5 && < 4.7
                  , parallel ==3.2.*
                  , array ==0.4.*
   default-language: Haskell2010
 
 executable sudoku4
   main-is: sudoku4.hs
-  build-depends:   base ==4.5.*
+  build-depends:   base >= 4.5 && < 4.7
                  , parallel ==3.2.*
                  , array ==0.4.*
   default-language: Haskell2010
