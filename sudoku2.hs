@@ -22,6 +22,6 @@ main = do
                     rseq bs'                             -- <3>
                     return (as' ++ bs')                  -- <4>
 
-  print (length (filter isJust solutions))               -- <5>
+  print (length (filter isJust solutions))
 -- >>
 
