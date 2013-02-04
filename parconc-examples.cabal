@@ -348,7 +348,7 @@ executable ping
                  , distributed-process >= 0.4.2 && < 0.5
                  , distributed-process-simplelocalnet ==0.2.*
                  , distributed-static ==0.2.*
-                 , template-haskell ==2.7.0.0
+                 , template-haskell >= 2.7 && < 2.9
   if impl(ghc <= 7.6)
       -- prior to ghc-7.4 generics lived in ghc-prim
       build-depends: ghc-prim
@@ -362,7 +362,7 @@ executable ping-multi
                  , distributed-process >= 0.4.2 && < 0.5
                  , distributed-process-simplelocalnet ==0.2.*
                  , distributed-static ==0.2.*
-                 , template-haskell ==2.7.0.0
+                 , template-haskell >= 2.7 && < 2.9
   if impl(ghc <= 7.6)
       -- prior to ghc-7.4 generics lived in ghc-prim
       build-depends: ghc-prim
@@ -376,7 +376,7 @@ executable ping-tc
                  , distributed-process >= 0.4.2 && < 0.5
                  , distributed-process-simplelocalnet ==0.2.*
                  , distributed-static ==0.2.*
-                 , template-haskell ==2.7.0.0
+                 , template-haskell >= 2.7 && < 2.9
   if impl(ghc <= 7.6)
       -- prior to ghc-7.4 generics lived in ghc-prim
       build-depends: ghc-prim
@@ -390,7 +390,7 @@ executable ping-tc-merge
                  , distributed-process >= 0.4.2 && < 0.5
                  , distributed-process-simplelocalnet ==0.2.*
                  , distributed-static ==0.2.*
-                 , template-haskell ==2.7.0.0
+                 , template-haskell >= 2.7 && < 2.9
   if impl(ghc <= 7.6)
       -- prior to ghc-7.4 generics lived in ghc-prim
       build-depends: ghc-prim
@@ -404,7 +404,7 @@ executable ping-tc-notify
                  , distributed-process >= 0.4.2 && < 0.5
                  , distributed-process-simplelocalnet ==0.2.*
                  , distributed-static ==0.2.*
-                 , template-haskell ==2.7.0.0
+                 , template-haskell >= 2.7 && < 2.9
   if impl(ghc <= 7.6)
       -- prior to ghc-7.4 generics lived in ghc-prim
       build-depends: ghc-prim
@@ -418,7 +418,7 @@ executable ping-fail
                  , distributed-process >= 0.4.2 && < 0.5
                  , distributed-process-simplelocalnet ==0.2.*
                  , distributed-static ==0.2.*
-                 , template-haskell ==2.7.0.0
+                 , template-haskell >= 2.7 && < 2.9
   if impl(ghc <= 7.6)
       -- prior to ghc-7.4 generics lived in ghc-prim
       build-depends: ghc-prim
@@ -436,7 +436,7 @@ executable distrib-chat
                  , distributed-process-simplelocalnet ==0.2.*
                  , distributed-static ==0.2.*
                  , transformers ==0.3.*
-                 , template-haskell ==2.7.0.0
+                 , template-haskell >= 2.7 && < 2.9
   if impl(ghc <= 7.6)
       -- prior to ghc-7.4 generics lived in ghc-prim
       build-depends: ghc-prim
@@ -454,7 +454,7 @@ executable distrib-chat-noslave
                  , distributed-process-simplelocalnet ==0.2.*
                  , distributed-static ==0.2.*
                  , transformers ==0.3.*
-                 , template-haskell ==2.7.0.0
+                 , template-haskell >= 2.7 && < 2.9
   if impl(ghc <= 7.6)
       -- prior to ghc-7.4 generics lived in ghc-prim
       build-depends: ghc-prim
@@ -473,7 +473,7 @@ executable distrib-db
                  , distributed-process-simplelocalnet ==0.2.*
                  , distributed-static ==0.2.*
                  , transformers ==0.3.*
-                 , template-haskell ==2.7.0.0
+                 , template-haskell >= 2.7 && < 2.9
   if impl(ghc <= 7.6)
       -- prior to ghc-7.4 generics lived in ghc-prim
       build-depends: ghc-prim
