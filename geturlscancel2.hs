@@ -1,4 +1,4 @@
-{-# LANGUAGE DeriveDataTypeable #-}
+{-# LANGUAGE DeriveDataTypeable, CPP #-}
 -- (c) Simon Marlow 2011, see the file LICENSE for copying terms.
 --
 -- Sample geturls.hs (CEFP summer school notes, 2011)
@@ -15,7 +15,12 @@ import TimeIt
 import Data.Either
 import System.IO
 import Control.Monad
+#if __GLASGOW_HASKELL__ < 706
 import Control.Concurrent
+#else
+-- forkFinally was added in GHC 7.6
+import Control.Concurrent hiding (forkFinally)
+#endif
 import Control.Exception
 import Text.Printf
 import qualified Data.ByteString as B

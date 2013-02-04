@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP #-}
 -- STM Async API used in \secref{stm-async}
 
 module Main where
@@ -6,6 +7,9 @@ import GetURL
 import TimeIt
 
 import Data.Either
+#if __GLASGOW_HASKELL__ < 706
+import ConcurrentUtils (forkFinally)
+#endif
 import Control.Concurrent
 import Control.Exception
 import Control.Monad
@@ -20,11 +24,6 @@ import qualified Data.ByteString as B
 -- <<Async
 data Async a = Async ThreadId (TMVar (Either SomeException a))
 -- >>
-
-forkFinally :: IO a -> (Either SomeException a -> IO ()) -> IO ThreadId
-forkFinally action fun =
-  mask $ \restore ->
-    forkIO (do r <- try (restore action); fun r)
 
 -- <<async
 async :: IO a -> IO (Async a)

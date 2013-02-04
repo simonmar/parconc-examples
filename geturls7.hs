@@ -1,8 +1,13 @@
+{-# LANGUAGE CPP #-}
+
 import GetURL
 import TimeIt
 
 import Control.Monad
 import Control.Concurrent
+#if __GLASGOW_HASKELL__ < 706
+import ConcurrentUtils (forkFinally)
+#endif
 import Control.Exception
 import Text.Printf
 import qualified Data.ByteString as B
@@ -14,11 +19,6 @@ import Control.Concurrent.STM
 -- <<Async
 data Async a = Async ThreadId (TMVar (Either SomeException a))
 -- >>
-
-forkFinally :: IO a -> (Either SomeException a -> IO ()) -> IO ThreadId
-forkFinally action fun =
-  mask $ \restore ->
-    forkIO (do r <- try (restore action); fun r)
 
 -- <<async
 async :: IO a -> IO (Async a)
