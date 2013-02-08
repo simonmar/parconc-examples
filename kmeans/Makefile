@@ -1,10 +1,10 @@
 GHC = ghc
 GHC_OPTS = -O2 -threaded -rtsopts
 
-kmeans : kmeans.hs KMeansCommon.hs
+kmeans : kmeans.hs KMeansCore.hs
 	$(GHC) $(GHC_OPTS) kmeans
 
-GenSamples : GenSamples.hs KMeansCommon.hs
+GenSamples : GenSamples.hs KMeansCore.hs
 	$(GHC) $(GHC_OPTS) GenSamples
 
 points.bin : GenSamples

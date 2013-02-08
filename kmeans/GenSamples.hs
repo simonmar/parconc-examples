@@ -1,4 +1,4 @@
-import KMeansCommon
+import KMeansCore
 import Data.Random.Normal
 import System.Random
 import System.IO

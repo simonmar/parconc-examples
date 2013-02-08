@@ -10,12 +10,18 @@
 --
 -- Usage (Strategies):
 --   $ ./kmeans-par strat 600 +RTS -N4
-
+--
 -- Usage (Par monad):
 --   $ ./kmeans-par par 600 +RTS -N4
+--
+-- Usage (divide-and-conquer / Par monad):
+--   $ ./kmeans-par divpar 7 +RTS -N4
+--
+-- Usage (divide-and-conquer / Eval monad):
+--   $ ./kmeans-par diveval 7 +RTS -N4
 
 import System.IO
-import KMeansCommon
+import KMeansCore
 import Data.Array
 import Text.Printf
 import Data.List
@@ -30,18 +36,23 @@ import Data.Time.Clock
 import Control.Exception
 import Control.Concurrent
 
+-- -----------------------------------------------------------------------------
+-- main: read input files, time calculation
+
 main = runInUnboundThread $ do
   points <- decodeFile "points.bin"
-  clusters <- getClusters "clusters"
+  clusters <- read `fmap` readFile "clusters"
   let nclusters = length clusters
   args <- getArgs
-  evaluate (length points)
+  npoints <- evaluate (length points)
   t0 <- getCurrentTime
   final_clusters <- case args of
-   ["seq"] -> kmeans_seq nclusters points clusters
-   ["strat",n] -> kmeans_strat (read n) nclusters points clusters
-   ["par",n] -> kmeans_par (read n) nclusters points clusters
-   _other -> error "args"
+    ["seq"       ] -> kmeans_seq               nclusters points clusters
+    ["strat",   n] -> kmeans_strat    (read n) nclusters points clusters
+    ["par",     n] -> kmeans_par      (read n) nclusters points clusters
+    ["divpar",  n] -> kmeans_div_par  (read n) nclusters points clusters npoints
+    ["diveval", n] -> kmeans_div_eval (read n) nclusters points clusters npoints
+    _other -> error "args"
   t1 <- getCurrentTime
   print final_clusters
   printf "Total time: %.2f\n" (realToFrac (diffUTCTime t1 t0) :: Double)
@@ -50,7 +61,7 @@ main = runInUnboundThread $ do
 -- K-Means: repeatedly step until convergence (sequential)
 
 kmeans_seq :: Int -> [Vector] -> [Cluster] -> IO [Cluster]
-kmeans_seq nclusters points clusters = do
+kmeans_seq nclusters points clusters =
   let
       loop :: Int -> [Cluster] -> IO [Cluster]
       loop n clusters | n > tooMany = do printf "giving up."; return clusters
@@ -61,7 +72,7 @@ kmeans_seq nclusters points clusters = do
         if clusters' == clusters
            then return clusters
            else loop (n+1) clusters'
-  --
+  in
   loop 0 clusters
 
 tooMany = 50
@@ -69,16 +80,11 @@ tooMany = 50
 -- -----------------------------------------------------------------------------
 -- K-Means: repeatedly step until convergence (Strategies)
 
-split :: Int -> [a] -> [[a]] 
-split numChunks l = splitSize (ceiling $ fromIntegral (length l) / fromIntegral numChunks) l
-   where
-      splitSize _ [] = []
-      splitSize i v = take i v : splitSize i (drop i v)
-
 kmeans_strat :: Int -> Int -> [Vector] -> [Cluster] -> IO [Cluster]
-kmeans_strat mappers nclusters points clusters = do
-  let chunks = split mappers points
+kmeans_strat mappers nclusters points clusters =
   let
+      chunks = split mappers points
+
       loop :: Int -> [Cluster] -> IO [Cluster]
       loop n clusters | n > tooMany = do printf "giving up."; return clusters
       loop n clusters = do
@@ -93,17 +99,24 @@ kmeans_strat mappers nclusters points clusters = do
         if clusters' == clusters
            then return clusters
            else loop (n+1) clusters'
-  --
+  in do
   final <- loop 0 clusters
   return final
+
+split :: Int -> [a] -> [[a]] 
+split numChunks l = splitSize (ceiling $ fromIntegral (length l) / fromIntegral numChunks) l
+   where
+      splitSize _ [] = []
+      splitSize i v = take i v : splitSize i (drop i v)
 
 -- -----------------------------------------------------------------------------
 -- K-Means: repeatedly step until convergence (Par monad)
 
 kmeans_par :: Int -> Int -> [Vector] -> [Cluster] -> IO [Cluster]
-kmeans_par mappers nclusters points clusters = do
-  let chunks = split mappers points
+kmeans_par mappers nclusters points clusters =
   let
+      chunks = split mappers points
+
       loop :: Int -> [Cluster] -> IO [Cluster]
       loop n clusters | n > tooMany = do printf "giving up."; return clusters
       loop n clusters = do
@@ -117,9 +130,85 @@ kmeans_par mappers nclusters points clusters = do
         if clusters' == clusters
            then return clusters
            else loop (n+1) clusters'
-  --
-  final <- loop 0 clusters
-  return final
+  in
+  loop 0 clusters
+
+-- -----------------------------------------------------------------------------
+-- kmeans_div_par: Use divide-and-conquer, and the Par monad for parallellism.
+
+kmeans_div_par :: Int -> Int -> [Vector] -> [Cluster] -> Int -> IO [Cluster]
+kmeans_div_par threshold nclusters points clusters npoints =
+  let
+      tree = mkPointTree threshold points npoints
+
+      loop :: Int -> [Cluster] -> IO [Cluster]
+      loop n clusters | n > tooMany = do printf "giving up."; return clusters
+      loop n clusters = do
+        hPrintf stderr "iteration %d\n" n
+        hPutStr stderr (unlines (map show clusters))
+        let
+             divconq :: Tree [Vector] -> Par [Cluster]
+             divconq (Leaf points) = return $ step nclusters clusters points
+             divconq (Node left right) = do
+                  i1 <- spawn $ divconq left
+                  i2 <- spawn $ divconq right
+                  c1 <- get i1
+                  c2 <- get i2
+                  return $! reduce nclusters [c1,c2]
+
+             clusters' = runPar $ divconq tree
+
+        if clusters' == clusters
+           then return clusters
+           else loop (n+1) clusters'
+  in
+  loop 0 clusters
+
+data Tree a = Leaf a
+            | Node (Tree a) (Tree a)
+
+
+mkPointTree :: Int -> [Vector] -> Int -> Tree [Vector]
+mkPointTree threshold points npoints = go 0 points npoints
+ where
+  go depth points npoints
+   | depth >= threshold = Leaf points
+   | otherwise = Node (go (depth+1) xs half)
+                      (go (depth+1) ys half)
+         where
+                half = npoints `quot` 2
+                (xs,ys) = splitAt half points
+
+-- -----------------------------------------------------------------------------
+-- kmeans_div_eval: Use divide-and-conquer, and the Eval monad for parallellism.
+
+kmeans_div_eval :: Int -> Int -> [Vector] -> [Cluster] -> Int -> IO [Cluster]
+kmeans_div_eval threshold nclusters points clusters npoints =
+  let
+      tree = mkPointTree threshold points npoints
+
+      loop :: Int -> [Cluster] -> IO [Cluster]
+      loop n clusters | n > tooMany = do printf "giving up."; return clusters
+      loop n clusters = do
+        hPrintf stderr "iteration %d\n" n
+        hPutStr stderr (unlines (map show clusters))
+        let
+             divconq :: Tree [Vector] -> [Cluster]
+             divconq (Leaf points) = step nclusters clusters points
+             divconq (Node left right) = runEval $ do
+                  c1 <- rpar $ divconq left
+                  c2 <- rpar $ divconq right
+                  rdeepseq c1
+                  rdeepseq c2
+                  return $! reduce nclusters [c1,c2]
+
+             clusters' = divconq tree
+
+        if clusters' == clusters
+           then return clusters
+           else loop (n+1) clusters'
+  in
+  loop 0 clusters
 
 -- -----------------------------------------------------------------------------
 -- Perform one step of the K-Means algorithm
