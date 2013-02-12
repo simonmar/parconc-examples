@@ -1,3 +1,5 @@
+{-# LANGUAGE ScopedTypeVariables, BangPatterns #-}
+
 -- K-Means sample from "Parallel and Concurrent Programming in Haskell"
 --
 -- With three versions:
@@ -23,6 +25,7 @@
 import System.IO
 import KMeansCore
 import Data.Array
+import Data.Array.Unsafe as Unsafe
 import Text.Printf
 import Data.List
 import Data.Function
@@ -35,6 +38,14 @@ import System.Environment
 import Data.Time.Clock
 import Control.Exception
 import Control.Concurrent
+import Control.Monad.ST
+import Data.Array.ST
+import System.Mem
+import Data.Maybe
+
+import qualified Data.Vector as Vector
+import Data.Vector (Vector)
+import qualified Data.Vector.Mutable as MVector
 
 -- -----------------------------------------------------------------------------
 -- main: read input files, time calculation
@@ -45,6 +56,7 @@ main = runInUnboundThread $ do
   let nclusters = length clusters
   args <- getArgs
   npoints <- evaluate (length points)
+  performGC
   t0 <- getCurrentTime
   final_clusters <- case args of
     ["seq"       ] -> kmeans_seq               nclusters points clusters
@@ -61,7 +73,7 @@ main = runInUnboundThread $ do
 -- K-Means: repeatedly step until convergence (sequential)
 
 -- <<kmeans_seq
-kmeans_seq :: Int -> [Vector] -> [Cluster] -> IO [Cluster]
+kmeans_seq :: Int -> [Point] -> [Cluster] -> IO [Cluster]
 kmeans_seq nclusters points clusters =
   let
       loop :: Int -> [Cluster] -> IO [Cluster]
@@ -73,8 +85,8 @@ kmeans_seq nclusters points clusters =
         hPutStr stdout (unlines (map show clusters))
         let clusters' = step nclusters clusters points    -- <2>
         if clusters' == clusters                          -- <3>
-           then return clusters                           -- <4>
-           else loop (n+1) clusters'                      -- <5>
+           then return clusters
+           else loop (n+1) clusters'
   in
   loop 0 clusters
 
@@ -85,7 +97,7 @@ tooMany = 50
 -- K-Means: repeatedly step until convergence (Strategies)
 
 -- <<kmeans_strat
-kmeans_strat :: Int -> Int -> [Vector] -> [Cluster] -> IO [Cluster]
+kmeans_strat :: Int -> Int -> [Point] -> [Cluster] -> IO [Cluster]
 kmeans_strat numChunks nclusters points clusters =
   let
       chunks = split numChunks points                             -- <1>
@@ -98,10 +110,7 @@ kmeans_strat numChunks nclusters points clusters =
         hPrintf stdout "iteration %d\n" n
         hPutStr stdout (unlines (map show clusters))
         let
-             new_clusterss = map (step nclusters clusters) chunks -- <2>
-                               `using` parList rdeepseq           -- <3>
-
-             clusters' = reduce nclusters new_clusterss           -- <4>
+             clusters' = steps_strat nclusters clusters chunks -- <2>
 
         if clusters' == clusters
            then return clusters
@@ -124,7 +133,7 @@ chunk n xs = as : chunk n bs
 -- -----------------------------------------------------------------------------
 -- K-Means: repeatedly step until convergence (Par monad)
 
-kmeans_par :: Int -> Int -> [Vector] -> [Cluster] -> IO [Cluster]
+kmeans_par :: Int -> Int -> [Point] -> [Cluster] -> IO [Cluster]
 kmeans_par mappers nclusters points clusters =
   let
       chunks = split mappers points
@@ -135,9 +144,7 @@ kmeans_par mappers nclusters points clusters =
         hPrintf stdout "iteration %d\n" n
         hPutStr stdout (unlines (map show clusters))
         let
-             new_clusterss = runPar $ Par.parMap (step nclusters clusters) chunks
-
-             clusters' = reduce nclusters new_clusterss
+             clusters' = steps_par nclusters clusters chunks
 
         if clusters' == clusters
            then return clusters
@@ -148,7 +155,7 @@ kmeans_par mappers nclusters points clusters =
 -- -----------------------------------------------------------------------------
 -- kmeans_div_par: Use divide-and-conquer, and the Par monad for parallellism.
 
-kmeans_div_par :: Int -> Int -> [Vector] -> [Cluster] -> Int -> IO [Cluster]
+kmeans_div_par :: Int -> Int -> [Point] -> [Cluster] -> Int -> IO [Cluster]
 kmeans_div_par threshold nclusters points clusters npoints =
   let
       tree = mkPointTree threshold points npoints
@@ -159,16 +166,16 @@ kmeans_div_par threshold nclusters points clusters npoints =
         hPrintf stderr "iteration %d\n" n
         hPutStr stderr (unlines (map show clusters))
         let
-             divconq :: Tree [Vector] -> Par [Cluster]
-             divconq (Leaf points) = return $ step nclusters clusters points
+             divconq :: Tree [Point] -> Par (Vector PointSum)
+             divconq (Leaf points) = return $ assign nclusters clusters points
              divconq (Node left right) = do
                   i1 <- spawn $ divconq left
                   i2 <- spawn $ divconq right
                   c1 <- get i1
                   c2 <- get i2
-                  return $! reduce nclusters [c1,c2]
+                  return $! combine c1 c2
 
-             clusters' = runPar $ divconq tree
+             clusters' = makeNewClusters $ runPar $ divconq tree
 
         if clusters' == clusters
            then return clusters
@@ -180,7 +187,7 @@ data Tree a = Leaf a
             | Node (Tree a) (Tree a)
 
 
-mkPointTree :: Int -> [Vector] -> Int -> Tree [Vector]
+mkPointTree :: Int -> [Point] -> Int -> Tree [Point]
 mkPointTree threshold points npoints = go 0 points npoints
  where
   go depth points npoints
@@ -194,7 +201,7 @@ mkPointTree threshold points npoints = go 0 points npoints
 -- -----------------------------------------------------------------------------
 -- kmeans_div_eval: Use divide-and-conquer, and the Eval monad for parallellism.
 
-kmeans_div_eval :: Int -> Int -> [Vector] -> [Cluster] -> Int -> IO [Cluster]
+kmeans_div_eval :: Int -> Int -> [Point] -> [Cluster] -> Int -> IO [Cluster]
 kmeans_div_eval threshold nclusters points clusters npoints =
   let
       tree = mkPointTree threshold points npoints
@@ -205,16 +212,16 @@ kmeans_div_eval threshold nclusters points clusters npoints =
         hPrintf stderr "iteration %d\n" n
         hPutStr stderr (unlines (map show clusters))
         let
-             divconq :: Tree [Vector] -> [Cluster]
-             divconq (Leaf points) = step nclusters clusters points
+             divconq :: Tree [Point] -> Vector PointSum
+             divconq (Leaf points) = assign nclusters clusters points
              divconq (Node left right) = runEval $ do
                   c1 <- rpar $ divconq left
                   c2 <- rpar $ divconq right
                   rdeepseq c1
                   rdeepseq c2
-                  return $! reduce nclusters [c1,c2]
+                  return $! combine c1 c2
 
-             clusters' = divconq tree
+             clusters' = makeNewClusters $ divconq tree
 
         if clusters' == clusters
            then return clusters
@@ -225,37 +232,74 @@ kmeans_div_eval threshold nclusters points clusters npoints =
 -- -----------------------------------------------------------------------------
 -- Perform one step of the K-Means algorithm
 
--- <<reduce
-reduce :: Int -> [[Cluster]] -> [Cluster]
-reduce nclusters css =
-  concatMap combine $ elems $
-     accumArray (flip (:)) [] (0,nclusters) [ (clId c, c) | c <- concat css]
- where
-  combine [] = []
-  combine (c:cs) = [foldr combineClusters c cs]
--- >>
-
 -- <<step
-step :: Int -> [Cluster] -> [Vector] -> [Cluster]
+step :: Int -> [Cluster] -> [Point] -> [Cluster]
 step nclusters clusters points
    = makeNewClusters (assign nclusters clusters points)
 -- >>
 
 -- <<assign
-assign :: Int -> [Cluster] -> [Vector] -> Array Int [Vector]
-assign nclusters clusters points =
-    accumArray (flip (:)) [] (0, nclusters-1)
-       [ (clId (nearest p), p) | p <- points ]
-  where
-    nearest p = fst $ minimumBy (compare `on` snd)
-                          [ (c, sqDistance (clCent c) p) | c <- clusters ]
+assign :: Int -> [Cluster] -> [Point] -> Vector PointSum
+assign nclusters clusters points = Vector.create $ do
+    vec <- MVector.replicate nclusters (PointSum 0 zeroPoint)
+    let
+        addpoint p = do
+          let c = nearest p; cid = clId c
+          ps <- MVector.read vec cid
+          MVector.write vec cid $! addToPointSum ps p
+
+    mapM_ addpoint points
+    return vec
+ where
+  nearest p = fst $ minimumBy (compare `on` snd)
+                        [ (c, sqDistance (clCent c) p) | c <- clusters ]
 -- >>
 
+data PointSum = PointSum {-# UNPACK #-} !Int {-# UNPACK #-} !Point
+
+instance NFData PointSum
+
+-- <<addToPointSum
+addToPointSum :: PointSum -> Point -> PointSum
+addToPointSum (PointSum count ptsum) p
+  = PointSum (count+1) (ptsum `addPoint` p)
+-- >>
+
+-- <<pointSumToCluster
+pointSumToCluster :: Int -> PointSum -> Cluster
+pointSumToCluster i (PointSum count ptsum@(Point a b)) =
+  Cluster { clId    = i
+          , clCent  = Point (a / fromIntegral count) (b / fromIntegral count)
+          }
+-- >>
+
+-- <<combine
+combine :: Vector PointSum -> Vector PointSum -> Vector PointSum
+combine = Vector.zipWith add
+  where add (PointSum c1 p1) (PointSum c2 p2)
+           = PointSum (c1+c2) (p1 `addPoint` p2)
+-- >>
+
+steps_strat :: Int -> [Cluster] -> [[Point]] -> [Cluster]
+steps_strat nclusters clusters pointss
+  = makeNewClusters $
+      foldr1 combine $
+          (map (assign nclusters clusters) pointss
+            `using` parList rseq)
+
+steps_par :: Int -> [Cluster] -> [[Point]] -> [Cluster]
+steps_par nclusters clusters pointss
+  = makeNewClusters $
+      foldl1' combine $
+          (runPar $ Par.parMap (assign nclusters clusters) pointss)
+
 -- <<makeNewClusters
-makeNewClusters :: Array Int [Vector] -> [Cluster]
-makeNewClusters arr =
-  filter ((>0) . clCount) $
-     [ makeCluster i ps | (i,ps) <- assocs arr ]
+makeNewClusters :: Vector PointSum -> [Cluster]
+makeNewClusters vec =
+  catMaybes $ zipWith maybe_pointSumToCluster [0..] (Vector.toList vec)
+ where
+  maybe_pointSumToCluster i ps@(PointSum 0 _) = Nothing
+  maybe_pointSumToCluster i ps = Just (pointSumToCluster i ps)
 -- >>
                         -- v. important: filter out any clusters that have
                         -- no points.  This can happen when a cluster is not

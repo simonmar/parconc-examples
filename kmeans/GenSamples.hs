@@ -49,8 +49,8 @@ main = do
     writeFile "params" (show params)
 
 
-printPoint :: Handle -> Vector -> IO ()
-printPoint h (Vector x y) = do
+printPoint :: Handle -> Point -> IO ()
+printPoint h (Point x y) = do
   hPutStr h (show x)
   hPutChar h ' '
   hPutStr h (show y)
@@ -59,11 +59,11 @@ printPoint h (Vector x y) = do
 generate2DSamples :: Int                 -- number of samples to generate
                   -> Double -> Double    -- X and Y of the mean
                   -> Double -> Double    -- X and Y standard deviations
-                  -> IO [Vector]
+                  -> IO [Point]
 
 generate2DSamples n mx my sdx sdy = do
   gen <- getStdGen
   let (genx, geny) = split gen
       xsamples = normals' (mx,sdx) genx
       ysamples = normals' (my,sdy) geny
-  return (zipWith Vector (take n xsamples) ysamples)
+  return (zipWith Point (take n xsamples) ysamples)

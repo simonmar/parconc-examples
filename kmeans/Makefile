@@ -8,7 +8,7 @@ GenSamples : GenSamples.hs KMeansCore.hs
 	$(GHC) $(GHC_OPTS) GenSamples
 
 points : GenSamples
-	./GenSamples 5 40000 60000
+	./GenSamples 5 100000 150000
 
 EncodePoints: EncodePoints.hs KMeansCore.hs
 	$(GHC) $(GHC_OPTS) EncodePoints

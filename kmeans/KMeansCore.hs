@@ -14,31 +14,33 @@ import Data.Binary
 import Control.DeepSeq
 
 -- -----------------------------------------------------------------------------
--- Vectors
+-- Points
 
-data Vector = Vector {-#UNPACK#-}!Double {-#UNPACK#-}!Double
+data Point = Point {-#UNPACK#-}!Double {-#UNPACK#-}!Double
     deriving (Show,Read,Eq)
 
--- <<vector-ops
-zeroVector :: Vector
-zeroVector = Vector 0 0
+instance NFData Point
 
-addVector :: Vector -> Vector -> Vector
-addVector (Vector a b) (Vector c d) = Vector (a+c) (b+d)
+-- <<point-ops
+zeroPoint :: Point
+zeroPoint = Point 0 0
 
-sqDistance :: Vector -> Vector -> Double
-sqDistance (Vector x1 y1) (Vector x2 y2) = ((x1-x2)^2) + ((y1-y2)^2)
+addPoint :: Point -> Point -> Point
+addPoint (Point a b) (Point c d) = Point (a+c) (b+d)
+
+sqDistance :: Point -> Point -> Double
+sqDistance (Point x1 y1) (Point x2 y2) = ((x1-x2)^2) + ((y1-y2)^2)
 -- >>
 
-instance Binary Vector where
-  put (Vector a b) = put a >> put b
-  get = do a <- get; b <- get; return (Vector a b)
+instance Binary Point where
+  put (Point a b) = put a >> put b
+  get = do a <- get; b <- get; return (Point a b)
 
-readPoints :: FilePath -> IO [Vector]
+readPoints :: FilePath -> IO [Point]
 readPoints f = do
   s <- B.readFile f
   let ls = map B.words $ B.lines s
-      points = [ Vector (read (B.unpack sx)) (read (B.unpack sy))
+      points = [ Point (read (B.unpack sx)) (read (B.unpack sy))
                | (sx:sy:_) <- ls ]
   --
   return points
@@ -48,35 +50,19 @@ readPoints f = do
 
 data Cluster
   = Cluster { clId    :: {-# UNPACK #-} !Int
-            , clCount :: {-# UNPACK #-} !Int
-            , clSum   :: {-# UNPACK #-} !Vector
-            , clCent  :: {-# UNPACK #-} !Vector
+            , clCent  :: {-# UNPACK #-} !Point
             }
   deriving (Show,Read,Eq)
 
 instance NFData Cluster  -- default is ok, all the fields are strict
 
 -- <<makeCluster
-makeCluster :: Int -> [Vector] -> Cluster
-makeCluster clid vecs =
+makeCluster :: Int -> [Point] -> Cluster
+makeCluster clid points =
   Cluster { clId    = clid
-          , clCount = count
-          , clSum   = vecsum
-          , clCent  = Vector (a / fromIntegral count) (b / fromIntegral count)
+          , clCent  = Point (a / fromIntegral count) (b / fromIntegral count)
           }
  where
-  vecsum@(Vector a b) = foldl' addVector zeroVector vecs
-  count = length vecs
--- >>
-
--- <<combineClusters
-combineClusters c1 c2 =
-  Cluster { clId    = clId c1
-          , clCount = count
-          , clSum   = vecsum
-          , clCent  = Vector (a / fromIntegral count) (b / fromIntegral count)
-          }
- where
-  count = clCount c1 + clCount c2
-  vecsum@(Vector a b) = addVector (clSum c1) (clSum c2)
+  pointsum@(Point a b) = foldl' addPoint zeroPoint points
+  count = length points
 -- >>
