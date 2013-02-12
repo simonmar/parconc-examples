@@ -6,7 +6,6 @@ import Data.Array
 import System.Environment
 import Control.Monad
 import Data.List
-import Data.Binary
 
 minX, maxX, minY, maxY, minSD, maxSD :: Double
 minX = -0
@@ -35,8 +34,6 @@ main = do
     hsamp <- openFile "points" WriteMode
     mapM_ (printPoint hsamp) points
     hClose hsamp
-
-    encodeFile "points.bin" points
 
     -- generate the initial clusters by assigning each point to random
     -- cluster.

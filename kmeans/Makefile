@@ -7,10 +7,14 @@ kmeans : kmeans.hs KMeansCore.hs
 GenSamples : GenSamples.hs KMeansCore.hs
 	$(GHC) $(GHC_OPTS) GenSamples
 
-points.bin : GenSamples
-	./GenSamples 5 20000 40000
+points : GenSamples
+	./GenSamples 5 40000 60000
 
-points : points.bin
+EncodePoints: EncodePoints.hs KMeansCore.hs
+	$(GHC) $(GHC_OPTS) EncodePoints
+
+points.bin : EncodePoints points
+	./EncodePoints points points.bin
 
 view : points
 	gnuplot -e 'set terminal png; plot "points"' >points.png; eog points.png    

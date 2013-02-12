@@ -19,6 +19,7 @@ import Control.DeepSeq
 data Vector = Vector {-#UNPACK#-}!Double {-#UNPACK#-}!Double
     deriving (Show,Read,Eq)
 
+-- <<vector-ops
 zeroVector :: Vector
 zeroVector = Vector 0 0
 
@@ -27,6 +28,7 @@ addVector (Vector a b) (Vector c d) = Vector (a+c) (b+d)
 
 sqDistance :: Vector -> Vector -> Double
 sqDistance (Vector x1 y1) (Vector x2 y2) = ((x1-x2)^2) + ((y1-y2)^2)
+-- >>
 
 instance Binary Vector where
   put (Vector a b) = put a >> put b
@@ -54,24 +56,27 @@ data Cluster
 
 instance NFData Cluster  -- default is ok, all the fields are strict
 
+-- <<makeCluster
 makeCluster :: Int -> [Vector] -> Cluster
 makeCluster clid vecs =
-  Cluster { clId = clid
+  Cluster { clId    = clid
           , clCount = count
-          , clSum = vecsum
-          , clCent = centre
+          , clSum   = vecsum
+          , clCent  = Vector (a / fromIntegral count) (b / fromIntegral count)
           }
  where
-  vecsum@(Vector a b)  = foldl' addVector zeroVector vecs
-  centre = Vector (a / fromIntegral count) (b / fromIntegral count)
+  vecsum@(Vector a b) = foldl' addVector zeroVector vecs
   count = length vecs
+-- >>
 
+-- <<combineClusters
 combineClusters c1 c2 =
-  Cluster { clId = clId c1
+  Cluster { clId    = clId c1
           , clCount = count
-          , clSum = vecsum
-          , clCent = Vector (a / fromIntegral count) (b / fromIntegral count)
+          , clSum   = vecsum
+          , clCent  = Vector (a / fromIntegral count) (b / fromIntegral count)
           }
  where
   count = clCount c1 + clCount c2
   vecsum@(Vector a b) = addVector (clSum c1) (clSum c2)
+-- >>

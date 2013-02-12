@@ -60,41 +60,48 @@ main = runInUnboundThread $ do
 -- -----------------------------------------------------------------------------
 -- K-Means: repeatedly step until convergence (sequential)
 
+-- <<kmeans_seq
 kmeans_seq :: Int -> [Vector] -> [Cluster] -> IO [Cluster]
 kmeans_seq nclusters points clusters =
   let
       loop :: Int -> [Cluster] -> IO [Cluster]
-      loop n clusters | n > tooMany = do printf "giving up."; return clusters
+      loop n clusters | n > tooMany = do                  -- <1>
+        putStrLn "giving up."
+        return clusters
       loop n clusters = do
         hPrintf stdout "iteration %d\n" n
         hPutStr stdout (unlines (map show clusters))
-        let clusters' = step nclusters clusters points
-        if clusters' == clusters
-           then return clusters
-           else loop (n+1) clusters'
+        let clusters' = step nclusters clusters points    -- <2>
+        if clusters' == clusters                          -- <3>
+           then return clusters                           -- <4>
+           else loop (n+1) clusters'                      -- <5>
   in
   loop 0 clusters
 
 tooMany = 50
+-- >>
 
 -- -----------------------------------------------------------------------------
 -- K-Means: repeatedly step until convergence (Strategies)
 
+-- <<kmeans_strat
 kmeans_strat :: Int -> Int -> [Vector] -> [Cluster] -> IO [Cluster]
-kmeans_strat mappers nclusters points clusters =
+kmeans_strat numChunks nclusters points clusters =
   let
-      chunks = split mappers points
+      chunks = split numChunks points                             -- <1>
 
       loop :: Int -> [Cluster] -> IO [Cluster]
-      loop n clusters | n > tooMany = do printf "giving up."; return clusters
+      loop n clusters | n > tooMany = do
+        printf "giving up."
+        return clusters
       loop n clusters = do
         hPrintf stdout "iteration %d\n" n
         hPutStr stdout (unlines (map show clusters))
         let
-             new_clusterss = map (step nclusters clusters) chunks
-                               `using` parList rdeepseq
+             new_clusterss = map (step nclusters clusters) chunks -- <2>
+                               `using` parList rdeepseq           -- <3>
 
-             clusters' = reduce nclusters new_clusterss
+             clusters' = reduce nclusters new_clusterss           -- <4>
 
         if clusters' == clusters
            then return clusters
@@ -102,12 +109,17 @@ kmeans_strat mappers nclusters points clusters =
   in do
   final <- loop 0 clusters
   return final
+-- >>
 
-split :: Int -> [a] -> [[a]] 
-split numChunks l = splitSize (ceiling $ fromIntegral (length l) / fromIntegral numChunks) l
-   where
-      splitSize _ [] = []
-      splitSize i v = take i v : splitSize i (drop i v)
+-- <<split
+split :: Int -> [a] -> [[a]]
+split numChunks xs = chunk (length xs `quot` numChunks) xs
+
+chunk :: Int -> [a] -> [[a]]
+chunk n [] = []
+chunk n xs = as : chunk n bs
+  where (as,bs) = splitAt n xs
+-- >>
 
 -- -----------------------------------------------------------------------------
 -- K-Means: repeatedly step until convergence (Par monad)
@@ -213,6 +225,7 @@ kmeans_div_eval threshold nclusters points clusters npoints =
 -- -----------------------------------------------------------------------------
 -- Perform one step of the K-Means algorithm
 
+-- <<reduce
 reduce :: Int -> [[Cluster]] -> [Cluster]
 reduce nclusters css =
   concatMap combine $ elems $
@@ -220,13 +233,15 @@ reduce nclusters css =
  where
   combine [] = []
   combine (c:cs) = [foldr combineClusters c cs]
+-- >>
 
-
+-- <<step
 step :: Int -> [Cluster] -> [Vector] -> [Cluster]
 step nclusters clusters points
    = makeNewClusters (assign nclusters clusters points)
+-- >>
 
--- assign each vector to the nearest cluster centre
+-- <<assign
 assign :: Int -> [Cluster] -> [Vector] -> Array Int [Vector]
 assign nclusters clusters points =
     accumArray (flip (:)) [] (0, nclusters-1)
@@ -234,11 +249,14 @@ assign nclusters clusters points =
   where
     nearest p = fst $ minimumBy (compare `on` snd)
                           [ (c, sqDistance (clCent c) p) | c <- clusters ]
+-- >>
 
+-- <<makeNewClusters
 makeNewClusters :: Array Int [Vector] -> [Cluster]
 makeNewClusters arr =
   filter ((>0) . clCount) $
      [ makeCluster i ps | (i,ps) <- assocs arr ]
+-- >>
                         -- v. important: filter out any clusters that have
                         -- no points.  This can happen when a cluster is not
                         -- close to any points.  If we leave these in, then
