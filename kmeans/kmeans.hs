@@ -90,7 +90,7 @@ kmeans_seq nclusters points clusters =
   in
   loop 0 clusters
 
-tooMany = 50
+tooMany = 80
 -- >>
 
 -- -----------------------------------------------------------------------------

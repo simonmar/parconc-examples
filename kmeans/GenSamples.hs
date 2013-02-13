@@ -6,6 +6,7 @@ import Data.Array
 import System.Environment
 import Control.Monad
 import Data.List
+import Data.Binary
 
 minX, maxX, minY, maxY, minSD, maxSD :: Double
 minX = -0
@@ -16,9 +17,12 @@ minSD = 0.5
 maxSD = 1.5
 
 main = do
-    [n, minp, maxp] <- fmap (fmap read) getArgs
+    n: minp: maxp: rest <- fmap (fmap read) getArgs
 
-    gen <- getStdGen
+    case rest of
+        [seed] -> setStdGen (mkStdGen seed)
+        _ -> return ()
+
     nps <- replicateM n (randomRIO (minp, maxp))
     xs  <- replicateM n (randomRIO (minX, maxY))
     ys  <- replicateM n (randomRIO (minX, maxY))
@@ -35,9 +39,11 @@ main = do
     mapM_ (printPoint hsamp) points
     hClose hsamp
 
+    encodeFile "points.bin" points
+
     -- generate the initial clusters by assigning each point to random
     -- cluster.
-    gen <- getStdGen
+    gen <- newStdGen
     let
         rand_clusters = randomRs (0,n-1) gen :: [Int]
         arr = accumArray (flip (:)) [] (0,n-1) $
@@ -62,7 +68,7 @@ generate2DSamples :: Int                 -- number of samples to generate
                   -> IO [Point]
 
 generate2DSamples n mx my sdx sdy = do
-  gen <- getStdGen
+  gen <- newStdGen
   let (genx, geny) = split gen
       xsamples = normals' (mx,sdx) genx
       ysamples = normals' (my,sdy) geny

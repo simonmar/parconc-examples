@@ -8,13 +8,9 @@ GenSamples : GenSamples.hs KMeansCore.hs
 	$(GHC) $(GHC_OPTS) GenSamples
 
 points : GenSamples
-	./GenSamples 5 100000 150000
+	./GenSamples 5 50000 100000 1005
 
-EncodePoints: EncodePoints.hs KMeansCore.hs
-	$(GHC) $(GHC_OPTS) EncodePoints
-
-points.bin : EncodePoints points
-	./EncodePoints points points.bin
+points.bin : points
 
 view : points
 	gnuplot -e 'set terminal png; plot "points"' >points.png; eog points.png    
