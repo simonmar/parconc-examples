@@ -81,8 +81,8 @@ kmeans_seq nclusters points clusters =
         putStrLn "giving up."
         return clusters
       loop n clusters = do
-        hPrintf stdout "iteration %d\n" n
-        hPutStr stdout (unlines (map show clusters))
+        printf "iteration %d\n" n
+        putStr (unlines (map show clusters))
         let clusters' = step nclusters clusters points    -- <2>
         if clusters' == clusters                          -- <3>
            then return clusters
@@ -107,10 +107,10 @@ kmeans_strat numChunks nclusters points clusters =
         printf "giving up."
         return clusters
       loop n clusters = do
-        hPrintf stdout "iteration %d\n" n
-        hPutStr stdout (unlines (map show clusters))
+        printf "iteration %d\n" n
+        putStr (unlines (map show clusters))
         let
-             clusters' = steps_strat nclusters clusters chunks -- <2>
+             clusters' = parSteps_strat nclusters clusters chunks -- <2>
 
         if clusters' == clusters
            then return clusters
@@ -141,8 +141,8 @@ kmeans_par mappers nclusters points clusters =
       loop :: Int -> [Cluster] -> IO [Cluster]
       loop n clusters | n > tooMany = do printf "giving up."; return clusters
       loop n clusters = do
-        hPrintf stdout "iteration %d\n" n
-        hPutStr stdout (unlines (map show clusters))
+        printf "iteration %d\n" n
+        putStr (unlines (map show clusters))
         let
              clusters' = steps_par nclusters clusters chunks
 
@@ -273,19 +273,25 @@ pointSumToCluster i (PointSum count ptsum@(Point a b)) =
           }
 -- >>
 
--- <<combine
-combine :: Vector PointSum -> Vector PointSum -> Vector PointSum
-combine = Vector.zipWith add
-  where add (PointSum c1 p1) (PointSum c2 p2)
-           = PointSum (c1+c2) (p1 `addPoint` p2)
+-- <<addPointSums
+addPointSums :: PointSum -> PointSum -> PointSum
+addPointSums (PointSum c1 p1) (PointSum c2 p2)
+  = PointSum (c1+c2) (p1 `addPoint` p2)
 -- >>
 
-steps_strat :: Int -> [Cluster] -> [[Point]] -> [Cluster]
-steps_strat nclusters clusters pointss
+-- <<combine
+combine :: Vector PointSum -> Vector PointSum -> Vector PointSum
+combine = Vector.zipWith addPointSums
+-- >>
+
+-- <<parSteps_strat
+parSteps_strat :: Int -> [Cluster] -> [[Point]] -> [Cluster]
+parSteps_strat nclusters clusters pointss
   = makeNewClusters $
       foldr1 combine $
           (map (assign nclusters clusters) pointss
             `using` parList rseq)
+-- >>
 
 steps_par :: Int -> [Cluster] -> [[Point]] -> [Cluster]
 steps_par nclusters clusters pointss
@@ -296,10 +302,10 @@ steps_par nclusters clusters pointss
 -- <<makeNewClusters
 makeNewClusters :: Vector PointSum -> [Cluster]
 makeNewClusters vec =
-  catMaybes $ zipWith maybe_pointSumToCluster [0..] (Vector.toList vec)
- where
-  maybe_pointSumToCluster i ps@(PointSum 0 _) = Nothing
-  maybe_pointSumToCluster i ps = Just (pointSumToCluster i ps)
+  [ pointSumToCluster i ps
+  | (i,ps@(PointSum count _)) <- zip [0..] (Vector.toList vec)
+  , count > 0
+  ]
 -- >>
                         -- v. important: filter out any clusters that have
                         -- no points.  This can happen when a cluster is not
