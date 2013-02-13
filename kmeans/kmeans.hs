@@ -100,7 +100,7 @@ tooMany = 80
 kmeans_strat :: Int -> Int -> [Point] -> [Cluster] -> IO [Cluster]
 kmeans_strat numChunks nclusters points clusters =
   let
-      chunks = split numChunks points                             -- <1>
+      chunks = split numChunks points                            -- <1>
 
       loop :: Int -> [Cluster] -> IO [Cluster]
       loop n clusters | n > tooMany = do
@@ -109,15 +109,12 @@ kmeans_strat numChunks nclusters points clusters =
       loop n clusters = do
         printf "iteration %d\n" n
         putStr (unlines (map show clusters))
-        let
-             clusters' = parSteps_strat nclusters clusters chunks -- <2>
-
+        let clusters' = parSteps_strat nclusters clusters chunks -- <2>
         if clusters' == clusters
            then return clusters
            else loop (n+1) clusters'
-  in do
-  final <- loop 0 clusters
-  return final
+  in
+  loop 0 clusters
 -- >>
 
 -- <<split
