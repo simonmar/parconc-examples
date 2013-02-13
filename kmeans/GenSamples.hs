@@ -9,12 +9,12 @@ import Data.List
 import Data.Binary
 
 minX, maxX, minY, maxY, minSD, maxSD :: Double
-minX = -0
+minX = -10
 maxX = 10
 minY = -10
 maxY = 10
-minSD = 0.5
-maxSD = 1.5
+minSD = 1.5
+maxSD = 2.0
 
 main = do
     n: minp: maxp: rest <- fmap (fmap read) getArgs
