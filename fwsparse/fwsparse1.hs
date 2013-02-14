@@ -7,6 +7,7 @@ import System.Environment
 import qualified Data.IntMap as Map
 import Data.IntMap (IntMap)
 import System.Random
+import Data.List
 import Data.Traversable hiding (mapM)
 import Control.DeepSeq
 
@@ -15,18 +16,15 @@ import SparseGraph
 -- -----------------------------------------------------------------------------
 -- shortestPaths
 
-shortestPaths :: [Vertex] -> AdjMap -> AdjMap
-shortestPaths vs w = go vs w
+shortestPaths :: [Vertex] -> Graph -> Graph
+shortestPaths vs g = foldl' update g vs
  where
-  go [] w     = w
-  go (k:ks) w = go ks $! w'
-    where
-      w' = runPar $ do
-             m <- Map.traverseWithKey (\i jmap -> spawnP (shortmap i jmap)) w
-             traverse get m
-
-      shortmap :: Vertex -> IntMap Weight -> IntMap Weight
-      shortmap i jmap = foldr shortest Map.empty vs
+  update g k = runPar $ do
+    m <- Map.traverseWithKey (\i jmap -> spawnP (shortmap i jmap)) g
+    traverse get m
+   where
+    shortmap :: Vertex -> IntMap Weight -> IntMap Weight
+    shortmap i jmap = foldr shortest Map.empty vs
         where shortest j m =
                 case (old,new) of
                    (Nothing, Nothing) -> m
@@ -35,12 +33,12 @@ shortestPaths vs w = go vs w
                    (Just w1, Just w2) -> Map.insert j (min w1 w2) m
                 where
                   old = Map.lookup j jmap
-                  new = do w1 <- lookupW i k w
-                           w2 <- lookupW k j w
+                  new = do w1 <- weight g i k
+                           w2 <- weight g k j
                            return (w1+w2)
 
 spawnP :: NFData a => a -> Par (IVar a)
-spawnP a = do v <- new; fork (put v a); return v
+spawnP a = do v <- new; fork (put_ v a); return v
 
 -- -----------------------------------------------------------------------------
 -- Testing
@@ -62,7 +60,7 @@ test  = [[  0, 999, 999,  13, 999, 999],
 --   [11, 17, 999, 14, 21,  0] ]
 
 runtest :: [[Int]]
-runtest = fromAdjMatrix (toAdjMatrix 5 (shortestPaths [0..5] (mkAdjMap test)))
+runtest = fromAdjMatrix (toAdjMatrix 5 (shortestPaths [0..5] (mkGraph test)))
 
 main :: IO ()
 main = do

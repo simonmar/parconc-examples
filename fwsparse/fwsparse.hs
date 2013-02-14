@@ -3,36 +3,35 @@
 module Main ( main, runtest ) where
 
 import System.Environment
-import qualified Data.IntMap as Map
+import qualified Data.IntMap.Strict as Map
 import Data.IntMap (IntMap)
 import System.Random
-
+import Data.List
 import SparseGraph
 
 -- -----------------------------------------------------------------------------
 -- shortestPaths
 
-shortestPaths :: [Vertex] -> AdjMap -> AdjMap
-shortestPaths vs w = go vs w
+-- <<shortestPaths
+shortestPaths :: [Vertex] -> Graph -> Graph
+shortestPaths vs g = foldl' update g vs            -- <1>
  where
-  go [] w     = w
-  go (k:ks) w = go ks $! w'
-    where
-      w' = Map.mapWithKey (\i jmap -> shortmap i jmap) w
-
-      shortmap :: Vertex -> IntMap Weight -> IntMap Weight
-      shortmap i jmap = foldr shortest Map.empty vs
+  update g k = Map.mapWithKey shortmap g           -- <2>
+   where
+     shortmap :: Vertex -> IntMap Weight -> IntMap Weight
+     shortmap i jmap = foldr shortest Map.empty vs -- <3>
         where shortest j m =
-                case (old,new) of
+                case (old,new) of                  -- <6>
                    (Nothing, Nothing) -> m
                    (Nothing, Just w ) -> Map.insert j w m
                    (Just w,  Nothing) -> Map.insert j w m
                    (Just w1, Just w2) -> Map.insert j (min w1 w2) m
                 where
-                  old = Map.lookup j jmap
-                  new = do w1 <- lookupW i k w
-                           w2 <- lookupW k j w
+                  old = Map.lookup j jmap          -- <4>
+                  new = do w1 <- weight g i k      -- <5>
+                           w2 <- weight g k j
                            return (w1+w2)
+-- >>
 
 -- -----------------------------------------------------------------------------
 -- Testing
@@ -54,7 +53,7 @@ test  = [[  0, 999, 999,  13, 999, 999],
 --   [11, 17, 999, 14, 21,  0] ]
 
 runtest :: [[Int]]
-runtest = fromAdjMatrix (toAdjMatrix 5 (shortestPaths [0..5] (mkAdjMap test)))
+runtest = fromAdjMatrix (toAdjMatrix 5 (shortestPaths [0..5] (mkGraph test)))
 
 main :: IO ()
 main = do
