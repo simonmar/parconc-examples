@@ -37,9 +37,6 @@ shortestPaths vs g = foldl' update g vs
                            w2 <- weight g k j
                            return (w1+w2)
 
-spawnP :: NFData a => a -> Par (IVar a)
-spawnP a = do v <- new; fork (put_ v a); return v
-
 -- -----------------------------------------------------------------------------
 -- Testing
 
