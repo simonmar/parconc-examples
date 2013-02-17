@@ -2,7 +2,6 @@ import Data.Map (Map)
 import qualified Data.Map as Map
 import Control.Concurrent
 import Prelude hiding (lookup)
-import Control.Concurrent.Async
 
 -- <<types
 type Name        = String
@@ -30,7 +29,7 @@ insert (PhoneBookState m) name number = do
 lookup :: PhoneBookState -> Name -> IO (Maybe PhoneNumber)
 lookup (PhoneBookState m) name = do
   book <- takeMVar m
-  putMVar book m
+  putMVar m book
   return (Map.lookup name book)
 -- >>
 
