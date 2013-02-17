@@ -46,5 +46,5 @@ timeDownload url = do
 
 main = do
  as <- mapM (async . timeDownload) sites  -- <1>
- mapM wait as                             -- <2>
+ mapM_ wait as                            -- <2>
 -- >>
