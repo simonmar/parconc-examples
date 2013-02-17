@@ -10,9 +10,7 @@
 import GetURL
 import TimeIt
 
-import Control.Monad
 import Control.Concurrent
-import Control.Exception
 import Text.Printf
 import qualified Data.ByteString as B
 
