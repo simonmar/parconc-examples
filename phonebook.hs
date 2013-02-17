@@ -29,7 +29,7 @@ insert (PhoneBookState m) name number = do
 lookup :: PhoneBookState -> Name -> IO (Maybe PhoneNumber)
 lookup (PhoneBookState m) name = do
   book <- takeMVar m
-  putMVar book m
+  putMVar m book
   return (Map.lookup name book)
 -- >>
 
