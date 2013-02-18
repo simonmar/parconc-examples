@@ -15,7 +15,6 @@ main = do
           Left e | isDoesNotExistError e -> loop n fs
                  | otherwise             -> throwIO e
           Right h -> do
-            h <- openFile f ReadMode
             s <- hGetContents h
             loop (n + length (lines s)) fs
 
