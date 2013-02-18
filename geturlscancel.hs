@@ -18,7 +18,6 @@ import Control.Concurrent
 import Control.Exception
 import Text.Printf
 import qualified Data.ByteString as B
-import Data.Typeable
 import Prelude hiding (catch)
 
 -----------------------------------------------------------------------------
