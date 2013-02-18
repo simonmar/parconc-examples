@@ -1,4 +1,3 @@
-{-# LANGUAGE DeriveDataTypeable #-}
 -- (c) Simon Marlow 2011, see the file LICENSE for copying terms.
 --
 -- Sample geturls.hs (CEFP summer school notes, 2011)
@@ -19,7 +18,6 @@ import Control.Concurrent
 import Control.Exception
 import Text.Printf
 import qualified Data.ByteString as B
-import Data.Typeable
 import Prelude hiding (catch)
 
 -----------------------------------------------------------------------------

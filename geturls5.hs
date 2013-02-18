@@ -17,7 +17,7 @@ main = do
   let
     download url = do
        r <- getURL url
-       putMVar m (url,r)
+       putMVar m (url, r)
 
   mapM_ (forkIO . download) sites
 
