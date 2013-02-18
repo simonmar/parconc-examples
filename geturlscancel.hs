@@ -1,4 +1,3 @@
-{-# LANGUAGE DeriveDataTypeable #-}
 -- (c) Simon Marlow 2011, see the file LICENSE for copying terms.
 --
 -- Sample geturls.hs (CEFP summer school notes, 2011)
