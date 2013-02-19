@@ -2,7 +2,8 @@
 
 module Main ( main, runtest ) where
 
-import Control.Monad.Par
+import Control.Monad.Par.Scheds.Trace
+  -- gives slightly better results than Control.Monad.Par with monad-par-0.3.4
 import System.Environment
 import qualified Data.IntMap as Map
 import Data.IntMap (IntMap)
