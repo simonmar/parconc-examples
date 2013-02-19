@@ -17,7 +17,7 @@ main = do
   text <- case f of
             "-" -> B.getContents
             _   -> B.readFile f
-  B.putStr (pipe n e d text)
+  B.putStr (pipeline n e d text)
 
 -- example keys, created by makeKey below
 n, d, e :: Integer
