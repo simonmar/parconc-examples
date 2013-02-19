@@ -9,7 +9,6 @@ import Data.IntMap (IntMap)
 import System.Random
 import Data.List
 import Data.Traversable hiding (mapM)
-import Control.DeepSeq
 
 import SparseGraph
 
@@ -19,9 +18,11 @@ import SparseGraph
 shortestPaths :: [Vertex] -> Graph -> Graph
 shortestPaths vs g = foldl' update g vs
  where
+-- <<update
   update g k = runPar $ do
-    m <- Map.traverseWithKey (\i jmap -> spawnP (shortmap i jmap)) g
+    m <- Map.traverseWithKey (\i jmap -> spawn (return (shortmap i jmap))) g
     traverse get m
+-- >>
    where
     shortmap :: Vertex -> IntMap Weight -> IntMap Weight
     shortmap i jmap = foldr shortest Map.empty vs
