@@ -37,12 +37,34 @@ waitEither a b = do
   wait (Async m)
 -- >>
 
+-- <<waitAny
+waitAny :: [Async a] -> IO a
+waitAny as = do
+  m <- newEmptyMVar
+  let forkwait a = forkIO $ do r <- try (wait a); putMVar m r
+  mapM_ forkwait as
+  wait (Async m)
+-- >>
+
 -----------------------------------------------------------------------------
 
+sites = ["http://www.google.com",
+         "http://www.bing.com",
+         "http://www.yahoo.com",
+         "http://www.wikipedia.com/wiki/Spade",
+         "http://www.wikipedia.com/wiki/Shovel"]
+
 -- <<main
+main :: IO ()
 main = do
-  a1 <- async (getURL "http://www.wikipedia.org/wiki/Shovel")
-  a2 <- async (getURL "http://www.wikipedia.org/wiki/Spade")
-  r <- waitEither a1 a2
-  print r
+  let
+    download url = do
+       r <- getURL url
+       return (url, r)
+
+  as <- mapM (async . download) sites
+
+  (url, r) <- waitAny as
+  printf "%s was first (%d bytes)\n" url (B.length r)
+  mapM_ wait as
 -- >>

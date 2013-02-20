@@ -8,7 +8,7 @@ type Name        = String
 type PhoneNumber = String
 type PhoneBook   = Map Name PhoneNumber
 
-data PhoneBookState = PhoneBookState (MVar PhoneBook)
+newtype PhoneBookState = PhoneBookState (MVar PhoneBook)
 -- >>
 
 -- <<new

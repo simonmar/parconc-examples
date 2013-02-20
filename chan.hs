@@ -23,26 +23,25 @@ newChan = do
 -- <<writeChan
 writeChan :: Chan a -> a -> IO ()
 writeChan (Chan _ writeVar) val = do
-  new_hole <- newEmptyMVar
-  old_hole <- takeMVar writeVar
-  putMVar writeVar new_hole
-  putMVar old_hole (Item val new_hole)
+  newHole <- newEmptyMVar
+  oldHole <- takeMVar writeVar
+  putMVar writeVar newHole
+  putMVar oldHole (Item val newHole)
 -- >>
 
 -- <<readChan
 readChan :: Chan a -> IO a
 readChan (Chan readVar _) = do
-  stream <- takeMVar readVar
-  Item val new <- takeMVar stream
-  putMVar readVar new
+  stream <- takeMVar readVar            -- <1>
+  Item val tail <- takeMVar stream      -- <2>
+  putMVar readVar tail                  -- <3>
   return val
 -- >>
 
 -- <<dupChan
 dupChan :: Chan a -> IO (Chan a)
 dupChan (Chan _ writeVar) = do
-  hole       <- takeMVar writeVar
-  putMVar writeVar hole
+  hole <- readMVar writeVar
   newReadVar <- newMVar hole
   return (Chan newReadVar writeVar)
 -- >>

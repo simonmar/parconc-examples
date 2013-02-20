@@ -6,10 +6,10 @@ import Control.Monad
 main = loop
  where
   loop = do
-    s <- getLine           -- <1>
+    s <- getLine
     if s == "exit"
        then return ()
-       else do forkIO $ setReminder s -- <2>
+       else do forkIO $ setReminder s
                loop
 -- >>
 

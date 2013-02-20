@@ -41,10 +41,10 @@ sites = ["http://www.google.com",
 
 timeDownload :: String -> IO ()
 timeDownload url = do
-  (page, time) <- timeit $ getURL url
+  (page, time) <- timeit $ getURL url   -- <1>
   printf "downloaded: %s (%d bytes, %.2fs)\n" url (B.length page) time
 
 main = do
- as <- mapM (async . timeDownload) sites  -- <1>
- mapM_ wait as                            -- <2>
+ as <- mapM (async . timeDownload) sites  -- <2>
+ mapM_ wait as                            -- <3>
 -- >>
