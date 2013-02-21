@@ -1,11 +1,17 @@
+--
+-- Adapted from the program "infer", believed to have been originally
+-- authored by Philip Wadler, and used in the nofib benchmark suite
+-- since at least the late 90s.
+--
+
 module Substitution   (Sub, applySub, lookupSub, emptySub, extendSub,
                        makeSub, thenSub, domSub, unifySub)
                       where
 
-import Type           (TVarId, TConId, MonoType (TVar, TCon), freeTVarMono)
-import FiniteMap      (FM, emptyFM, lookupElseFM, makeFM, extendFM,
-                       thenFM, mapFM, domFM, ranFM)
-import MaybeM         (Maybe, thenM, returnM, failM, guardM)
+import Type
+import FiniteMap
+import MaybeM
+
 data  Sub  =  MkSub (FM TVarId MonoType)
 rep                           ::  Sub -> FM TVarId MonoType
 rep (MkSub f)                 =   f

@@ -1,3 +1,9 @@
+--
+-- Adapted from the program "infer", believed to have been originally
+-- authored by Philip Wadler, and used in the nofib benchmark suite
+-- since at least the late 90s.
+--
+
 module MaybeM
       (Maybe, returnM, eachM, thenM,
        failM, orM, guardM, filterM, theM, existsM, useM)

@@ -1,14 +1,18 @@
-module Term
-  (VarId, Term (Var, Abs, App, Let), readsId,freeVars)
-where
+--
+-- Adapted from the program "infer", believed to have been originally
+-- authored by Philip Wadler, and used in the nofib benchmark suite
+-- since at least the late 90s.
+--
 
-import Parse
+module Term (VarId, Term (..), freeVars) where
+
 import Shows
 import qualified Data.Set as Set
 import Data.Set (Set)
 
 type  VarId   =  String
-data  Term    =  Var VarId
+data  Term    =  Int Int
+              |  Var VarId
               |  Abs VarId Term
               |  App Term Term
               |  Let VarId Term Term
@@ -16,6 +20,7 @@ data  Term    =  Var VarId
 freeVars :: Term -> Set VarId
 freeVars t = go t Set.empty
  where
+  go (Int _) s = s
   go (Var v) s = Set.insert v s
   go (Abs v t) s = Set.delete v (go t s)
   go (App f t) s = go f (go t s)
@@ -23,35 +28,9 @@ freeVars t = go t Set.empty
 
 instance Show Term where
       showsPrec d  =  showsTerm d
-instance Read Term where
-      readsPrec d  =  readsTerm
-readsTerm, readsAbs, readsAtomics, readsAtomic, readsVar :: Parses Term
-readsTerm     =       readsAbs
-              `elseP` readsLet
-              `elseP` readsAtomics
-readsAtomic   =       readsVar
-              `elseP` parenP readsTerm
-readsAbs      =       lexP "\\"               `thenP` (\_  ->
-                      plusP readsId           `thenP` (\xs ->
-                      lexP "."                `thenP` (\_  ->
-                      readsTerm               `thenP` (\v  ->
-                                              returnP (foldr Abs v xs)))))
-readsLet      =       lexP "let"              `thenP` (\_ ->
-                      readsId                 `thenP` (\x ->
-                      lexP "="                `thenP` (\_ ->
-                      readsTerm               `thenP` (\u ->
-                      lexP "in"               `thenP` (\_ ->
-                      readsTerm               `thenP` (\v ->
-                                              returnP (Let x u v)))))))
-readsAtomics  =       readsAtomic             `thenP` (\t  ->
-                      starP readsAtomic       `thenP` (\ts ->
-                                              returnP (foldl App t ts)))
-readsVar      =       readsId                 `thenP` (\x ->
-                                              returnP (Var x))
-readsId       :: Parses String
-readsId       =  lexicalP (isntKeyword `filterP` plusP alphaP)
-                 where  isntKeyword x  =  (x /= "let" && x /= "in")
+
 showsTerm                     :: Int -> Shows Term
+showsTerm d (Int i)           =  shows i
 showsTerm d (Var x)           =  showsString x
 showsTerm d (Abs x v)         =  showsParenIf (d>0)
                                  (showsString "\\" . showsString x . showsAbs v)

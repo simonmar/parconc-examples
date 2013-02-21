@@ -1,0 +1,53 @@
+id = \x->x ;
+
+a = \f -> f id id ;
+a = \f -> f a a ;
+a = \f -> f a a ;
+a = \f -> f a a ;
+a = \f -> f a a ;
+a = \f -> f a a ;
+a = \f -> f a a ;
+a = \f -> f a a ;
+a = \f -> f a a ;
+a = \f -> f a a ;
+a = \f -> f a a ;
+a = let f = a in \x -> x ;
+
+b = \f -> f id id ;
+b = \f -> f b b ;
+b = \f -> f b b ;
+b = \f -> f b b ;
+b = \f -> f b b ;
+b = \f -> f b b ;
+b = \f -> f b b ;
+b = \f -> f b b ;
+b = \f -> f b b ;
+b = \f -> f b b ;
+b = \f -> f b b ;
+b = let f = b in \x -> x ;
+
+c = \f -> f id id ;
+c = \f -> f c c ;
+c = \f -> f c c ;
+c = \f -> f c c ;
+c = \f -> f c c ;
+c = \f -> f c c ;
+c = \f -> f c c ;
+c = \f -> f c c ;
+c = \f -> f c c ;
+c = \f -> f c c ;
+c = \f -> f c c ;
+c = let f = c in \x -> x ;
+
+d = \f -> f id id ;
+d = \f -> f d d ;
+d = \f -> f d d ;
+d = \f -> f d d ;
+d = \f -> f d d ;
+d = \f -> f d d ;
+d = \f -> f d d ;
+d = \f -> f d d ;
+d = \f -> f d d ;
+d = \f -> f d d ;
+d = \f -> f d d ;
+d = let f = d in \x -> x ;

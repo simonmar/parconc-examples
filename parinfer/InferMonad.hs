@@ -1,11 +1,18 @@
+--
+-- Adapted from the program "infer", believed to have been originally
+-- authored by Philip Wadler, and used in the nofib benchmark suite
+-- since at least the late 90s.
+--
+
 module InferMonad     (Infer, returnI, eachI, thenI, guardI, useI, getSubI,
                        substituteI, unifyI, freshI, freshesI)
                       where
 
-import MaybeM         (Maybe, returnM, eachM, thenM, failM, guardM, theM, existsM, useM)
+import MaybeM
 import StateX         (StateX, returnSX, eachSX, thenSX, toSX, putSX, getSX, useSX)
-import Type           (TVarId, TConId, MonoType (TVar, TCon), freeTVarMono)
-import Substitution   (Sub, applySub, lookupSub, emptySub, extendSub, domSub, unifySub)
+import Type
+import Substitution
+
 type  Counter         =  Int
 data  Infer x         =  MkI (StateX Sub (StateX Counter (Maybe ((x, Sub), Counter))))
 rep (MkI xJ)          =  xJ

@@ -1,21 +1,26 @@
+--
+-- Adapted from the program "infer", believed to have been originally
+-- authored by Philip Wadler, and used in the nofib benchmark suite
+-- since at least the late 90s.
+--
+
 module Infer (inferTerm,inferTop) where
 
 import Data.List(nub)
 
 import  MyList                  (minus)
-import  Type                  (TVarId, TConId, MonoType (..), PolyType (All),
-                               arrow, freeTVarMono)
+import  Type                  (TVarId, MonoType (..), PolyType (All),
+                               arrow, intType, freeTVarMono)
 import  Term
 import  Substitution          (Sub, applySub, lookupSub, makeSub)
 import  Environment
 import  InferMonad
-import  MaybeM
-import  Control.Monad.Par
+import  Control.Monad.Par.Scheds.Trace
 import  qualified Data.Set as Set
 import  qualified Data.Map as Map
 import  Data.Map (Map)
 import  Data.Maybe
-import Debug.Trace
+import Control.Monad
 
 specialiseI                   :: PolyType -> Infer MonoType
 specialiseI (All xxs tt)      =  freshesI (length xxs) `thenI` (\yys ->
@@ -34,6 +39,7 @@ freeTVarSubEnv s aa           =  concat (map (freeTVarMono . lookupSub s)
                                              (freeTVarEnv aa))
 
 inferTerm  ::  Env -> Term -> Infer MonoType
+inferTerm _  (Int _)  = returnI intType
 inferTerm aa (Var x)  =
       (x `elem` domEnv aa)                      `guardI` (
       let ss = lookupEnv aa x in
@@ -66,25 +72,24 @@ inferTopRhs aa u = useI (error "type error") $ do
     uu <- inferTerm aa u
     generaliseI aa uu
 
-inferTopTerm :: Env -> Term -> MonoType
-inferTopTerm aa t = useI (error "type error") (inferTerm aa t)
-
 type TopEnv = Map VarId (IVar PolyType)
 
-inferTop :: TopEnv -> Term -> Par MonoType
-inferTop topenv (Let x u v) = do
-    vu <- new
+-- <<inferTop
+inferTop :: TopEnv -> [(VarId,Term)] -> Par [(VarId,PolyType)]
+inferTop topenv0 binds = do
+  topenv1 <- foldM inferBind topenv0 binds                          -- <1>
+  mapM (\(v,i) -> do t <- get i; return (v,t)) (Map.toList topenv1) -- <2>
+-- >>
 
-    fork $ do
-      let fu = Set.toList (freeVars u)
-      tfu <- mapM (get . fromJust . flip Map.lookup topenv) fu
-      let aa = makeEnv (zip fu tfu)
-      put vu (inferTopRhs aa u)
+-- <<inferBind
+inferBind :: TopEnv -> (VarId,Term) -> Par TopEnv
+inferBind topenv (x,u) = do
+  vu <- new                                                     -- <1>
+  fork $ do                                                     -- <2>
+    let fu = Set.toList (freeVars u)                            -- <3>
+    tfu <- mapM (get . fromJust . flip Map.lookup topenv) fu    -- <4>
+    let aa = makeEnv (zip fu tfu)                               -- <5>
+    put vu (inferTopRhs aa u)                                   -- <6>
+  return (Map.insert x vu topenv)                               -- <7>
+-- >>
 
-    inferTop (Map.insert x vu topenv) v
-
-inferTop topenv t = do
-    let (vs,ivs) = unzip (Map.toList topenv)
-    tvs <- mapM get ivs
-    let aa = makeEnv (zip vs tvs)
-    return (inferTopTerm aa t)
