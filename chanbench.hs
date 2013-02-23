@@ -4,7 +4,7 @@ import Control.Monad
 import System.Environment
 
 import Control.Concurrent.Chan
-import Control.Concurrent.STM
+import Control.Concurrent.STM (atomically)
 
 import TQueue
 import TBQueue
