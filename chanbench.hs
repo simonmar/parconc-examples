@@ -4,7 +4,7 @@ import Control.Monad
 import System.Environment
 
 import Control.Concurrent.Chan
-import Control.Concurrent.STM
+import Control.Concurrent.STM (atomically)
 
 import TQueue
 import TBQueue
@@ -15,6 +15,7 @@ import TBQueue
 -- #define CHAN
 -- #define TCHAN
 -- #define TQUEUE
+-- #define TBQUEUE
 
 #ifdef CHAN
 newc = newChan
@@ -33,6 +34,11 @@ newc = atomically $ newTBQueue 4096
 readc c = atomically $ readTBQueue c
 writec c x = atomically $ writeTBQueue c x
 #endif
+
+-- Invoke this program with two command-line parameters.
+-- The first should be 0, 1, or 2, specifying one of three
+-- different benchmarks. The second specifies the size of the
+-- test.
 
 main = do
   [stest,sn] <- getArgs -- 2000000 is a good number
