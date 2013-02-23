@@ -15,6 +15,7 @@ import TBQueue
 -- #define CHAN
 -- #define TCHAN
 -- #define TQUEUE
+-- #define TBQUEUE
 
 #ifdef CHAN
 newc = newChan
