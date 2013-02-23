@@ -4,19 +4,14 @@
 module Main where
 
 import GetURL
-import TimeIt
 
-import Data.Either
 #if __GLASGOW_HASKELL__ < 706
 import ConcurrentUtils (forkFinally)
 #endif
 import Control.Concurrent
 import Control.Exception
-import Control.Monad
 import Control.Concurrent.STM
-import Control.Applicative
 import Text.Printf
-import qualified Data.ByteString as B
 
 -- -----------------------------------------------------------------------------
 -- STM Async API
