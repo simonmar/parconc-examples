@@ -28,10 +28,6 @@ data Person = Person
 
 type TimeTable = [[Talk]]
 
-selects xs [] = []
-selects xs (y:ys) = (y,xs++ys) : selects (y:xs) ys
-
-
 -- ----------------------------------------------------------------------------
 
 solve :: ( partial -> Maybe solution )   -- finished?
@@ -85,19 +81,28 @@ schedule persons all_talks maxTrack maxSlot =
      | otherwise       = Nothing
 
   clashesWith :: Map Talk [Talk]
-  clashesWith = Map.fromListWith (\xs ys -> filter (`notElem` ys) xs ++ ys)
+  clashesWith = Map.fromListWith union
      [ (t, ts)
      | s <- persons
-     , (t, ts) <- selects [] (talks s) ]
+     , (t, ts) <- selects (talks s) ]
 
   refine (this_slot, ts, slot, slots, track, tracks)
      | track == maxTrack = [(ts, ts, slot+1, tracks : slots, 0, [])]
      | otherwise =
          [ (this_slot', filter (/= c) ts, slot, slots, track+1, c:tracks)
-         | (c,ts') <- selects [] this_slot
+         | (c,ts') <- selects this_slot
          , let clashes = Map.findWithDefault [] c clashesWith
          , let this_slot' = filter (`notElem` clashes) ts'
          ]
+
+-- ----------------------------------------------------------------------------
+-- Utils
+
+selects :: [a] -> [(a,[a])]
+selects xs0 = go [] xs0
+  where
+   go xs [] = []
+   go xs (y:ys) = (y,xs++ys) : go (y:xs) ys
 
 -- ----------------------------------------------------------------------------
 
