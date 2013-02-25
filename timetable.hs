@@ -7,6 +7,7 @@ import System.Environment
 import Debug.Trace
 import Data.List
 import Control.Monad.Par
+import Control.DeepSeq
 
 import Data.Map (Map)
 import qualified Data.Map as Map
@@ -33,44 +34,66 @@ selects xs (y:ys) = (y,xs++ys) : selects (y:xs) ys
 
 -- ----------------------------------------------------------------------------
 
-solve :: ( state -> Bool )                           -- finished?
-      -> ( solution -> state -> [(solution,state)] ) -- extend a solution
-      -> solution                                    -- initial solution
-      -> state                                       -- initial state
-      -> [ solution ]
+solve :: ( partial -> Maybe solution )   -- finished?
+      -> ( partial -> [ partial ] )      -- refine a solution
+      -> partial                         -- initial solution
+      -> [solution]
 
-solve finished extend emptysoln initstate
-  = generate emptysoln initstate
+solve finished refine emptysoln
+  = generate emptysoln
   where
-    generate soln state
-       | finished state = [ soln ]
-       | otherwise      = concat [ generate soln' state'
-                                 | (soln', state') <- extend soln state ]
+    generate partial
+       | Just soln <- finished partial = [soln]
+       | otherwise  = concat (map generate (refine partial))
 
+parsolve :: NFData solution
+      => Int
+      -> ( partial -> Maybe solution )   -- finished?
+      -> ( partial -> [ partial ] )      -- refine a solution
+      -> partial                         -- initial solution
+      -> [solution]
+
+parsolve maxdepth finished refine emptysoln
+  = runPar $ generate 0 emptysoln
+  where
+    generate d partial | d >= maxdepth = return (solve finished refine partial)
+    generate d partial
+       | Just soln <- finished partial = return [soln]
+       | otherwise  = do
+           is <- mapM (spawn . generate (d+1)) (refine partial)
+           solnss <- mapM get is
+           return (concat solnss)
 
 -- ----------------------------------------------------------------------------
 
-type State    = ([Talk], [Talk], Int, Int, [Talk])
+type Partial  = ( [Talk]    -- talks that can be allocated in the current slot
+                , [Talk]    -- all talks remaining to allocate
+                , Int       -- current slot number
+                , [[Talk]]  -- completed slots so far
+                , Int       -- current track number
+                , [Talk]    -- talks in the current slot so far
+                )
 type Solution = [[Talk]]
 
 schedule persons all_talks maxTrack maxSlot =
-  solve finished extend emptysoln initstate
+  parsolve 3 finished refine emptysoln
  where
-  emptysoln = []
+  emptysoln = (all_talks, all_talks, 0, [], 0, [])
 
-  initstate = (all_talks, all_talks, 0, 0, [])
-
-  finished (this_slot, ts, slot, track, tracks) = slot == maxSlot
+  finished (this_slot, ts, slot, slots, track, tracks)
+     | slot == maxSlot = Just slots
+     | otherwise       = Nothing
 
   clashesWith :: Map Talk [Talk]
   clashesWith = Map.fromListWith (\xs ys -> filter (`notElem` ys) xs ++ ys)
-     [ (c, ts)
-     | s <- persons, (c, ts) <- selects [] (talks s) ]
+     [ (t, ts)
+     | s <- persons
+     , (t, ts) <- selects [] (talks s) ]
 
-  extend slots (this_slot, ts, slot, track, tracks)
-     | track == maxTrack = (tracks : slots , (ts, ts, slot, 0, []))
+  refine (this_slot, ts, slot, slots, track, tracks)
+     | track == maxTrack = [(ts, ts, slot+1, tracks : slots, 0, [])]
      | otherwise =
-         [ (slots, (this_slot', (filter (/= c) ts), slot, track+1, c:tracks))
+         [ (this_slot', filter (/= c) ts, slot, slots, track+1, c:tracks)
          | (c,ts') <- selects [] this_slot
          , let clashes = Map.findWithDefault [] c clashesWith
          , let this_slot' = filter (`notElem` clashes) ts'
@@ -80,7 +103,7 @@ schedule persons all_talks maxTrack maxSlot =
 
 bench :: Int -> Int -> Int -> Int -> Int -> StdGen -> ([Person],[Talk],[TimeTable])
 bench nslots ntracks ntalks npersons c_per_s gen =
-  (persons,talks, runPar $ solve persons talks ntracks nslots)
+  (persons,talks, schedule persons talks ntracks nslots)
  where
   total_talks = nslots * ntracks
 
@@ -104,7 +127,7 @@ main = do
 --   [ a, b ] <- fmap (fmap read) getArgs
 --   print (head (test2 a b))
 
-test = solve testPersons cs 2 2
+test = schedule testPersons cs 2 2
  where
    cs@[ca,cb,cc,cd] = map Talk [1..4]
 
@@ -114,7 +137,7 @@ test = solve testPersons cs 2 2
     , Person "R" [cc,cd]
     ]
 
-test2 n m = solve testPersons cs m n
+test2 n m = schedule testPersons cs m n
  where
    cs = map Talk [1 .. (n * m)]
 
