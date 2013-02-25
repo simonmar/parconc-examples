@@ -30,49 +30,51 @@ type TimeTable = [[Talk]]
 selects xs [] = []
 selects xs (y:ys) = (y,xs++ys) : selects (y:xs) ys
 
-solve :: [Person] -> [Talk] -> Int -> Int -> Par [TimeTable]
-solve persons all_talks maxTrack maxSlot =
-  trace (show clashesWith) $
-  generate 0 all_talks all_talks 0 [] 0 []
+
+-- ----------------------------------------------------------------------------
+
+solve :: ( state -> Bool )                           -- finished?
+      -> ( solution -> state -> [(solution,state)] ) -- extend a solution
+      -> solution                                    -- initial solution
+      -> state                                       -- initial state
+      -> [ solution ]
+
+solve finished extend emptysoln initstate
+  = generate emptysoln initstate
+  where
+    generate soln state
+       | finished state = [ soln ]
+       | otherwise      = concat [ generate soln' state'
+                                 | (soln', state') <- extend soln state ]
+
+
+-- ----------------------------------------------------------------------------
+
+type State    = ([Talk], [Talk], Int, Int, [Talk])
+type Solution = [[Talk]]
+
+schedule persons all_talks maxTrack maxSlot =
+  solve finished extend emptysoln initstate
  where
+  emptysoln = []
+
+  initstate = (all_talks, all_talks, 0, 0, [])
+
+  finished (this_slot, ts, slot, track, tracks) = slot == maxSlot
+
   clashesWith :: Map Talk [Talk]
   clashesWith = Map.fromListWith (\xs ys -> filter (`notElem` ys) xs ++ ys)
-     [ (c, cs)
-     | s <- persons, (c, cs) <- selects [] (talks s) ]
+     [ (c, ts)
+     | s <- persons, (c, ts) <- selects [] (talks s) ]
 
-  generate depth this_slot cs slot slots track tracks
---    | trace (show slot ++ " " ++ show track ++ " " ++ show this_slot) False = undefined
-    | slot == maxSlot = return [ slots ]
-    | track == maxTrack   = generate depth cs cs (slot+1) (tracks:slots) 0 []
-    | otherwise = do
-      if (depth > 3)
-         then return (generate_seq this_slot cs slot slots track tracks)
-         else do
-           is <- mapM spawn next
-           xss <- mapM get is
-           return (concat xss)
-    where
-     next =  [ generate (depth+1) this_slot' (filter (/= c) cs) slot slots
-                        (track+1) (c:tracks)
-             | (c,ts') <- selects [] this_slot
-               let clashes = Map.findWithDefault [] c clashesWith
-               let this_slot' = filter (`notElem` clashes) ts'
-             ]
-
-  generate_seq this_slot cs slot slots track tracks
-    | slot == maxSlot = [ slots ]
-    | track == maxTrack   = generate_seq cs cs (slot+1) (tracks:slots) 0 []
-    | otherwise =
-       concat [ generate_seq (filter (`notElem` (Map.findWithDefault [] c clashesWith)) ts') (filter (/= c) cs) slot slots (track+1) (c:tracks)
-             | (c,ts') <- selects [] this_slot
-             ]
-
-   -- Keep a list of talks we can put in this slot
-   -- if it is empty, backtrack
-   -- For each class,
-   -- Pick one of their talks that is in our list of talks
-   --
-
+  extend slots (this_slot, ts, slot, track, tracks)
+     | track == maxTrack = (tracks : slots , (ts, ts, slot, 0, []))
+     | otherwise =
+         [ (slots, (this_slot', (filter (/= c) ts), slot, track+1, c:tracks))
+         | (c,ts') <- selects [] this_slot
+         , let clashes = Map.findWithDefault [] c clashesWith
+         , let this_slot' = filter (`notElem` clashes) ts'
+         ]
 
 -- ----------------------------------------------------------------------------
 
