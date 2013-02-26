@@ -37,45 +37,55 @@ type TimeTable = [[Talk]]
 -- >>
 
 -- ----------------------------------------------------------------------------
+-- The parallel skeleton
+
+-- <<search_type
+search :: ( partial -> Maybe solution )   -- <1>
+       -> ( partial -> [ partial ] )      -- <2>
+       -> partial                         -- <3>
+       -> [solution]                      -- <4>
+-- >>
+
+-- <<search
+search finished refine emptysoln = generate emptysoln
+  where
+    generate partial
+       | Just soln <- finished partial = [soln]
+       | otherwise  = concat (map generate (refine partial))
+-- >>
+
+-- ----------------------------------------------------------------------------
+
+-- <<Partial
+type Partial = (Int, Int, [[Talk]], [Talk], [Talk], [Talk])
+-- >>
 
 -- <<timetable
 timetable :: [Person] -> [Talk] -> Int -> Int -> [TimeTable]
 timetable people allTalks maxTrack maxSlot =
--- >>
--- <<generate_call
-  generate 0 0 [] [] allTalks allTalks
--- >>
+  search finished refine emptysoln
  where
--- <<generate_type
-  generate :: Int          -- current slot number
-           -> Int          -- current track number
-           -> [[Talk]]     -- slots allocated so far
-           -> [Talk]       -- talks in this slot
-           -> [Talk]       -- talks that can be allocated in this slot
-           -> [Talk]       -- all talks remaining to be allocated
-           -> [TimeTable]  -- all possible solutions
--- >>
+  emptysoln = (0, 0, [], [], allTalks, allTalks)
 
--- <<generate
-  generate slotNo trackNo slots slot slotTalks talks
-     | slotNo == maxSlot   = [slots]                                    -- <1>
-     | trackNo == maxTrack =
-         generate (slotNo+1) 0 (slot:slots) [] talks talks              -- <2>
-     | otherwise = concat                                               -- <3>
-         [ generate slotNo (trackNo+1) slots (t:slot) slotTalks' talks' -- <8>
-         | (t, ts) <- selects slotTalks                                 -- <4>
-         , let clashesWithT = Map.findWithDefault [] t clashes          -- <5>
-         , let slotTalks' = filter (`notElem` clashesWithT) ts          -- <6>
-         , let talks' = filter (/= t) talks                             -- <7>
-         ]
--- >>
+  finished (slotNo, trackNo, slots, slot, slotTalks, talks)
+     | slotNo == maxSlot = Just slots
+     | otherwise         = Nothing
 
--- <<clashes
   clashes :: Map Talk [Talk]
   clashes = Map.fromListWith union
      [ (t, ts)
      | s <- people
      , (t, ts) <- selects (talks s) ]
+
+  refine (slotNo, trackNo, slots, slot, slotTalks, talks)
+     | trackNo == maxTrack = [(slotNo+1, 0, slot:slots, [], talks, talks)]
+     | otherwise =
+         [ (slotNo, trackNo+1, slots, t:slot, slotTalks', talks')
+         | (t, ts) <- selects slotTalks
+         , let clashesWithT = Map.findWithDefault [] t clashes
+         , let slotTalks' = filter (`notElem` clashesWithT) ts
+         , let talks' = filter (/= t) talks
+         ]
 -- >>
 
 -- ----------------------------------------------------------------------------
