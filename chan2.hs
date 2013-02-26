@@ -60,7 +60,7 @@ main = do
   c <- newChan
   writeChan c 'a'
   readChan c >>= print
-  c2 <- duCphan c
+  c2 <- dupChan c
   writeChan c 'b'
   readChan c >>= print
   readChan c2 >>= print

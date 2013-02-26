@@ -3,8 +3,8 @@
 module Main ( main, runtest ) where
 
 import System.Environment
-import qualified Data.IntMap.Strict as Map
-import Data.IntMap (IntMap)
+import qualified MapCompat as Map
+import MapCompat (IntMap)
 import System.Random
 import Data.List
 import SparseGraph

@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP #-}
 module SparseGraph (
     Vertex, Weight,
     Graph,
@@ -9,7 +10,11 @@ module SparseGraph (
     checksum
   ) where
 
+#if MIN_VERSION_containers(0,5,0)
 import qualified Data.IntMap.Strict as Map
+#else
+import qualified Data.IntMap as Map
+#endif
 import qualified Data.IntSet as IntSet
 import Data.IntMap (IntMap)
 import System.Random

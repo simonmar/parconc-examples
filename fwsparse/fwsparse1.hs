@@ -5,8 +5,8 @@ module Main ( main, runtest ) where
 import Control.Monad.Par.Scheds.Trace
   -- gives slightly better results than Control.Monad.Par with monad-par-0.3.4
 import System.Environment
-import qualified Data.IntMap as Map
-import Data.IntMap (IntMap)
+import qualified MapCompat as Map
+import MapCompat (IntMap)
 import System.Random
 import Data.List
 import Data.Traversable hiding (mapM)
@@ -67,3 +67,4 @@ main = do
   let g = mkStdGen 9999
   let (mat,vs) = randomGraph g h 100 n
   print (checksum (shortestPaths vs mat))
+

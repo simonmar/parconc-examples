@@ -83,7 +83,7 @@ executable kmeans
                  , monad-par >= 0.3.4 && < 0.4
                    -- monad-par 0.3 has a bug:
                    -- https://github.com/simonmar/monad-par/issues/23
-                 , binary >= 0.6.3 && < 0.7
+                 , binary >= 0.5 && < 0.7
                  , array ==0.4.*
                  , bytestring >= 0.9 && < 0.11
                  , vector >= 0.10 && < 0.11
@@ -94,7 +94,7 @@ executable GenSamples
   hs-source-dirs: kmeans
   main-is: GenSamples.hs
   build-depends:   base >= 4.5 && < 4.7
-                 , binary >= 0.6.3 && < 0.7
+                 , binary >= 0.5 && < 0.7
                  , array ==0.4.*
                  , vector >= 0.10 && < 0.11
                  , random >= 1.0 && < 1.1
@@ -243,7 +243,7 @@ executable geturls1
   main-is: geturls1.hs
   build-depends:   base >= 4.5 && < 4.7
                  , containers >= 0.4 && < 0.6
-                 , network ==2.3.*
+                 , network >= 2.3 && < 2.5
                  , HTTP ==4000.2.*
                  , bytestring >= 0.9 && < 0.11
   default-language: Haskell2010
@@ -254,7 +254,7 @@ executable  geturls2
                  , stm ==2.4.*
                  , bytestring >= 0.9 && < 0.11
                  , time ==1.4.*
-                 , network ==2.3.*
+                 , network >= 2.3 && < 2.5
                  , HTTP ==4000.2.*
   default-language: Haskell2010
 
@@ -264,7 +264,7 @@ executable  geturls3
                  , stm ==2.4.*
                  , bytestring >= 0.9 && < 0.11
                  , time ==1.4.*
-                 , network ==2.3.*
+                 , network >= 2.3 && < 2.5
                  , HTTP ==4000.2.*
   default-language: Haskell2010
 
@@ -274,7 +274,7 @@ executable  geturls4
                  , stm ==2.4.*
                  , bytestring >= 0.9 && < 0.11
                  , time ==1.4.*
-                 , network ==2.3.*
+                 , network >= 2.3 && < 2.5
                  , HTTP ==4000.2.*
   default-language: Haskell2010
 
@@ -284,7 +284,7 @@ executable  geturls5
                  , stm ==2.4.*
                  , bytestring >= 0.9 && < 0.11
                  , time ==1.4.*
-                 , network ==2.3.*
+                 , network >= 2.3 && < 2.5
                  , HTTP ==4000.2.*
   default-language: Haskell2010
 
@@ -294,7 +294,7 @@ executable  geturls6
                  , stm ==2.4.*
                  , bytestring >= 0.9 && < 0.11
                  , time ==1.4.*
-                 , network ==2.3.*
+                 , network >= 2.3 && < 2.5
                  , HTTP ==4000.2.*
   default-language: Haskell2010
 
@@ -307,7 +307,7 @@ executable  geturlscancel
                  , stm ==2.4.*
                  , bytestring >= 0.9 && < 0.11
                  , time ==1.4.*
-                 , network ==2.3.*
+                 , network >= 2.3 && < 2.5
                  , HTTP ==4000.2.*
   default-language: Haskell2010
 
@@ -317,7 +317,7 @@ executable  geturlscancel2
                  , stm ==2.4.*
                  , bytestring >= 0.9 && < 0.11
                  , time ==1.4.*
-                 , network ==2.3.*
+                 , network >= 2.3 && < 2.5
                  , HTTP ==4000.2.*
   default-language: Haskell2010
 
@@ -370,7 +370,7 @@ executable  geturlsfirst
                  , bytestring >= 0.9 && < 0.11
                  , time ==1.4.*
                  , HTTP ==4000.2.*
-                 , network ==2.3.*
+                 , network >= 2.3 && < 2.5
   default-language: Haskell2010
 
 executable  TChan
@@ -406,7 +406,7 @@ executable  geturls7
                  , stm ==2.4.*
                  , bytestring >= 0.9 && < 0.11
                  , time ==1.4.*
-                 , network ==2.3.*
+                 , network >= 2.3 && < 2.5
                  , HTTP ==4000.2.*
   default-language: Haskell2010
 
@@ -416,7 +416,7 @@ executable  geturls8
                  , stm ==2.4.*
                  , bytestring >= 0.9 && < 0.11
                  , time ==1.4.*
-                 , network ==2.3.*
+                 , network >= 2.3 && < 2.5
                  , HTTP ==4000.2.*
   default-language: Haskell2010
 
@@ -426,7 +426,7 @@ executable  geturls9
                  , stm ==2.4.*
                  , bytestring >= 0.9 && < 0.11
                  , time ==1.4.*
-                 , network ==2.3.*
+                 , network >= 2.3 && < 2.5
                  , HTTP ==4000.2.*
   default-language: Haskell2010
 
@@ -490,7 +490,7 @@ executable  server
   main-is: server.hs
   build-depends:   base >= 4.5 && < 4.7
                  , stm ==2.4.*
-                 , network ==2.3.*
+                 , network >= 2.3 && < 2.5
   default-language: Haskell2010
 
 executable  server2
@@ -498,7 +498,7 @@ executable  server2
   build-depends:   base >= 4.5 && < 4.7
                  , stm ==2.4.*
                  , async ==2.0.*
-                 , network ==2.3.*
+                 , network >= 2.3 && < 2.5
   default-language: Haskell2010
 
 executable chat
@@ -507,7 +507,7 @@ executable chat
                  , containers >= 0.4 && < 0.6
                  , async ==2.0.*
                  , stm ==2.4.*
-                 , network ==2.3.*
+                 , network >= 2.3 && < 2.5
   default-language: Haskell2010
 
 -- -----------------------------------------------------------------------------
@@ -516,8 +516,8 @@ executable chat
 executable ping
   main-is: distrib-ping/ping.hs
   build-depends:   base >= 4.5 && < 4.7
-                 , network ==2.3.*
-                 , binary >= 0.6.3 && < 0.7
+                 , network >= 2.3 && < 2.5
+                 , binary >= 0.5 && < 0.7
                  , distributed-process >= 0.4.2 && < 0.5
                  , distributed-process-simplelocalnet ==0.2.*
                  , distributed-static ==0.2.*
@@ -530,8 +530,8 @@ executable ping
 executable ping-multi
   main-is: distrib-ping/ping-multi.hs
   build-depends:   base >= 4.5 && < 4.7
-                 , network ==2.3.*
-                 , binary >= 0.6.3 && < 0.7
+                 , network >= 2.3 && < 2.5
+                 , binary >= 0.5 && < 0.7
                  , distributed-process >= 0.4.2 && < 0.5
                  , distributed-process-simplelocalnet ==0.2.*
                  , distributed-static ==0.2.*
@@ -544,8 +544,8 @@ executable ping-multi
 executable ping-tc
   main-is: distrib-ping/ping-tc.hs
   build-depends:   base >= 4.5 && < 4.7
-                 , network ==2.3.*
-                 , binary >= 0.6.3 && < 0.7
+                 , network >= 2.3 && < 2.5
+                 , binary >= 0.5 && < 0.7
                  , distributed-process >= 0.4.2 && < 0.5
                  , distributed-process-simplelocalnet ==0.2.*
                  , distributed-static ==0.2.*
@@ -558,8 +558,8 @@ executable ping-tc
 executable ping-tc-merge
   main-is: distrib-ping/ping-tc-merge.hs
   build-depends:   base >= 4.5 && < 4.7
-                 , network ==2.3.*
-                 , binary >= 0.6.3 && < 0.7
+                 , network >= 2.3 && < 2.5
+                 , binary >= 0.5 && < 0.7
                  , distributed-process >= 0.4.2 && < 0.5
                  , distributed-process-simplelocalnet ==0.2.*
                  , distributed-static ==0.2.*
@@ -573,8 +573,8 @@ executable ping-tc-merge
 executable ping-tc-notify
   main-is: distrib-ping/ping-tc-notify.hs
   build-depends:   base >= 4.5 && < 4.7
-                 , network ==2.3.*
-                 , binary >= 0.6.3 && < 0.7
+                 , network >= 2.3 && < 2.5
+                 , binary >= 0.5 && < 0.7
                  , distributed-process >= 0.4.2 && < 0.5
                  , distributed-process-simplelocalnet ==0.2.*
                  , distributed-static ==0.2.*
@@ -587,8 +587,8 @@ executable ping-tc-notify
 executable ping-fail
   main-is: distrib-ping/ping-fail.hs
   build-depends:   base >= 4.5 && < 4.7
-                 , network ==2.3.*
-                 , binary >= 0.6.3 && < 0.7
+                 , network >= 2.3 && < 2.5
+                 , binary >= 0.5 && < 0.7
                  , distributed-process >= 0.4.2 && < 0.5
                  , distributed-process-simplelocalnet ==0.2.*
                  , distributed-static ==0.2.*
@@ -604,8 +604,8 @@ executable distrib-chat
                  , containers >= 0.4 && < 0.6
                  , stm ==2.4.*
                  , async ==2.0.*
-                 , network ==2.3.*
-                 , binary >= 0.6.3 && < 0.7
+                 , network >= 2.3 && < 2.5
+                 , binary >= 0.5 && < 0.7
                  , distributed-process >= 0.4.2 && < 0.5
                  , distributed-process-simplelocalnet ==0.2.*
                  , distributed-static ==0.2.*
@@ -622,8 +622,8 @@ executable distrib-chat-noslave
                  , containers >= 0.4 && < 0.6
                  , stm ==2.4.*
                  , async ==2.0.*
-                 , network ==2.3.*
-                 , binary >= 0.6.3 && < 0.7
+                 , network >= 2.3 && < 2.5
+                 , binary >= 0.5 && < 0.7
                  , distributed-process >= 0.4.2 && < 0.5
                  , distributed-process-simplelocalnet ==0.2.*
                  , distributed-static ==0.2.*
@@ -641,8 +641,8 @@ executable distrib-db
                  , containers >= 0.4 && < 0.6
                  , stm ==2.4.*
                  , async ==2.0.*
-                 , network ==2.3.*
-                 , binary >= 0.6.3 && < 0.7
+                 , network >= 2.3 && < 2.5
+                 , binary >= 0.5 && < 0.7
                  , distributed-process >= 0.4.2 && < 0.5
                  , distributed-process-simplelocalnet ==0.2.*
                  , distributed-static ==0.2.*
@@ -691,7 +691,7 @@ executable  bingtranslator
                  , bytestring >= 0.9 && < 0.11
                  , time ==1.4.*
                  , HTTP ==4000.2.*
-                 , network ==2.3.*
+                 , network >= 2.3 && < 2.5
                  , utf8-string ==0.3.*
                  , xml ==1.3.*
   default-language: Haskell2010
@@ -702,7 +702,7 @@ executable  bingtranslatorconc
                  , bytestring >= 0.9 && < 0.11
                  , time ==1.4.*
                  , HTTP ==4000.2.*
-                 , network ==2.3.*
+                 , network >= 2.3 && < 2.5
                  , utf8-string ==0.3.*
                  , xml ==1.3.*
   default-language: Haskell2010
@@ -713,7 +713,7 @@ executable  geturlsstm
                  , stm ==2.4.*
                  , bytestring >= 0.9 && < 0.11
                  , time ==1.4.*
-                 , network ==2.3.*
+                 , network >= 2.3 && < 2.5
                  , HTTP ==4000.2.*
   default-language: Haskell2010
 

@@ -12,6 +12,7 @@ import Control.Concurrent
 import Control.Exception
 import Control.Concurrent.STM
 import Text.Printf
+import qualified Data.ByteString as B
 
 -- -----------------------------------------------------------------------------
 -- STM Async API
