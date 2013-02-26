@@ -18,6 +18,7 @@ import Control.Concurrent.STM
 -- #define CHAN
 -- #define TCHAN
 -- #define TQUEUE
+-- #define TBQUEUE
 
 #ifdef CHAN
 newc = newChan
@@ -38,6 +39,11 @@ writec c x = atomically $ writeTBQueue c x
 #endif
 
 bufsiz=4096
+
+-- Invoke this program with two command-line parameters.
+-- The first should be 0, 1, or 2, specifying one of three
+-- different benchmarks. The second specifies the size of the
+-- test.
 
 main = do
   [stest,sn] <- getArgs -- 2000000 is a good number
