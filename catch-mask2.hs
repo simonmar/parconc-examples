@@ -1,3 +1,4 @@
+{-# LANGUAGE BangPatterns #-}
 import System.IO
 import System.IO.Error
 import System.Environment
@@ -7,8 +8,8 @@ import Control.Exception
 main = do
   fs <- getArgs
   let
-     loop n [] = return n
-     loop n (f:fs) = do
+     loop !n [] = return n
+     loop !n (f:fs) = do
         getMaskingState >>= print
         r <- Control.Exception.try (openFile f ReadMode)
         case r of

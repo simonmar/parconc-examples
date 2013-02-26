@@ -20,6 +20,7 @@ readTList (TList v) = do
   xs <- readTVar v
   case xs of
     []      -> retry
-    (x:xs') -> do writeTVar v xs'
-                  return x
+    (x:xs') -> do
+      writeTVar v xs'
+      return x
 -- >>

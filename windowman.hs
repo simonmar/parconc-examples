@@ -23,8 +23,8 @@ moveWindowSTM disp win a b = do
   writeTVar ma (Set.delete win wa)
   writeTVar mb (Set.insert win wb)
  where
-  ma = fromJust (Map.lookup a disp)
-  mb = fromJust (Map.lookup b disp)
+  ma = disp ! a
+  mb = disp ! b
 -- >>
 
 -- <<moveWindow
@@ -53,7 +53,7 @@ type UserFocus = TVar Desktop
 getWindows :: Display -> UserFocus -> STM (Set Window)
 getWindows disp focus = do
   desktop <- readTVar focus
-  readTVar (fromJust (Map.lookup desktop disp))
+  readTVar (disp ! desktop)
 -- >>
 
 -- <<renderThread

@@ -85,13 +85,16 @@ sites = ["http://www.google.com",
          "http://www.wikipedia.com/wiki/Shovel"]
 
 -- <<main
+main :: IO ()
 main = do
+  let
+    download url = do
+       r <- getURL url
+       return (url, r)
+
   as <- mapM (async . download) sites
-  (url,_) <- waitAny as
-  printf "%s was first\n" url
+
+  (url, r) <- waitAny as
+  printf "%s was first (%d bytes)\n" url (B.length r)
   mapM_ wait as
- where
-  download url = do
-     contents <- getURL url
-     return (url, contents)
 -- >>

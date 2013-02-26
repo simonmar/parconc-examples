@@ -41,7 +41,7 @@ readChan (Chan readVar _) = do
 -- <<dupChan
 dupChan :: Chan a -> IO (Chan a)
 dupChan (Chan _ writeVar) = do
-  hole       <- takeMVar writeVar
+  hole <- takeMVar writeVar
   putMVar writeVar hole
   newReadVar <- newMVar hole
   return (Chan newReadVar writeVar)
@@ -60,7 +60,7 @@ main = do
   c <- newChan
   writeChan c 'a'
   readChan c >>= print
-  c2 <- dupChan c
+  c2 <- duCphan c
   writeChan c 'b'
   readChan c >>= print
   readChan c2 >>= print

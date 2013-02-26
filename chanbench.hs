@@ -25,13 +25,13 @@ newc = newTChanIO
 readc c = atomically $ readTChan c
 writec c x = atomically $ writeTChan c x
 #elif defined(TQUEUE)
-newc = atomically $ newTQueue
-readc c = atomically $ readTQueue c
-writec c x = atomically $ writeTQueue c x
+newc = atomically $ TQueue.newTQueue
+readc c = atomically $ TQueue.readTQueue c
+writec c x = atomically $ TQueue.writeTQueue c x
 #elif defined(TBQUEUE)
-newc = atomically $ newTBQueue 4096
-readc c = atomically $ readTBQueue c
-writec c x = atomically $ writeTBQueue c x
+newc = atomically $ TBQueue.newTBQueue 4096
+readc c = atomically $ TBQueue.readTBQueue c
+writec c x = atomically $ TBQueue.writeTBQueue c x
 #endif
 
 main = do
