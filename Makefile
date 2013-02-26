@@ -177,6 +177,7 @@ test:
 	cd kmeans && ../dist/build/kmeans/kmeans seq
 	cd kmeans && ../dist/build/kmeans/kmeans strat 64 +RTS -N2
 	./dist/build/logger/logger
+	./dist/build/modifytwo/modifytwo
 	./dist/build/mvar1/mvar1
 	./dist/build/mvar2/mvar2
 	if ! ./dist/build/mvar3/mvar3; then true; else false; fi

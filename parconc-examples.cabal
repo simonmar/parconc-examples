@@ -135,6 +135,11 @@ executable  geturls9
                  , HTTP ==4000.2.*
   default-language: Haskell2010
 
+executable  modifytwo
+  main-is: modifytwo.hs
+  build-depends:   base >= 4.5 && < 4.7
+  default-language: Haskell2010
+
 executable  chan
   main-is: chan.hs
   build-depends:   base >= 4.5 && < 4.7
