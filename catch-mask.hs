@@ -1,3 +1,4 @@
+{-# LANGUAGE BangPatterns #-}
 import System.IO
 import System.IO.Error
 import System.Environment
@@ -7,8 +8,8 @@ import Control.Exception as E
 main = do
   fs <- getArgs
   let
-     loop n [] = return n
-     loop n (f:fs)
+     loop !n [] = return n
+     loop !n (f:fs)
         = handle (\e -> if isDoesNotExistError e
                            then loop n fs
                            else throwIO e) $
