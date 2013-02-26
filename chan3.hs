@@ -21,6 +21,15 @@ newChan = do
   return (Chan readVar writeVar)
 -- >>
 
+-- <<wrongWriteChan
+wrongWriteChan :: Chan a -> a -> IO ()
+wrongWriteChan (Chan _ writeVar) val = do
+  newHole <- newEmptyMVar
+  modifyMVar_ writeVar $ \oldHole -> do
+    putMVar oldHole (Item val newHole)  -- <1>
+    return newHole                      -- <2>
+-- >>
+
 -- <<writeChan
 writeChan :: Chan a -> a -> IO ()
 writeChan (Chan _ writeVar) val = do
@@ -34,9 +43,9 @@ writeChan (Chan _ writeVar) val = do
 -- <<readChan
 readChan :: Chan a -> IO a
 readChan (Chan readVar _) = do
-  modifyMVar readVar $ \readEnd -> do
-    (Item val newReadEnd) <- readMVar readEnd
-    return (newReadEnd, val)
+  modifyMVar readVar $ \stream -> do
+    Item val tail <- readMVar stream
+    return (tail, val)
 -- >>
 
 main = do

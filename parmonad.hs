@@ -1,6 +1,4 @@
 import Control.Exception
-import Data.Time.Clock
-import Text.Printf
 import System.Environment
 import Control.Monad.Par.Scheds.Trace
 -- NB. using Trace here, Direct is too strict and forces the fibs in

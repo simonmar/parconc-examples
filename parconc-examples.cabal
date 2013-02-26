@@ -11,6 +11,177 @@ category:            Sample Code
 build-type:          Simple
 cabal-version:       >=1.10
 
+-- -----------------------------------------------------------------------------
+-- par-eval
+
+executable sudoku1
+  main-is: sudoku1.hs
+  build-depends:   base >= 4.5 && < 4.7
+                 , parallel ==3.2.*
+                 , array ==0.4.*
+  default-language: Haskell2010
+
+executable sudoku2
+  main-is: sudoku2.hs
+  build-depends:   base >= 4.5 && < 4.7
+                 , parallel ==3.2.*
+                 , array ==0.4.*
+                 , deepseq ==1.3.*
+  ghc-options: -threaded
+  default-language: Haskell2010
+
+executable sudoku3
+  main-is: sudoku3.hs
+  build-depends:   base >= 4.5 && < 4.7
+                 , parallel ==3.2.*
+                 , array ==0.4.*
+  ghc-options: -threaded
+  default-language: Haskell2010
+
+executable sudoku4
+  main-is: sudoku4.hs
+  build-depends:   base >= 4.5 && < 4.7
+                 , parallel ==3.2.*
+                 , array ==0.4.*
+  ghc-options: -threaded
+  default-language: Haskell2010
+
+-- -----------------------------------------------------------------------------
+-- par-strat
+
+executable rsa
+  main-is: rsa.hs
+  build-depends:   base >= 4.5 && < 4.7
+                 , bytestring >= 0.10 && < 0.11
+  default-language: Haskell2010
+
+executable rsa1
+  main-is: rsa1.hs
+  build-depends:   base >= 4.5 && < 4.7
+                 , bytestring >= 0.10 && < 0.11
+                 -- bytestring-0.10 needed to get instance NFData ByteString
+                 , parallel ==3.2.*
+  ghc-options: -threaded
+  default-language: Haskell2010
+
+executable rsa2
+  main-is: rsa2.hs
+  build-depends:   base >= 4.5 && < 4.7
+                 , bytestring >= 0.10 && < 0.11
+                 -- bytestring-0.10 needed to get instance NFData ByteString
+                 , parallel ==3.2.*
+  ghc-options: -threaded
+  default-language: Haskell2010
+
+executable kmeans
+  hs-source-dirs: kmeans
+  main-is: kmeans.hs
+  build-depends:   base >= 4.5 && < 4.7
+                 , parallel ==3.2.*
+                 , time ==1.4.*
+                 , deepseq ==1.3.*
+                 , monad-par >= 0.3.4 && < 0.4
+                   -- monad-par 0.3 has a bug:
+                   -- https://github.com/simonmar/monad-par/issues/23
+                 , binary >= 0.6.3 && < 0.7
+                 , array ==0.4.*
+                 , bytestring >= 0.9 && < 0.11
+                 , vector >= 0.10 && < 0.11
+  ghc-options: -threaded
+  default-language: Haskell2010
+
+executable GenSamples
+  hs-source-dirs: kmeans
+  main-is: GenSamples.hs
+  build-depends:   base >= 4.5 && < 4.7
+                 , binary >= 0.6.3 && < 0.7
+                 , array ==0.4.*
+                 , vector >= 0.10 && < 0.11
+                 , random >= 1.0 && < 1.1
+                 , normaldistribution >= 1.1 && < 1.2
+                 , deepseq ==1.3.*
+                 , bytestring >= 0.9 && < 0.11
+  default-language: Haskell2010
+
+-- -----------------------------------------------------------------------------
+-- par-monad
+
+executable parmonad
+  main-is: parmonad.hs
+  build-depends:   base >= 4.5 && < 4.7
+                 , monad-par >= 0.3.4 && < 0.4
+  ghc-options: -threaded
+  default-language: Haskell2010
+
+executable rsa-pipeline
+  main-is: rsa-pipeline.hs
+  build-depends:   base >= 4.5 && < 4.7
+                 , bytestring >= 0.10 && < 0.11
+                 -- bytestring-0.10 needed to get instance NFData ByteString
+                 , monad-par >= 0.3.4 && < 0.4
+                 , deepseq ==1.3.*
+  ghc-options: -threaded
+  default-language: Haskell2010
+
+executable fwsparse
+  main-is: fwsparse.hs
+  hs-source-dirs: fwsparse
+  build-depends:   base >= 4.5 && < 4.7
+                 , random >= 1.0 && < 1.1
+                 , array ==0.4.*
+                 , containers >= 0.4 && < 0.6
+  default-language: Haskell2010
+
+executable fwsparse1
+  main-is: fwsparse1.hs
+  hs-source-dirs: fwsparse
+  build-depends:   base >= 4.5 && < 4.7
+                 , random >= 1.0 && < 1.1
+                 , array ==0.4.*
+                 , containers >= 0.4 && < 0.6
+                 , monad-par >= 0.3.4 && < 0.4
+                 , deepseq ==1.3.*
+  ghc-options: -threaded
+  default-language: Haskell2010
+
+executable  timetable
+  main-is: timetable.hs
+  build-depends:   base >= 4.5 && < 4.7
+                 , containers >= 0.4 && < 0.6
+                 , deepseq ==1.3.*
+                 , random >= 1.0 && < 1.1
+  default-language: Haskell2010
+
+executable  timetable1
+  main-is: timetable1.hs
+  build-depends:   base >= 4.5 && < 4.7
+                 , containers >= 0.4 && < 0.6
+                 , deepseq ==1.3.*
+                 , monad-par >= 0.3.4 && < 0.4
+                 , random >= 1.0 && < 1.1
+  default-language: Haskell2010
+
+executable  timetable2
+  main-is: timetable2.hs
+  build-depends:   base >= 4.5 && < 4.7
+                 , containers >= 0.4 && < 0.6
+                 , deepseq ==1.3.*
+                 , monad-par >= 0.3.4 && < 0.4
+                 , random >= 1.0 && < 1.1
+  default-language: Haskell2010
+
+executable  timetable3
+  main-is: timetable3.hs
+  build-depends:   base >= 4.5 && < 4.7
+                 , containers >= 0.4 && < 0.6
+                 , deepseq ==1.3.*
+                 , monad-par >= 0.3.4 && < 0.4
+                 , random >= 1.0 && < 1.1
+  default-language: Haskell2010
+
+-- -----------------------------------------------------------------------------
+-- conc-fork
+
 executable  fork
   main-is: fork.hs
   build-depends:   base >= 4.5 && < 4.7
@@ -25,6 +196,9 @@ executable  reminders2
   main-is: reminders2.hs
   build-depends:   base >= 4.5 && < 4.7
   default-language: Haskell2010
+
+-- -----------------------------------------------------------------------------
+-- conc-mvar
 
 executable  mvar1
   main-is: mvar1.hs
@@ -45,6 +219,25 @@ executable  logger
   main-is: logger.hs
   build-depends:   base >= 4.5 && < 4.7
   default-language: Haskell2010
+
+executable  phonebook
+  main-is: phonebook.hs
+  build-depends:   base >= 4.5 && < 4.7
+                 , containers >= 0.4 && < 0.6
+  default-language: Haskell2010
+
+executable  chan
+  main-is: chan.hs
+  build-depends:   base >= 4.5 && < 4.7
+  default-language: Haskell2010
+
+executable  chan2
+  main-is: chan2.hs
+  build-depends:   base >= 4.5 && < 4.7
+  default-language: Haskell2010
+
+-- -----------------------------------------------------------------------------
+-- conc-overlap
 
 executable geturls1
   main-is: geturls1.hs
@@ -105,6 +298,102 @@ executable  geturls6
                  , HTTP ==4000.2.*
   default-language: Haskell2010
 
+-- -----------------------------------------------------------------------------
+-- conc-asyncex
+
+executable  geturlscancel
+  main-is: geturlscancel.hs
+  build-depends:   base >= 4.5 && < 4.7
+                 , stm ==2.4.*
+                 , bytestring >= 0.9 && < 0.11
+                 , time ==1.4.*
+                 , network ==2.3.*
+                 , HTTP ==4000.2.*
+  default-language: Haskell2010
+
+executable  geturlscancel2
+  main-is: geturlscancel2.hs
+  build-depends:   base >= 4.5 && < 4.7
+                 , stm ==2.4.*
+                 , bytestring >= 0.9 && < 0.11
+                 , time ==1.4.*
+                 , network ==2.3.*
+                 , HTTP ==4000.2.*
+  default-language: Haskell2010
+
+executable  modifytwo
+  main-is: modifytwo.hs
+  build-depends:   base >= 4.5 && < 4.7
+  default-language: Haskell2010
+
+executable  chan3
+  main-is: chan3.hs
+  build-depends:   base >= 4.5 && < 4.7
+  default-language: Haskell2010
+
+executable  timeout
+  main-is: timeout.hs
+  build-depends:   base >= 4.5 && < 4.7
+  default-language: Haskell2010
+
+executable  catch-mask
+  main-is: catch-mask.hs
+  build-depends:   base >= 4.5 && < 4.7
+  default-language: Haskell2010
+
+executable  catch-mask2
+  main-is: catch-mask2.hs
+  build-depends:   base >= 4.5 && < 4.7
+  default-language: Haskell2010
+
+-- -----------------------------------------------------------------------------
+-- conc-stm
+
+-- not mentioned in the text?
+executable  windowman
+  main-is: windowman.hs
+  build-depends:   base >= 4.5 && < 4.7
+                 , containers >= 0.4 && < 0.6
+                 , stm ==2.4.*
+  default-language: Haskell2010
+
+executable  tmvar
+  main-is: tmvar.hs
+  build-depends:   base >= 4.5 && < 4.7
+                 , stm ==2.4.*
+  default-language: Haskell2010
+
+executable  geturlsfirst
+  main-is: geturlsfirst.hs
+  build-depends:   base >= 4.5 && < 4.7
+                 , stm ==2.4.*
+                 , bytestring >= 0.9 && < 0.11
+                 , time ==1.4.*
+                 , HTTP ==4000.2.*
+                 , network ==2.3.*
+  default-language: Haskell2010
+
+executable  TList
+  main-is: TList.hs
+  build-depends:   base >= 4.5 && < 4.7
+                 , stm ==2.4.*
+  default-language: Haskell2010
+
+executable  TQueue
+  main-is: TQueue.hs
+  build-depends:   base >= 4.5 && < 4.7
+                 , stm ==2.4.*
+  default-language: Haskell2010
+
+executable  TBQueue
+  main-is: TBQueue.hs
+  build-depends:   base >= 4.5 && < 4.7
+                 , stm ==2.4.*
+  default-language: Haskell2010
+
+-- -----------------------------------------------------------------------------
+-- conc-higher
+
 executable  geturls7
   main-is: geturls7.hs
   build-depends:   base >= 4.5 && < 4.7
@@ -135,184 +424,14 @@ executable  geturls9
                  , HTTP ==4000.2.*
   default-language: Haskell2010
 
-executable  modifytwo
-  main-is: modifytwo.hs
-  build-depends:   base >= 4.5 && < 4.7
-  default-language: Haskell2010
-
-executable  chan
-  main-is: chan.hs
-  build-depends:   base >= 4.5 && < 4.7
-  default-language: Haskell2010
-
-executable  chan2
-  main-is: chan2.hs
-  build-depends:   base >= 4.5 && < 4.7
-  default-language: Haskell2010
-
-executable  chan3
-  main-is: chan3.hs
-  build-depends:   base >= 4.5 && < 4.7
-  default-language: Haskell2010
-
-executable  deadlock1
-  main-is: deadlock1.hs
-  build-depends:   base >= 4.5 && < 4.7
-  default-language: Haskell2010
-
-executable  deadlock2
-  main-is: deadlock2.hs
-  build-depends:   base >= 4.5 && < 4.7
-  default-language: Haskell2010
-
-executable  threadperf1
-  main-is: threadperf1.hs
-  build-depends:   base >= 4.5 && < 4.7
-  default-language: Haskell2010
-
-executable  threadperf2
-  main-is: threadperf2.hs
-  build-depends:   base >= 4.5 && < 4.7
-  ghc-options: -rtsopts
-  default-language: Haskell2010
-
-executable  geturlscancel
-  main-is: geturlscancel.hs
-  build-depends:   base >= 4.5 && < 4.7
-                 , stm ==2.4.*
-                 , bytestring >= 0.9 && < 0.11
-                 , time ==1.4.*
-                 , network ==2.3.*
-                 , HTTP ==4000.2.*
-  default-language: Haskell2010
-
-executable  geturlscancel2
-  main-is: geturlscancel2.hs
-  build-depends:   base >= 4.5 && < 4.7
-                 , stm ==2.4.*
-                 , bytestring >= 0.9 && < 0.11
-                 , time ==1.4.*
-                 , network ==2.3.*
-                 , HTTP ==4000.2.*
-  default-language: Haskell2010
-
-executable  timeout
-  main-is: timeout.hs
-  build-depends:   base >= 4.5 && < 4.7
-  default-language: Haskell2010
-
 executable  timeout2
   main-is: timeout.hs
   build-depends:   base >= 4.5 && < 4.7
                  , async ==2.0.*
   default-language: Haskell2010
 
-executable  catch-mask
-  main-is: catch-mask.hs
-  build-depends:   base >= 4.5 && < 4.7
-  default-language: Haskell2010
-
-executable  catch-mask2
-  main-is: catch-mask2.hs
-  build-depends:   base >= 4.5 && < 4.7
-  default-language: Haskell2010
-
-executable  windowman
-  main-is: windowman.hs
-  build-depends:   base >= 4.5 && < 4.7
-                 , containers >= 0.4 && < 0.6
-                 , stm ==2.4.*
-  default-language: Haskell2010
-
-executable  tmvar
-  main-is: tmvar.hs
-  build-depends:   base >= 4.5 && < 4.7
-                 , stm ==2.4.*
-  default-language: Haskell2010
-
-executable  geturlsfirst
-  main-is: geturlsfirst.hs
-  build-depends:   base >= 4.5 && < 4.7
-                 , stm ==2.4.*
-                 , bytestring >= 0.9 && < 0.11
-                 , time ==1.4.*
-                 , HTTP ==4000.2.*
-                 , network ==2.3.*
-  default-language: Haskell2010
-
-executable  bingtranslator
-  main-is: bingtranslator.hs
-  build-depends:   base >= 4.5 && < 4.7
-                 , bytestring >= 0.9 && < 0.11
-                 , time ==1.4.*
-                 , HTTP ==4000.2.*
-                 , network ==2.3.*
-                 , utf8-string ==0.3.*
-                 , xml ==1.3.*
-  default-language: Haskell2010
-
-executable  bingtranslatorconc
-  main-is: bingtranslatorconc.hs
-  build-depends:   base >= 4.5 && < 4.7
-                 , bytestring >= 0.9 && < 0.11
-                 , time ==1.4.*
-                 , HTTP ==4000.2.*
-                 , network ==2.3.*
-                 , utf8-string ==0.3.*
-                 , xml ==1.3.*
-  default-language: Haskell2010
-
-executable  TList
-  main-is: TList.hs
-  build-depends:   base >= 4.5 && < 4.7
-                 , stm ==2.4.*
-  default-language: Haskell2010
-
-executable  TQueue
-  main-is: TQueue.hs
-  build-depends:   base >= 4.5 && < 4.7
-                 , stm ==2.4.*
-  default-language: Haskell2010
-
-executable  geturlsstm
-  main-is: geturlsstm.hs
-  build-depends:   base >= 4.5 && < 4.7
-                 , stm ==2.4.*
-                 , bytestring >= 0.9 && < 0.11
-                 , time ==1.4.*
-                 , network ==2.3.*
-                 , HTTP ==4000.2.*
-  default-language: Haskell2010
-
-executable  Async
-  main-is: Async.hs
-  build-depends:   base >= 4.5 && < 4.7
-                 , stm ==2.4.*
-  default-language: Haskell2010
-
-executable  server
-  main-is: server.hs
-  build-depends:   base >= 4.5 && < 4.7
-                 , stm ==2.4.*
-                 , network ==2.3.*
-  default-language: Haskell2010
-
-executable  server2
-  main-is: server2.hs
-  build-depends:   base >= 4.5 && < 4.7
-                 , stm ==2.4.*
-                 , async ==2.0.*
-                 , network ==2.3.*
-  default-language: Haskell2010
-
-executable chat
-  main-is: chat.hs
-  build-depends:   base >= 4.5 && < 4.7
-                 , containers >= 0.4 && < 0.6
-                 , async ==2.0.*
-                 , stm ==2.4.*
-                 , network ==2.3.*
-  default-language: Haskell2010
+-- -----------------------------------------------------------------------------
+-- conc-par
 
 executable findseq
   main-is: findseq.hs
@@ -345,6 +464,48 @@ executable findpar3
                  , async ==2.0.*
                  , stm ==2.4.*
   default-language: Haskell2010
+
+executable findpar4
+  main-is: findpar4.hs
+  build-depends:   base >= 4.5 && < 4.7
+                 , filepath ==1.3.*
+                 , directory >= 1.1 && < 1.3
+                 , async ==2.0.*
+                 , stm ==2.4.*
+                 , transformers ==0.3.*
+                 , abstract-par ==0.3.*
+                 , monad-par >= 0.3.4 && < 0.4
+  default-language: Haskell2010
+
+-- -----------------------------------------------------------------------------
+-- conc-server
+
+executable  server
+  main-is: server.hs
+  build-depends:   base >= 4.5 && < 4.7
+                 , stm ==2.4.*
+                 , network ==2.3.*
+  default-language: Haskell2010
+
+executable  server2
+  main-is: server2.hs
+  build-depends:   base >= 4.5 && < 4.7
+                 , stm ==2.4.*
+                 , async ==2.0.*
+                 , network ==2.3.*
+  default-language: Haskell2010
+
+executable chat
+  main-is: chat.hs
+  build-depends:   base >= 4.5 && < 4.7
+                 , containers >= 0.4 && < 0.6
+                 , async ==2.0.*
+                 , stm ==2.4.*
+                 , network ==2.3.*
+  default-language: Haskell2010
+
+-- -----------------------------------------------------------------------------
+-- conc-distrib
 
 executable ping
   main-is: distrib-ping/ping.hs
@@ -402,6 +563,7 @@ executable ping-tc-merge
       build-depends: ghc-prim
   default-language: Haskell2010
 
+-- extra, not in the text?
 executable ping-tc-notify
   main-is: distrib-ping/ping-tc-notify.hs
   build-depends:   base >= 4.5 && < 4.7
@@ -485,121 +647,74 @@ executable distrib-db
       build-depends: ghc-prim
   default-language: Haskell2010
 
-executable sudoku1
-  main-is: sudoku1.hs
+-- -----------------------------------------------------------------------------
+-- conc-debugging-tuning
+
+executable  mvar4
+  main-is: mvar4.hs
   build-depends:   base >= 4.5 && < 4.7
-                 , parallel ==3.2.*
-                 , array ==0.4.*
   default-language: Haskell2010
 
-executable sudoku2
-  main-is: sudoku2.hs
+executable  deadlock1
+  main-is: deadlock1.hs
   build-depends:   base >= 4.5 && < 4.7
-                 , parallel ==3.2.*
-                 , array ==0.4.*
-                 , deepseq ==1.3.*
-  ghc-options: -threaded
   default-language: Haskell2010
 
-executable sudoku3
-  main-is: sudoku3.hs
+executable  deadlock2
+  main-is: deadlock2.hs
   build-depends:   base >= 4.5 && < 4.7
-                 , parallel ==3.2.*
-                 , array ==0.4.*
-  ghc-options: -threaded
   default-language: Haskell2010
 
-executable sudoku4
-  main-is: sudoku4.hs
+executable  threadperf1
+  main-is: threadperf1.hs
   build-depends:   base >= 4.5 && < 4.7
-                 , parallel ==3.2.*
-                 , array ==0.4.*
-  ghc-options: -threaded
   default-language: Haskell2010
 
-executable kmeans
-  hs-source-dirs: kmeans
-  main-is: kmeans.hs
+executable  threadperf2
+  main-is: threadperf2.hs
   build-depends:   base >= 4.5 && < 4.7
-                 , parallel ==3.2.*
+  ghc-options: -rtsopts
+  default-language: Haskell2010
+
+-- -----------------------------------------------------------------------------
+-- Extras (exercises etc.)
+
+executable  bingtranslator
+  main-is: bingtranslator.hs
+  build-depends:   base >= 4.5 && < 4.7
+                 , bytestring >= 0.9 && < 0.11
                  , time ==1.4.*
-                 , deepseq ==1.3.*
-                 , monad-par >= 0.3.4 && < 0.4
-                   -- monad-par 0.3 has a bug:
-                   -- https://github.com/simonmar/monad-par/issues/23
-                 , binary >= 0.6.3 && < 0.7
-                 , array ==0.4.*
+                 , HTTP ==4000.2.*
+                 , network ==2.3.*
+                 , utf8-string ==0.3.*
+                 , xml ==1.3.*
+  default-language: Haskell2010
+
+executable  bingtranslatorconc
+  main-is: bingtranslatorconc.hs
+  build-depends:   base >= 4.5 && < 4.7
                  , bytestring >= 0.9 && < 0.11
-                 , vector >= 0.10 && < 0.11
-  ghc-options: -threaded
+                 , time ==1.4.*
+                 , HTTP ==4000.2.*
+                 , network ==2.3.*
+                 , utf8-string ==0.3.*
+                 , xml ==1.3.*
   default-language: Haskell2010
 
-executable GenSamples
-  hs-source-dirs: kmeans
-  main-is: GenSamples.hs
+executable  geturlsstm
+  main-is: geturlsstm.hs
   build-depends:   base >= 4.5 && < 4.7
-                 , binary >= 0.6.3 && < 0.7
-                 , array ==0.4.*
-                 , vector >= 0.10 && < 0.11
-                 , random >= 1.0 && < 1.1
-                 , normaldistribution >= 1.1 && < 1.2
-                 , deepseq ==1.3.*
+                 , stm ==2.4.*
                  , bytestring >= 0.9 && < 0.11
+                 , time ==1.4.*
+                 , network ==2.3.*
+                 , HTTP ==4000.2.*
   default-language: Haskell2010
 
-executable rsa
-  main-is: rsa.hs
+executable  Async
+  main-is: Async.hs
   build-depends:   base >= 4.5 && < 4.7
-                 , bytestring >= 0.10 && < 0.11
-  default-language: Haskell2010
-
-executable rsa1
-  main-is: rsa1.hs
-  build-depends:   base >= 4.5 && < 4.7
-                 , bytestring >= 0.10 && < 0.11
-                 -- bytestring-0.10 needed to get instance NFData ByteString
-                 , parallel ==3.2.*
-  ghc-options: -threaded
-  default-language: Haskell2010
-
-executable rsa2
-  main-is: rsa2.hs
-  build-depends:   base >= 4.5 && < 4.7
-                 , bytestring >= 0.10 && < 0.11
-                 -- bytestring-0.10 needed to get instance NFData ByteString
-                 , parallel ==3.2.*
-  ghc-options: -threaded
-  default-language: Haskell2010
-
-executable rsa-pipeline
-  main-is: rsa-pipeline.hs
-  build-depends:   base >= 4.5 && < 4.7
-                 , bytestring >= 0.10 && < 0.11
-                 -- bytestring-0.10 needed to get instance NFData ByteString
-                 , monad-par >= 0.3.4 && < 0.4
-                 , deepseq ==1.3.*
-  ghc-options: -threaded
-  default-language: Haskell2010
-
-executable fwsparse
-  main-is: fwsparse.hs
-  hs-source-dirs: fwsparse
-  build-depends:   base >= 4.5 && < 4.7
-                 , random >= 1.0 && < 1.1
-                 , array ==0.4.*
-                 , containers >= 0.4 && < 0.6
-  default-language: Haskell2010
-
-executable fwsparse1
-  main-is: fwsparse1.hs
-  hs-source-dirs: fwsparse
-  build-depends:   base >= 4.5 && < 4.7
-                 , random >= 1.0 && < 1.1
-                 , array ==0.4.*
-                 , containers >= 0.4 && < 0.6
-                 , monad-par >= 0.3.4 && < 0.4
-                 , deepseq ==1.3.*
-  ghc-options: -threaded
+                 , stm ==2.4.*
   default-language: Haskell2010
 
 -- ToDo:

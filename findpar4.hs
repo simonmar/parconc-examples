@@ -7,8 +7,8 @@ import Data.List hiding (find)
 import GHC.Conc (getNumCapabilities)
 import Text.Printf
 
-import Control.Monad.Par hiding (runParIO)
 import Control.Monad.Par.IO
+import Control.Monad.Par.Class
 import Control.Monad.IO.Class
 
 import Control.Exception

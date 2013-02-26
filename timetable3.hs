@@ -1,7 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-import qualified Data.Text as Text
-import Data.Text (Text)
 import System.Random
 import System.Environment
 import Debug.Trace
@@ -26,7 +24,7 @@ instance Show Talk where
 
 -- <<Person
 data Person = Person
-  { name  :: Text
+  { name  :: String
   , talks :: [Talk]
   }
   deriving (Show)
@@ -135,7 +133,7 @@ bench nslots ntracks ntalks npersons c_per_s gen =
 
   mkpersons :: Int -> StdGen -> [Person]
   mkpersons 0 g = []
-  mkpersons n g = Person (Text.pack ('P':show n)) (take c_per_s cs) : rest
+  mkpersons n g = Person ('P':show n) (take c_per_s cs) : rest
         where
           (g1,g2) = split g
           rest = mkpersons (n-1) g2

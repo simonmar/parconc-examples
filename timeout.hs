@@ -12,9 +12,9 @@ instance Show Timeout where
 instance Exception Timeout
 
 -- <<timeout
-timeout n m
-    | n <  0    = fmap Just m                           -- <1>
-    | n == 0    = return Nothing                        -- <1>
+timeout t m
+    | t <  0    = fmap Just m                           -- <1>
+    | t == 0    = return Nothing                        -- <1>
     | otherwise = do
         pid <- myThreadId                               -- <2>
         u <- newUnique                                  -- <3>
@@ -22,9 +22,9 @@ timeout n m
         handleJust                                      -- <4>
            (\e -> if e == ex then Just () else Nothing) -- <5>
            (\_ -> return Nothing)                       -- <6>
-           (bracket (forkIO $ do threadDelay n          -- <7>
+           (bracket (forkIO $ do threadDelay t          -- <7>
                                  throwTo pid ex)
-                    (\t -> throwTo t ThreadKilled)      -- <8>
+                    (\tid -> throwTo tid ThreadKilled)  -- <8>
                     (\_ -> fmap Just m))                -- <9>
 -- >>
 

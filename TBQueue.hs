@@ -1,6 +1,6 @@
 module TBQueue (TBQueue, newTBQueue, writeTBQueue, readTBQueue) where
 
-import Control.Concurrent.STM
+import Control.Concurrent.STM hiding (TBQueue, newTBQueue, writeTBQueue, readTBQueue)
 
 -- <<TBQueue
 data TBQueue a = TBQueue (TVar Int) (TVar [a]) (TVar [a]) -- <1>

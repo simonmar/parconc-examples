@@ -25,8 +25,8 @@ writeChan :: Chan a -> a -> IO ()
 writeChan (Chan _ writeVar) val = do
   newHole <- newEmptyMVar
   oldHole <- takeMVar writeVar
-  putMVar writeVar newHole
   putMVar oldHole (Item val newHole)
+  putMVar writeVar newHole
 -- >>
 
 -- <<readChan
