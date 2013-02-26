@@ -8,6 +8,7 @@ module Async (
     waitSTM,
     wait,
     waitEither,
+    waitAny,
     waitBoth,
     concurrently
   ) where

@@ -1,5 +1,4 @@
 import GetURL
-import TimeIt
 
 import Async
 
