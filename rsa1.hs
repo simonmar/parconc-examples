@@ -9,6 +9,7 @@ import Control.Parallel.Strategies
 import Data.List
 import qualified Data.ByteString.Lazy.Char8 as B
 import Data.ByteString.Lazy.Char8 (ByteString)
+import ByteStringCompat
 
 main = do
   [cmd,f] <- getArgs

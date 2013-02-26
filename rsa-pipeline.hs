@@ -8,6 +8,7 @@ import System.Environment
 import Data.List
 import qualified Data.ByteString.Lazy.Char8 as B
 import Data.ByteString.Lazy.Char8 (ByteString)
+import ByteStringCompat
 import Control.Monad.Par.Scheds.Trace
 
 import Stream
