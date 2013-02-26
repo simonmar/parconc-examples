@@ -1,15 +1,12 @@
 {-# LANGUAGE CPP #-}
 
 import GetURL
-import TimeIt
 
-import Control.Monad
 import Control.Concurrent
 #if __GLASGOW_HASKELL__ < 706
 import ConcurrentUtils (forkFinally)
 #endif
 import Control.Exception
-import Text.Printf
 import qualified Data.ByteString as B
 import Control.Concurrent.STM
 
