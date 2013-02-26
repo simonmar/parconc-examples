@@ -202,3 +202,25 @@ test:
 	./dist/build/threadperf2/threadperf2 +RTS -K32m
 	./dist/build/timeout2/timeout2
 	./dist/build/timeout/timeout
+
+.PHONY: chanbench
+chanbench:
+	$(GHC) -DCHAN    -O2 chanbench.hs -o chanbench-chan   
+	$(GHC) -DTCHAN   -O2 chanbench.hs -o chanbench-tchan  
+	$(GHC) -DTQUEUE  -O2 chanbench.hs -o chanbench-tqueue 
+	$(GHC) -DTBQUEUE -O2 chanbench.hs -o chanbench-tbqueue
+
+chanbench-run: chanbench
+	time ./chanbench-chan       0 10000000
+	time ./chanbench-tchan      0 10000000
+	time ./chanbench-tqueue     0 10000000
+	time ./chanbench-tbqueue    0 10000000
+	time ./chanbench-chan       1 10000000
+# takes too long:
+#	time ./chanbench-tchan      1 10000000
+	time ./chanbench-tqueue     1 10000000
+#	time ./chanbench-tbqueue    1 10000000
+	time ./chanbench-chan       2 10000000
+	time ./chanbench-tchan      2 10000000
+	time ./chanbench-tqueue     2 10000000
+	time ./chanbench-tbqueue    2 10000000

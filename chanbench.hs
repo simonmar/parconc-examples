@@ -6,8 +6,11 @@ import System.Environment
 import Control.Concurrent.Chan
 import Control.Concurrent.STM
 
-import TQueue
-import TBQueue
+-- The TQueue and TBQueue in the stm package are optimised with UNPACKs,
+-- so we measure with those rather than these local versions.
+--
+-- import TQueue
+-- import TBQueue
 
 -- Using CPP rather than a runtime choice between channel types,
 -- because we want the compiler to be able to optimise the calls.
@@ -25,14 +28,16 @@ newc = newTChanIO
 readc c = atomically $ readTChan c
 writec c x = atomically $ writeTChan c x
 #elif defined(TQUEUE)
-newc = atomically $ TQueue.newTQueue
-readc c = atomically $ TQueue.readTQueue c
-writec c x = atomically $ TQueue.writeTQueue c x
+newc = atomically $ newTQueue
+readc c = atomically $ readTQueue c
+writec c x = atomically $ writeTQueue c x
 #elif defined(TBQUEUE)
-newc = atomically $ TBQueue.newTBQueue 4096
-readc c = atomically $ TBQueue.readTBQueue c
-writec c x = atomically $ TBQueue.writeTBQueue c x
+newc = atomically $ newTBQueue bufsiz
+readc c = atomically $ readTBQueue c
+writec c x = atomically $ writeTBQueue c x
 #endif
+
+bufsiz=4096
 
 main = do
   [stest,sn] <- getArgs -- 2000000 is a good number
@@ -53,7 +58,6 @@ runtest n test = do
       replicateM_ n $ writec c (1 :: Int)
       replicateM_ n $ readc c
     2 -> do
-      let n10 = n `quot` 1000
-      replicateM_ 1000 $ do
-        replicateM_ n10 $ writec c (1 :: Int)
-        replicateM_ n10 $ readc c
+      replicateM_ (n `quot` bufsiz) $ do
+        replicateM_ bufsiz $ writec c (1 :: Int)
+        replicateM_ bufsiz $ readc c
