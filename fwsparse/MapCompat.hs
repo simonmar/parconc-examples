@@ -14,6 +14,6 @@ traverseWithKey f m =
 
 #else
 
-import qualified Data.IntMap.Strict as Map
+import Data.IntMap.Strict as Map
 
 #endif
