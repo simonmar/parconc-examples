@@ -1,5 +1,6 @@
 import Control.Concurrent
 import GHC.Conc
+import Debug.Trace
 
 -- <<main
 main = do
@@ -10,6 +11,7 @@ main = do
   labelThread t "a"
   t <- forkIO $ putMVar m 'b'
   labelThread t "b"
+  traceEventIO "before takeMVar"
   takeMVar m
   takeMVar m
 -- >>
