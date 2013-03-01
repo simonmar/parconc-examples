@@ -125,6 +125,7 @@ test = timetable testPersons cs 2 2
     [ Person "P" [c1,c2]
     , Person "Q" [c2,c3]
     , Person "R" [c3,c4]
+    , Person "S" [c1,c4]
     ]
 
 test2 n m = timetable testPersons cs m n
