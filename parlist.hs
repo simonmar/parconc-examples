@@ -1,12 +1,17 @@
 module ParList where
 
-import Control.Parallel.Strategies hiding (parList)
+import Control.Parallel.Strategies hiding (parList, evalList)
+
+-- <<evalList
+evalList :: Strategy a -> Strategy [a]
+evalList strat []     = return []
+evalList strat (x:xs) = do
+  x'  <- strat x
+  xs' <- evalList strat xs
+  return (x':xs')
+-- >>
 
 -- <<parList
 parList :: Strategy a -> Strategy [a]
-parList strat []     = return []
-parList strat (x:xs) = do
-  x'  <- rparWith strat x               -- <1>
-  xs' <- parList strat xs
-  return (x':xs')
+parList strat = evalList (rparWith strat)
 -- >>
