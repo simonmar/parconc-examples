@@ -7,8 +7,10 @@ import System.Environment
 import Data.Array.Repa
 import Data.Maybe
 
+-- <<Graph
 type Weight = Int
 type Graph r = Array r DIM2 Weight
+-- >>
 
 -- -----------------------------------------------------------------------------
 -- shortestPaths
