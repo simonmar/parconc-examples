@@ -13,6 +13,7 @@ main = do
   let puzzles   = lines file
       solutions = runEval (parMap solve puzzles)
 
+  evaluate (length puzzles)
   print (length (filter isJust solutions))
 -- >>
 
