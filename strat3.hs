@@ -1,5 +1,6 @@
 import Control.Parallel
-import Control.Parallel.Strategies (rpar, Strategy, using)
+import Control.Parallel.Strategies (rpar, rseq, Strategy, using, rparWith)
+import Control.Exception
 import Text.Printf
 import System.Environment
 
@@ -14,7 +15,7 @@ main = print pair
  where
   pair =
 -- <<pair
-   (fib 35, fib 36) `using` parPair
+   (fib 35, fib 36) `using` parPair rseq rseq
 -- >>
 
 -- <<evalPair
@@ -26,6 +27,6 @@ evalPair sa sb (a,b) = do
 -- >>
 
 -- <<parPair
-parPair :: Strategy (a,b)
-parPair = evalPair rpar rpar
+parPair :: Strategy a -> Strategy b -> Strategy (a,b)
+parPair sa sb = evalPair (rparWith sa) (rparWith sb)
 -- >>

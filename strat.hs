@@ -1,7 +1,5 @@
 import Control.Parallel
 import Control.Parallel.Strategies (rpar, Strategy, using)
-import Control.Exception
-import Data.Time.Clock
 import Text.Printf
 import System.Environment
 
