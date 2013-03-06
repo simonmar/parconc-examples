@@ -2,7 +2,6 @@ import Sudoku
 import Control.Exception
 import System.Environment
 import Control.Parallel.Strategies hiding (parMap)
-import Control.Seq as Seq
 import Data.Maybe
 
 -- <<main
