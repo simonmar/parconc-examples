@@ -11,6 +11,10 @@ instance Show Timeout where
 
 instance Exception Timeout
 
+-- <<timeout-sig
+timeout :: Int -> IO a -> IO (Maybe a)
+-- >>
+
 -- <<timeout
 timeout t m
     | t <  0    = fmap Just m                           -- <1>

@@ -6,6 +6,7 @@ import Data.Typeable
 import Control.Concurrent.Async
 
 -- <<timeout
+timeout :: Int -> IO a -> IO (Maybe a)
 timeout n m
     | n <  0    = fmap Just m
     | n == 0    = return Nothing
