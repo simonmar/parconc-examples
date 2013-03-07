@@ -201,6 +201,39 @@ executable  timetable3
   default-language: Haskell2010
 
 -- -----------------------------------------------------------------------------
+-- par-repa
+
+executable  fwdense
+  main-is: fwdense.hs
+  build-depends:   base >= 4.5 && < 4.7
+                 , repa == 3.2.*
+  ghc-options: -O2 -fllvm
+  default-language: Haskell2010
+
+executable  fwdense1
+  main-is: fwdense1.hs
+  build-depends:   base >= 4.5 && < 4.7
+                 , repa == 3.2.*
+                 , transformers ==0.3.*
+  ghc-options: -O2 -fllvm
+  default-language: Haskell2010
+
+-- Disable the image-maniputation programs by default, because they
+-- require the devil library which needs to be installed separately.
+flag devil
+  default: False
+
+executable rotateimage
+  main-is: rotateimage.hs
+  build-depends:   base >= 4.5 && < 4.7
+                 , repa == 3.2.*
+                 , repa-devil == 0.3.*
+  ghc-options: -O2 -fllvm
+  if !flag(devil)
+     buildable: False
+  default-language: Haskell2010
+
+-- -----------------------------------------------------------------------------
 -- conc-fork
 
 executable  fork

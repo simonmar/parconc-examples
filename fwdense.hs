@@ -1,11 +1,10 @@
-{-# LANGUAGE CPP #-}
+{-# LANGUAGE CPP, BangPatterns #-}
 {-# OPTIONS_GHC -Wall -fno-warn-name-shadowing #-}
 
-module Main ( main, test ) where
+module Main ( main, test, maxDistances ) where
 
 import System.Environment
 import Data.Array.Repa
-import Data.Maybe
 
 -- <<Graph
 type Weight = Int
@@ -15,61 +14,66 @@ type Graph r = Array r DIM2 Weight
 -- -----------------------------------------------------------------------------
 -- shortestPaths
 
+-- <<shortestPaths
 shortestPaths :: Graph U -> Graph U
-shortestPaths g = go 0 g
+shortestPaths g0 = go g0 0                                                -- <2>
   where
-    Z :. k0 :. _ = extent g
+    Z :. _ :. n = extent g0                                               -- <1>
 
-    go k g | k == k0   = g
-           | otherwise = go (k+1) $! g'
-       where
-#if 1
-         g' = fromJust (computeP (fromFunction (Z:.k0:.k0) sp))
-         sp (Z:.i:.j) = min (g ! (Z:.i:.j)) (g ! (Z:.i:.k) + g ! (Z:.k:.j))
-#elif 0
-         g' = computeS (fromFunction (Z:.k0:.k0) sp)
-         sp (Z:.i:.j) = min (g ! (Z:.i:.j)) (g ! (Z:.i:.k) + g ! (Z:.k:.j))
-#else
-         g' = computeS $ traverse g id $ \prev (Z:.i:.j) ->
-                  min (prev (Z:.i:.j)) (prev (Z:.i:.k) + prev (Z:.k:.j))
-#endif
+    go !g !k | k == n    = g                                              -- <3>
+             | otherwise =
+                 let g' = computeS (fromFunction (Z:.n:.n) sp)            -- <4>
+                 in  go g' (k+1)                                          -- <5>
+     where
+       sp (Z:.i:.j) = min (g ! (Z:.i:.j)) (g ! (Z:.i:.k) + g ! (Z:.k:.j)) -- <6>
+-- >>
+
+-- -----------------------------------------------------------------------------
+
+-- <<maxDistance
+maxDistance :: Weight -> Weight -> Weight
+maxDistance x y
+  | x == inf  = y
+  | y == inf  = x
+  | otherwise = max x y
+-- >>
+
+maxDistances :: Graph U -> Array U DIM1 Weight
+maxDistances = foldS maxDistance inf
 
 -- -----------------------------------------------------------------------------
 -- Testing
 
-input :: [[Int]]
-input = [[  0, 999, 999,  13, 999, 999],
-         [999,   0, 999, 999,   4,   9],
-         [ 11, 999,   0, 999, 999, 999],
-         [999,   3, 999,   0, 999,   7],
-         [ 15,   5, 999,   1,   0, 999],
-         [ 11, 999, 999,  14, 999,   0]]
+-- <<inf
+inf :: Weight
+inf = 999
+-- >>
+
+testGraph :: Graph U
+testGraph = toAdjMatrix $
+        [[  0, inf, inf,  13, inf, inf],
+         [inf,   0, inf, inf,   4,   9],
+         [ 11, inf,   0, inf, inf, inf],
+         [inf,   3, inf,   0, inf,   7],
+         [ 15,   5, inf,   1,   0, inf],
+         [ 11, inf, inf,  14, inf,   0]]
 
 -- correct result:
-result :: [[Int]]
-result = [[0,  16, 999, 13, 20, 20],
-          [19,  0, 999,  5,  4,  9],
+expectedResult :: Graph U
+expectedResult = toAdjMatrix $
+         [[0,  16, inf, 13, 20, 20],
+          [19,  0, inf,  5,  4,  9],
           [11, 27,   0, 24, 31, 31],
-          [18,  3, 999,  0,  7,  7],
-          [15,  4, 999,  1,  0,  8],
-          [11, 17, 999, 14, 21,  0] ]
+          [18,  3, inf,  0,  7,  7],
+          [15,  4, inf,  1,  0,  8],
+          [11, 17, inf, 14, 21,  0] ]
 
 test :: Bool
-test = fromAdjMatrix (shortestPaths (toAdjMatrix input)) == result
+test = shortestPaths testGraph == expectedResult
 
-toAdjMatrix :: [[Int]] -> Graph U
+toAdjMatrix :: [[Weight]] -> Graph U
 toAdjMatrix xs = fromListUnboxed (Z :. k :. k) (concat xs)
   where k = length xs
-
-fromAdjMatrix :: Graph U -> [[Int]]
-fromAdjMatrix m = chunk k (toList m)
-  where
-   (Z :. _ :. k) = extent m
-
-chunk :: Int -> [a] -> [[a]]
-chunk _ [] = []
-chunk n xs = as : chunk n bs
-  where (as,bs) = splitAt n xs
 
 main :: IO ()
 main = do
