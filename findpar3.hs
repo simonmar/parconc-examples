@@ -47,8 +47,8 @@ subfind :: NBSem -> String -> FilePath
         ->  [Async (Maybe FilePath)] -> IO (Maybe FilePath)
 
 subfind sem s p inner asyncs = do
-  b <- doesDirectoryExist p
-  if b
+  isdir <- doesDirectoryExist p
+  if isdir
      then do
        q <- tryWaitNBSem sem
        if q
