@@ -24,8 +24,8 @@ find s d = do
   loop [] = return Nothing                             -- <5>
   loop (f:fs)  = do
     let d' = d </> f                                   -- <6>
-    b <- doesDirectoryExist d'                         -- <7>
-    if b
+    isdir <- doesDirectoryExist d'                     -- <7>
+    if isdir
        then do r <- find s d'                          -- <8>
                case r of
                  Just _  -> return r                   -- <9>
