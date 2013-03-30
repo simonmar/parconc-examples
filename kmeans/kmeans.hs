@@ -264,9 +264,9 @@ addToPointSum (PointSum count ptsum) p
 
 -- <<pointSumToCluster
 pointSumToCluster :: Int -> PointSum -> Cluster
-pointSumToCluster i (PointSum count ptsum@(Point a b)) =
+pointSumToCluster i (PointSum count ptsum@(Point x y)) =
   Cluster { clId    = i
-          , clCent  = Point (a / fromIntegral count) (b / fromIntegral count)
+          , clCent  = Point (x / fromIntegral count) (y / fromIntegral count)
           }
 -- >>
 
