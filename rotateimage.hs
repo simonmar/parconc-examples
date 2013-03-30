@@ -11,35 +11,35 @@ main :: IO ()
 main = do
     [n, f1,f2] <- getArgs
     runIL $ do
-      (RGB v) <- readImage f1
-      rotated <- computeP $ rotate (read n) v :: IL (Array F DIM3 Word8)
-      writeImage f2 (RGB rotated)
+      (RGB v) <- readImage f1                                            -- <1>
+      rotated <- computeP $ rotate (read n) v :: IL (Array F DIM3 Word8) -- <2>
+      writeImage f2 (RGB rotated)                                        -- <3>
 -- >>
 
 -- <<rotate
 rotate :: Double -> Array F DIM3 Word8 -> Array D DIM3 Word8
-rotate deg g = fromFunction (Z :. y :. x :. k) f
+rotate deg g = fromFunction (Z :. y :. x :. k) f      -- <1>
     where
         sh@(Z :. y :. x :. k)   = extent g
 
-        !theta = pi/180 * deg
+        !theta = pi/180 * deg                         -- <2>
 
-        !st = sin theta
+        !st = sin theta                               -- <3>
         !ct = cos theta
 
-        !fy2 = fromIntegral y / 2 :: Double
-        !fx2 = fromIntegral x / 2 :: Double
+        !cy = fromIntegral y / 2 :: Double            -- <4>
+        !cx = fromIntegral x / 2 :: Double
 
-        f (Z :. i :. j :. k)
-          | inShape sh new = g ! new
-          | otherwise      = 0 -- black
+        f (Z :. i :. j :. k)                          -- <5>
+          | inShape sh old = g ! old                  -- <6>
+          | otherwise      = 0                        -- <7>
           where
-            new = Z :. i' :. j' :. k
+            fi = fromIntegral i - cy                  -- <8>
+            fj = fromIntegral j - cx
 
-            fi = fromIntegral i - fy2
-            fj = fromIntegral j - fx2
+            i' = round (st * fj + ct * fi + cy)       -- <9>
+            j' = round (ct * fj - st * fi + cx)
 
-            i' = round (st * fj + ct * fi + fy2)
-            j' = round (ct * fj - st * fi + fx2)
+            old = Z :. i' :. j' :. k                  -- <10>
 -- >>
 
