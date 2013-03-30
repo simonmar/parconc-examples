@@ -233,7 +233,7 @@ executable  fwdense1
   build-depends:   base >= 4.5 && < 4.7
                  , repa == 3.2.*
                  , transformers ==0.3.*
-  ghc-options: -O2
+  ghc-options: -O2 -threaded
   if flag(llvm)
      ghc-options: -fllvm
   default-language: Haskell2010
@@ -242,7 +242,7 @@ executable rotateimage
   main-is: rotateimage.hs
   build-depends:   base >= 4.5 && < 4.7
                  , repa == 3.2.*
-  ghc-options: -O2
+  ghc-options: -O2 -threaded
   if flag(devil)
      build-depends: repa-devil == 0.3.*
   else
