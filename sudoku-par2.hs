@@ -2,7 +2,7 @@ import Sudoku
 import Control.Exception
 import System.Environment
 import Data.Maybe
-import Control.Monad.Par
+import Control.Monad.Par.Scheds.Trace
 
 main :: IO ()
 main = do
