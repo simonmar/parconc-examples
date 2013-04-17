@@ -25,9 +25,6 @@ instance NFData Point
 zeroPoint :: Point
 zeroPoint = Point 0 0
 
-addPoint :: Point -> Point -> Point
-addPoint (Point a b) (Point c d) = Point (a+c) (b+d)
-
 sqDistance :: Point -> Point -> Double
 sqDistance (Point x1 y1) (Point x2 y2) = ((x1-x2)^2) + ((y1-y2)^2)
 -- >>
@@ -56,7 +53,7 @@ data Cluster
 
 instance NFData Cluster  -- default is ok, all the fields are strict
 
--- <<makeCluster
+
 makeCluster :: Int -> [Point] -> Cluster
 makeCluster clid points =
   Cluster { clId    = clid
@@ -65,4 +62,6 @@ makeCluster clid points =
  where
   pointsum@(Point a b) = foldl' addPoint zeroPoint points
   count = length points
--- >>
+
+  addPoint :: Point -> Point -> Point
+  addPoint (Point a b) (Point c d) = Point (a+c) (b+d)

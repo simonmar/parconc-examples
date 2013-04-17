@@ -8,19 +8,19 @@
 --   [ kmeans_par   ]  a parallel version using Control.Monad.Par
 --
 -- Usage (sequential):
---   $ ./kmeans-par seq
+--   $ ./kmeans seq
 --
 -- Usage (Strategies):
---   $ ./kmeans-par strat 600 +RTS -N4
+--   $ ./kmeans strat 600 +RTS -N4
 --
 -- Usage (Par monad):
---   $ ./kmeans-par par 600 +RTS -N4
+--   $ ./kmeans par 600 +RTS -N4
 --
 -- Usage (divide-and-conquer / Par monad):
---   $ ./kmeans-par divpar 7 +RTS -N4
+--   $ ./kmeans divpar 7 +RTS -N4
 --
 -- Usage (divide-and-conquer / Eval monad):
---   $ ./kmeans-par diveval 7 +RTS -N4
+--   $ ./kmeans diveval 7 +RTS -N4
 
 import System.IO
 import KMeansCore
@@ -238,7 +238,7 @@ step nclusters clusters points
 -- <<assign
 assign :: Int -> [Cluster] -> [Point] -> Vector PointSum
 assign nclusters clusters points = Vector.create $ do
-    vec <- MVector.replicate nclusters (PointSum 0 zeroPoint)
+    vec <- MVector.replicate nclusters (PointSum 0 0 0)
     let
         addpoint p = do
           let c = nearest p; cid = clId c
@@ -252,28 +252,28 @@ assign nclusters clusters points = Vector.create $ do
                         [ (c, sqDistance (clCent c) p) | c <- clusters ]
 -- >>
 
-data PointSum = PointSum {-# UNPACK #-} !Int {-# UNPACK #-} !Point
+data PointSum = PointSum {-# UNPACK #-} !Int {-# UNPACK #-} !Double {-# UNPACK #-} !Double
 
 instance NFData PointSum
 
 -- <<addToPointSum
 addToPointSum :: PointSum -> Point -> PointSum
-addToPointSum (PointSum count ptsum) p
-  = PointSum (count+1) (ptsum `addPoint` p)
+addToPointSum (PointSum count xs ys) (Point x y)
+  = PointSum (count+1) (xs + x) (ys + y)
 -- >>
 
 -- <<pointSumToCluster
 pointSumToCluster :: Int -> PointSum -> Cluster
-pointSumToCluster i (PointSum count ptsum@(Point x y)) =
+pointSumToCluster i (PointSum count xs ys) =
   Cluster { clId    = i
-          , clCent  = Point (x / fromIntegral count) (y / fromIntegral count)
+          , clCent  = Point (xs / fromIntegral count) (ys / fromIntegral count)
           }
 -- >>
 
 -- <<addPointSums
 addPointSums :: PointSum -> PointSum -> PointSum
-addPointSums (PointSum c1 p1) (PointSum c2 p2)
-  = PointSum (c1+c2) (p1 `addPoint` p2)
+addPointSums (PointSum c1 x1 y1) (PointSum c2 x2 y2)
+  = PointSum (c1+c2) (x1+x2) (y1+y2)
 -- >>
 
 -- <<combine
@@ -300,7 +300,7 @@ steps_par nclusters clusters pointss
 makeNewClusters :: Vector PointSum -> [Cluster]
 makeNewClusters vec =
   [ pointSumToCluster i ps
-  | (i,ps@(PointSum count _)) <- zip [0..] (Vector.toList vec)
+  | (i,ps@(PointSum count _ _)) <- zip [0..] (Vector.toList vec)
   , count > 0
   ]
 -- >>
