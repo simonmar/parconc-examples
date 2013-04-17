@@ -20,14 +20,17 @@ initLogger = do
 
 -- <<logger
 logger :: Logger -> IO ()
-logger (Logger m) = forever $ do
-  cmd <- takeMVar m
-  case cmd of
-    Message msg ->
-      putStrLn msg
-    Stop s -> do 
-      putStrLn "logger: stop"
-      putMVar s ()
+logger (Logger m) = loop
+ where
+  loop = do
+    cmd <- takeMVar m
+    case cmd of
+      Message msg -> do
+        putStrLn msg
+        loop
+      Stop s -> do
+        putStrLn "logger: stop"
+        putMVar s ()
 -- >>
 
 -- <<logMessage
