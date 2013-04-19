@@ -35,11 +35,11 @@ instance NFData a => NFData (IList a) where
 -- Stream operators
 
 -- <<streamFromList
-streamFromList :: NFData a => [a] -> Par (Stream a) -- <1>
+streamFromList :: NFData a => [a] -> Par (Stream a)
 streamFromList xs = do
-  var <- new                            -- <2>
-  fork $ loop xs var                    -- <3>
-  return var                            -- <4>
+  var <- new                            -- <1>
+  fork $ loop xs var                    -- <2>
+  return var                            -- <3>
  where
   loop [] var = put var Nil             -- <4>
   loop (x:xs) var = do                  -- <5>
