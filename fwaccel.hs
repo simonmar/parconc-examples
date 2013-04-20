@@ -22,19 +22,23 @@ shortestPaths g0 = run (shortestPathsAccel n (use g0))
     Z :. _ :. n = arrayShape g0
 
 shortestPathsAccel :: Int -> Acc Graph -> Acc Graph
-shortestPathsAccel n g0 = go g0 0
+shortestPathsAccel n g0 = Prelude.fst r
   where
-    sh = shape g0
+    r :: (Acc Graph, Acc (Array DIM0 Int))
+    r = unlift $ iterate next (lift (g0, unit 0)) !! n
 
-    go :: Acc Graph -> Int -> Acc Graph
-    go !g !k | k == n    = g
-             | otherwise = go (generate sh sp) (k+1)
-     where
-       ek = constant k
+next :: Acc (Graph, Array DIM0 Int) -> Acc (Graph, Array DIM0 Int)
+next gk = lift (generate sh sp, unit (k+1))
+ where
+   !sh = shape g
 
-       sp :: Exp DIM2 -> Exp Weight
-       sp ix = A.min (g ! (index2 i j)) (g ! (index2 i ek) + g ! (index2 ek j))
-         where (Z :. i :. j) = unlift ix
+   !(g,ka) = unlift gk
+
+   !k = the ka
+
+   sp :: Exp DIM2 -> Exp Weight
+   sp ix = A.min (g ! (index2 i j)) (g ! (index2 i k) + g ! (index2 k j))
+     where (Z :. i :. j) = unlift ix
 -- >>
 
 -- -----------------------------------------------------------------------------
@@ -91,5 +95,8 @@ toAdjMatrix xs = A.fromList (Z :. k :. k) (concat xs)
 main :: IO ()
 main = do
    [n] <- fmap (fmap read) getArgs
-   let g = fromList (Z:.n:.n) [1..n^(2::Int)] :: Graph
-   print (run (A.fold (+) (constant 0) (shortestPathsAccel n (use g))))
+   print (run (let g = generate (lift (Z:.(n::Int):.(n::Int))) f
+                   f :: Exp DIM2 -> Exp Int
+                   f ix = let i,j :: Exp Int; Z:.i:.j = unlift ix in j
+               in
+               A.foldAll (+) (constant 0) (shortestPathsAccel n g)))

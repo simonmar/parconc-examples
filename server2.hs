@@ -8,9 +8,6 @@ import Control.Concurrent.Async
 import Control.Concurrent.STM
 import ConcurrentUtils (forkFinally)
 
-port :: Int
-port = 44444
-
 -- <<main
 main = withSocketsDo $ do
   sock <- listenOn (PortNumber (fromIntegral port))
@@ -20,6 +17,9 @@ main = withSocketsDo $ do
     (handle, host, port) <- accept sock
     printf "Accepted connection from %s: %s\n" host (show port)
     forkFinally (talk handle factor) (\_ -> hClose handle)       -- <2>
+
+port :: Int
+port = 44444
 -- >>
 
 -- <<talk

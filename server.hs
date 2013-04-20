@@ -6,9 +6,6 @@ import System.IO
 import Text.Printf
 import Control.Exception
 
-port :: Int
-port = 44444
-
 -- <<main
 main = withSocketsDo $ do
   sock <- listenOn (PortNumber (fromIntegral port))              -- <1>
@@ -17,6 +14,9 @@ main = withSocketsDo $ do
      (handle, host, port) <- accept sock                         -- <3>
      printf "Accepted connection from %s: %s\n" host (show port)
      forkFinally (talk handle) (\_ -> hClose handle)             -- <4>
+
+port :: Int
+port = 44444
 -- >>
 
 -- <<talk
