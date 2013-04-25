@@ -26,35 +26,33 @@ data Backend = Interpreter
 
 data Options = Options
   {
-    _optBackend         :: Backend
-  , _optSize            :: Int
-  , _optLimit           :: Int
-  , _optBench           :: Bool
-  , _optHelp            :: Bool
+    optBackend         :: Backend
+  , optSize            :: Int
+  , optLimit           :: Int
+  , optBench           :: Bool
+  , optHelp            :: Bool
   }
   deriving Show
 
-$(mkLabels [''Options])
-
 defaultOptions :: Options
 defaultOptions = Options
-  { _optBackend         = maxBound
-  , _optSize            = 512
-  , _optLimit           = 255
-  , _optBench           = False
-  , _optHelp            = False
+  { optBackend         = maxBound
+  , optSize            = 512
+  , optLimit           = 255
+  , optBench           = False
+  , optHelp            = False
   }
 
 
 run :: Arrays a => Options -> Acc a -> a
-run opts = case _optBackend opts of
+run opts = case optBackend opts of
   Interpreter   -> Interp.run
 #ifdef ACCELERATE_CUDA_BACKEND
   CUDA          -> CUDA.run
 #endif
 
 run1 :: (Arrays a, Arrays b) => Options -> (Acc a -> Acc b) -> a -> b
-run1 opts f = case _optBackend opts of
+run1 opts f = case optBackend opts of
   Interpreter   -> head . Interp.stream f . return
 #ifdef ACCELERATE_CUDA_BACKEND
   CUDA          -> CUDA.run1 f
@@ -63,14 +61,14 @@ run1 opts f = case _optBackend opts of
 
 options :: [OptDescr (Options -> Options)]
 options =
-  [ Option []   ["interpreter"] (NoArg  (set optBackend Interpreter))   "reference implementation (sequential)"
+  [ Option []   ["interpreter"] (NoArg  (\o -> o{optBackend=Interpreter}))   "reference implementation (sequential)"
 #ifdef ACCELERATE_CUDA_BACKEND
-  , Option []   ["cuda"]        (NoArg  (set optBackend CUDA))          "implementation for NVIDIA GPUs (parallel)"
+  , Option []   ["cuda"]        (NoArg  (\o -> o{optBackend = CUDA}))          "implementation for NVIDIA GPUs (parallel)"
 #endif
-  , Option []   ["size"]        (ReqArg (set optSize . read) "INT")     "visualisation size (512)"
-  , Option []   ["limit"]       (ReqArg (set optLimit . read) "INT")    "iteration limit for escape (255)"
-  , Option []   ["benchmark"]   (NoArg  (set optBench True))            "benchmark instead of displaying animation (False)"
-  , Option "h?" ["help"]        (NoArg  (set optHelp True))             "show help message"
+  , Option []   ["size"]        (ReqArg (\i o -> o{optSize = read i}) "INT")     "visualisation size (512)"
+  , Option []   ["limit"]       (ReqArg (\i o -> o{optLimit = read i}) "INT")    "iteration limit for escape (255)"
+  , Option []   ["benchmark"]   (NoArg  (\o -> o{optBench = True}))            "benchmark instead of displaying animation (False)"
+  , Option "h?" ["help"]        (NoArg  (\o -> o{optHelp = True}))             "show help message"
   ]
 
 
@@ -78,8 +76,8 @@ processArgs :: [String] -> IO (Options, [String])
 processArgs argv =
   case getOpt' Permute options argv of
     (o,_,n,[])  -> case foldl (flip id) defaultOptions o of
-                     opts | False <- get optHelp opts   -> return (opts, n)
-                     opts | True  <- get optBench opts  -> return (opts, "--help":n)
+                     opts | False <- optHelp opts   -> return (opts, n)
+                     opts | True  <- optBench opts  -> return (opts, "--help":n)
                      _                                  -> putStrLn (helpMsg []) >> exitSuccess
     (_,_,_,err) -> error (helpMsg err)
   where

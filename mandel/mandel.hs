@@ -1,32 +1,36 @@
+{-# LANGUAGE TypeOperators #-}
 --
 -- A Mandelbrot set generator. Submitted by Simon Marlow as part of Issue #49.
 --
 
 
 import Config
-import Data.Label
 import Control.Monad
 import Control.Exception
 import Foreign.Ptr
 import Foreign.ForeignPtr
 import System.IO.Unsafe
 import System.Environment
-import Criterion.Main                           ( defaultMain, bench, whnf )
 import Data.Array.Accelerate.Array.Data         ( ptrsOfArrayData )
 import Data.Array.Accelerate.Array.Sugar        ( Array(..) )
 
 import Prelude                                  as P
 import Data.Array.Accelerate                    as A hiding ( size )
-import qualified Graphics.Gloss                 as G
+import Data.Array.Accelerate.IO
+import qualified Data.Array.Repa as R
+import qualified Data.Array.Repa.Repr.ForeignPtr as R
+import Data.Array.Repa.IO.DevIL
 
 
 -- Mandelbrot Set --------------------------------------------------------------
 
-type F            = Float       -- Double not supported on all devices
-
+-- <<types
+type F            = Float
 type Complex      = (F,F)
 type ComplexPlane = Array DIM2 Complex
+-- >>
 
+-- <<mandelbrot
 mandelbrot :: F -> F -> F -> F -> Int -> Int -> Int
            -> Acc (Array DIM2 (F,F,Int))
 
@@ -39,8 +43,10 @@ mandelbrot x y x' y' screenX screenY depth
     go :: Acc (Array DIM2 (F,F,Int))
        -> Acc (Array DIM2 (F,F,Int))
     go = A.zipWith iter cs
+-- >>
 
 
+-- <<genPlane
 genPlane :: F -> F
          -> F -> F
          -> Int
@@ -65,44 +71,59 @@ genPlane lowx lowy highx highy viewx viewy
 
       eviewx = constant (P.fromIntegral viewx)
       eviewy = constant (P.fromIntegral viewy)
+-- >>
 
 
+-- <<next
 next :: Exp Complex -> Exp Complex -> Exp Complex
 next c z = c `plus` (z `times` z)
+-- >>
 
-
+-- <<plus
 plus :: Exp Complex -> Exp Complex -> Exp Complex
 plus = lift2 f
   where f :: (Exp F, Exp F) -> (Exp F, Exp F) -> (Exp F, Exp F)
         f (x1,y1) (x2,y2) = (x1+x2,y1+y2)
+-- >>
 
+-- <<times
 times :: Exp Complex -> Exp Complex -> Exp Complex
 times = lift2 f
   where f :: (Exp F, Exp F) -> (Exp F, Exp F) -> (Exp F, Exp F)
         f (ax,ay) (bx,by)   =  (ax*bx-ay*by, ax*by+ay*bx)
+-- >>
 
+-- <<dot
 dot :: Exp Complex -> Exp F
 dot = lift1 f
   where f :: (Exp F, Exp F) -> Exp F
         f (x,y) = x*x + y*y
+-- >>
 
 
+-- <<iter0
 iter :: Exp Complex -> Exp (F,F,Int) -> Exp (F,F,Int)
-iter c z =
+iter c p =
+-- >>
+-- <<iter1
   let
-     (x,y,i) = unlift z :: (Exp F, Exp F, Exp Int)
+     (x,y,i) = unlift p :: (Exp F, Exp F, Exp Int)
      z' = next c (lift (x,y))
   in
+-- >>
+-- <<iter2
   (dot z' >* 4.0) ?
-     ( z
+     ( p
      , lift (A.fst z', A.snd z', i+1)
      )
+-- >>
 
-
+-- <<mkinit
 mkinit :: Acc ComplexPlane -> Acc (Array DIM2 (F,F,Int))
 mkinit cs = A.map (lift1 f) cs
   where f :: (Exp F, Exp F) -> (Exp F, Exp F, Exp Int)
         f (x,y) = (x,y,0)
+-- >>
 
 
 -- Rendering -------------------------------------------------------------------
@@ -114,14 +135,15 @@ prettyRGBA lIMIT s' = r + g + b + a
   where
     (_, _, s)   = unlift s' :: (Exp F, Exp F, Exp Int)
     t           = A.fromIntegral $ ((lIMIT - s) * 255) `quot` lIMIT
-    r           = (t     `mod` 128 + 64) * 0x1000000
-    g           = (t * 2 `mod` 128 + 64) * 0x10000
-    b           = (t * 3 `mod` 256     ) * 0x100
-    a           = 0xFF
+    r           = (t     `mod` 128 + 64)
+    g           = (t * 2 `mod` 128 + 64) * 0x100
+    b           = (t * 3 `mod` 256     ) * 0x10000
+    a           = 0xFF000000
 
 
-makePicture :: Options -> Int -> Acc (Array DIM2 (F, F, Int)) -> G.Picture
-makePicture opt limit zs = pic
+makePicture :: Options -> Int -> Acc (Array DIM2 (F, F, Int))
+            -> R.Array R.F R.DIM3 Word8
+makePicture opt limit zs = R.fromForeignPtr (R.Z R.:. h R.:. w R.:. 4) rawData
   where
     arrPixels   = run opt $ A.map (prettyRGBA (constant limit)) zs
     (Z:.h:.w)   = arrayShape arrPixels
@@ -132,7 +154,6 @@ makePicture opt limit zs = pic
                   in
                   unsafePerformIO       $ newForeignPtr_ (castPtr ptr)
 
-    pic         = G.bitmapOfForeignPtr h w rawData False
 
 
 -- Main ------------------------------------------------------------------------
@@ -140,8 +161,8 @@ makePicture opt limit zs = pic
 main :: IO ()
 main
   = do  (config, nops) <- processArgs =<< getArgs
-        let size        = get optSize config
-            limit       = get optLimit config
+        let size        = optSize config
+            limit       = optLimit config
             --
             x           = -0.25         -- should get this from command line as well
             y           = -1.0
@@ -151,14 +172,4 @@ main
             image       = makePicture config limit
                         $ mandelbrot x y x' y' size size limit
 
-        void $ evaluate image
-
-        if get optBench config
-           then withArgs nops $ defaultMain
-                    [ bench "mandelbrot" $ whnf (\() -> image) () ]
-
-           else G.display
-                    (G.InWindow "Mandelbrot" (size, size) (10, 10))
-                    G.black
-                    image
-
+        runIL $ writeImage "out.png" (RGBA image)
