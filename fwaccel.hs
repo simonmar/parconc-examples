@@ -22,7 +22,9 @@ shortestPaths :: Graph -> Graph
 shortestPaths g0 = run (shortestPathsAcc n (use g0))
   where
     Z :. _ :. n = arrayShape g0
+-- >>
 
+-- <<shortestPathsAcc
 shortestPathsAcc :: Int -> Acc Graph -> Acc Graph
 shortestPathsAcc n g0 =
   foldl1 (>->) (Prelude.map step [0 .. n-1]) g0
