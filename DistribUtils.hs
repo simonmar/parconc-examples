@@ -33,6 +33,9 @@ distribMain master frtable = do
     [ "slave", port ] -> do
       backend <- initializeBackend defaultHost port rtable
       startSlave backend
+    [ "slave", host, port ] -> do
+      backend <- initializeBackend host port rtable
+      startSlave backend
 
 defaultHost = "localhost"
 defaultPort = "44444"
