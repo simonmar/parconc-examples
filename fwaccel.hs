@@ -3,12 +3,14 @@
 
 module Main ( main, test {-, maxDistances -} ) where
 
+import Prelude
 import System.Environment
 import Data.Array.Accelerate as A
 import Data.Array.Accelerate.Interpreter as I
+-- import Data.Array.Accelerate.CUDA as C
 
 -- <<Graph
-type Weight = Int
+type Weight = Int32
 type Graph = Array DIM2 Weight
 -- >>
 
@@ -17,28 +19,27 @@ type Graph = Array DIM2 Weight
 
 -- <<shortestPaths
 shortestPaths :: Graph -> Graph
-shortestPaths g0 = run (shortestPathsAccel n (use g0))
+shortestPaths g0 = run (shortestPathsAcc n (use g0))
   where
     Z :. _ :. n = arrayShape g0
 
-shortestPathsAccel :: Int -> Acc Graph -> Acc Graph
-shortestPathsAccel n g0 = Prelude.fst r
-  where
-    r :: (Acc Graph, Acc (Array DIM0 Int))
-    r = unlift $ iterate next (lift (g0, unit 0)) !! n
+shortestPathsAcc :: Int -> Acc Graph -> Acc Graph
+shortestPathsAcc n g0 =
+  foldl1 (>->) (Prelude.map step [0 .. n-1]) g0
+-- >>
 
-next :: Acc (Graph, Array DIM0 Int) -> Acc (Graph, Array DIM0 Int)
-next gk = lift (generate sh sp, unit (k+1))
+-- <<step
+step :: Int -> Acc Graph -> Acc Graph
+step k g = generate (shape g) sp                           -- <1>
  where
-   !sh = shape g
-
-   !(g,ka) = unlift gk
-
-   !k = the ka
-
    sp :: Exp DIM2 -> Exp Weight
-   sp ix = A.min (g ! (index2 i j)) (g ! (index2 i k) + g ! (index2 k j))
-     where (Z :. i :. j) = unlift ix
+   sp ix = let
+             (Z :. i :. j) = unlift ix                     -- <2>
+           in
+             A.min (g ! (index2 i j))                      -- <3>
+                   (g ! (index2 i k') + g ! (index2 k' j))
+
+   k' = the (unit (constant k))                            -- <4>
 -- >>
 
 -- -----------------------------------------------------------------------------
@@ -88,15 +89,22 @@ expectedResult = toAdjMatrix $
 test :: Bool
 test = toList (shortestPaths testGraph) == toList expectedResult
 
+test2 = shortestPathsAcc n g0
+  where
+    n  = 5
+    g0 = generate (lift (Z:.n:.n)) (A.fromIntegral . A.snd . A.unindex2)
+
+
+
 toAdjMatrix :: [[Weight]] -> Graph
 toAdjMatrix xs = A.fromList (Z :. k :. k) (concat xs)
   where k = length xs
 
+
 main :: IO ()
 main = do
-   [n] <- fmap (fmap read) getArgs
-   print (run (let g = generate (lift (Z:.(n::Int):.(n::Int))) f
-                   f :: Exp DIM2 -> Exp Int
-                   f ix = let i,j :: Exp Int; Z:.i:.j = unlift ix in j
+   (n:_) <- fmap (fmap read) getArgs
+   print (run (let g    = generate (constant (Z:.n:.n) :: Exp DIM2) f
+                   f ix = let i,j :: Exp Int; Z:.i:.j = unlift ix in A.fromIntegral j
                in
-               A.foldAll (+) (constant 0) (shortestPathsAccel n g)))
+               A.foldAll (+) (constant 0) (shortestPathsAcc n g)))
