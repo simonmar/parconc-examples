@@ -6,7 +6,7 @@ module Main ( main, test {-, maxDistances -} ) where
 import Prelude
 import System.Environment
 import Data.Array.Accelerate as A
-import Data.Array.Accelerate.Interpreter
+import Data.Array.Accelerate.CUDA
 
 -- <<Graph
 type Weight = Int32

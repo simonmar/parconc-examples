@@ -35,14 +35,14 @@ mandelbrot :: F -> F -> F -> F -> Int -> Int -> Int
            -> Acc (Array DIM2 (F,F,Int))
 
 mandelbrot x y x' y' screenX screenY depth
-  = iterate go zs0 !! depth
+  = iterate go zs0 !! depth                  -- <4>
   where
-    cs  = genPlane x y x' y' screenX screenY
-    zs0 = mkinit cs
+    cs  = genPlane x y x' y' screenX screenY -- <1>
+    zs0 = mkinit cs                          -- <2>
 
     go :: Acc (Array DIM2 (F,F,Int))
        -> Acc (Array DIM2 (F,F,Int))
-    go = A.zipWith iter cs
+    go = A.zipWith iter cs                   -- <3>
 -- >>
 
 
@@ -52,6 +52,7 @@ genPlane :: F -> F
          -> Int
          -> Int
          -> Acc ComplexPlane
+-- >>
 genPlane lowx lowy highx highy viewx viewy
    = generate (constant (Z:.viewy:.viewx))
               (\ix -> let pr = unindex2 ix
@@ -71,7 +72,6 @@ genPlane lowx lowy highx highy viewx viewy
 
       eviewx = constant (P.fromIntegral viewx)
       eviewy = constant (P.fromIntegral viewy)
--- >>
 
 
 -- <<next

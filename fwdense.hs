@@ -78,6 +78,6 @@ toAdjMatrix xs = fromListUnboxed (Z :. k :. k) (concat xs)
 main :: IO ()
 main = do
    [n] <- fmap (fmap read) getArgs
-   let g = fromListUnboxed (Z:.n:.n) [1..n^(2::Int)] :: Graph U
+   let g = fromListUnboxed (Z:.n:.n) [0..n^(2::Int)-1] :: Graph U
    print (sumAllS (shortestPaths g))
 
