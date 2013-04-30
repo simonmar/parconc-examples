@@ -34,8 +34,8 @@ type ComplexPlane = Array DIM2 Complex
 mandelbrot :: F -> F -> F -> F -> Int -> Int -> Int
            -> Acc (Array DIM2 (F,F,Int))
 
-mandelbrot x y x' y' screenX screenY depth
-  = iterate go zs0 !! depth                  -- <4>
+mandelbrot x y x' y' screenX screenY max_depth
+  = iterate go zs0 !! max_depth              -- <4>
   where
     cs  = genPlane x y x' y' screenX screenY -- <1>
     zs0 = mkinit cs                          -- <2>
