@@ -32,7 +32,7 @@ type ComplexPlane = Array DIM2 Complex
 
 -- <<mandelbrot
 mandelbrot :: F -> F -> F -> F -> Int -> Int -> Int
-           -> Acc (Array DIM2 (F,F,Int))
+           -> Acc (Array DIM2 (Complex,Int))
 
 mandelbrot x y x' y' screenX screenY max_depth
   = iterate go zs0 !! max_depth              -- <4>
@@ -40,8 +40,8 @@ mandelbrot x y x' y' screenX screenY max_depth
     cs  = genPlane x y x' y' screenX screenY -- <1>
     zs0 = mkinit cs                          -- <2>
 
-    go :: Acc (Array DIM2 (F,F,Int))
-       -> Acc (Array DIM2 (F,F,Int))
+    go :: Acc (Array DIM2 (Complex,Int))
+       -> Acc (Array DIM2 (Complex,Int))
     go = A.zipWith iter cs                   -- <3>
 -- >>
 
@@ -102,27 +102,23 @@ dot = lift1 f
 
 
 -- <<iter0
-iter :: Exp Complex -> Exp (F,F,Int) -> Exp (F,F,Int)
+iter :: Exp Complex -> Exp (Complex,Int) -> Exp (Complex,Int)
 iter c p =
--- >>
--- <<iter1
   let
-     (x,y,i) = unlift p :: (Exp F, Exp F, Exp Int)
-     z' = next c (lift (x,y))
+     (z,i) = unlift p :: (Exp Complex, Exp Int)
+     z' = next c z
   in
--- >>
--- <<iter2
   (dot z' >* 4.0) ?
      ( p
-     , lift (A.fst z', A.snd z', i+1)
+     , lift (z', i+1)
      )
 -- >>
 
 -- <<mkinit
-mkinit :: Acc ComplexPlane -> Acc (Array DIM2 (F,F,Int))
+mkinit :: Acc ComplexPlane -> Acc (Array DIM2 (Complex,Int))
 mkinit cs = A.map (lift1 f) cs
-  where f :: (Exp F, Exp F) -> (Exp F, Exp F, Exp Int)
-        f (x,y) = (x,y,0)
+  where f :: (Exp F, Exp F) -> ((Exp F, Exp F), Exp Int)
+        f (x,y) = ((x,y),0)
 -- >>
 
 
@@ -130,10 +126,10 @@ mkinit cs = A.map (lift1 f) cs
 
 type RGBA = Word32
 
-prettyRGBA :: Exp Int -> Exp (F, F, Int) -> Exp RGBA
+prettyRGBA :: Exp Int -> Exp (Complex, Int) -> Exp RGBA
 prettyRGBA lIMIT s' = r + g + b + a
   where
-    (_, _, s)   = unlift s' :: (Exp F, Exp F, Exp Int)
+    (_, s)      = unlift s' :: (Exp (F, F), Exp Int)
     t           = A.fromIntegral $ ((lIMIT - s) * 255) `quot` lIMIT
     r           = (t     `mod` 128 + 64)
     g           = (t * 2 `mod` 128 + 64) * 0x100
@@ -141,7 +137,7 @@ prettyRGBA lIMIT s' = r + g + b + a
     a           = 0xFF000000
 
 
-makePicture :: Options -> Int -> Acc (Array DIM2 (F, F, Int))
+makePicture :: Options -> Int -> Acc (Array DIM2 (Complex, Int))
             -> R.Array R.F R.DIM3 Word8
 makePicture opt limit zs = R.fromForeignPtr (R.Z R.:. h R.:. w R.:. 4) rawData
   where
