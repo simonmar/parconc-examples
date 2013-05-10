@@ -27,11 +27,18 @@ flag llvm
 flag devil
   default: False
 
+-- -f cuda: Build the examples that require accelerate-cuda.  These
+-- need the NVidia CUDA tools installed.
+
+flag cuda
+  default: False
+
 -- -----------------------------------------------------------------------------
 -- par-eval
 
 executable sudoku1
   main-is: sudoku1.hs
+  other-modules: Sudoku
   build-depends:   base >= 4.5 && < 4.7
                  , parallel ==3.2.*
                  , array ==0.4.*
@@ -39,6 +46,7 @@ executable sudoku1
 
 executable sudoku2
   main-is: sudoku2.hs
+  other-modules: Sudoku
   build-depends:   base >= 4.5 && < 4.7
                  , parallel ==3.2.*
                  , array ==0.4.*
@@ -48,6 +56,7 @@ executable sudoku2
 
 executable sudoku3
   main-is: sudoku3.hs
+  other-modules: Sudoku
   build-depends:   base >= 4.5 && < 4.7
                  , parallel ==3.2.*
                  , array ==0.4.*
@@ -56,6 +65,7 @@ executable sudoku3
 
 executable sudoku4
   main-is: sudoku4.hs
+  other-modules: Sudoku
   build-depends:   base >= 4.5 && < 4.7
                  , parallel ==3.2.*
                  , array ==0.4.*
@@ -88,6 +98,7 @@ executable strat3
 
 executable rsa
   main-is: rsa.hs
+  other-modules: ByteStringCompat
   build-depends:   base >= 4.5 && < 4.7
                  , bytestring >= 0.9 && < 0.11
                  , deepseq ==1.3.*
@@ -95,6 +106,7 @@ executable rsa
 
 executable rsa1
   main-is: rsa1.hs
+  other-modules: ByteStringCompat
   build-depends:   base >= 4.5 && < 4.7
                  , bytestring >= 0.9 && < 0.11
                  , parallel ==3.2.*
@@ -104,6 +116,7 @@ executable rsa1
 
 executable rsa2
   main-is: rsa2.hs
+  other-modules: ByteStringCompat
   build-depends:   base >= 4.5 && < 4.7
                  , bytestring >= 0.9 && < 0.11
                  , parallel ==3.2.*
@@ -114,6 +127,7 @@ executable rsa2
 executable kmeans
   hs-source-dirs: kmeans
   main-is: kmeans.hs
+  other-modules: KMeansCore
   build-depends:   base >= 4.5 && < 4.7
                  , parallel ==3.2.*
                  , time ==1.4.*
@@ -153,6 +167,7 @@ executable parmonad
 
 executable rsa-pipeline
   main-is: rsa-pipeline.hs
+  other-modules: ByteStringCompat Stream
   build-depends:   base >= 4.5 && < 4.7
                  , bytestring >= 0.9 && < 0.11
                  , monad-par >= 0.3.4 && < 0.4
@@ -162,6 +177,7 @@ executable rsa-pipeline
 
 executable fwsparse
   main-is: fwsparse.hs
+  other-modules: SparseGraph MapCompat
   hs-source-dirs: fwsparse
   build-depends:   base >= 4.5 && < 4.7
                  , random >= 1.0 && < 1.1
@@ -171,6 +187,7 @@ executable fwsparse
 
 executable fwsparse1
   main-is: fwsparse1.hs
+  other-modules: SparseGraph MapCompat
   hs-source-dirs: fwsparse
   build-depends:   base >= 4.5 && < 4.7
                  , random >= 1.0 && < 1.1
@@ -252,6 +269,42 @@ executable rotateimage
   default-language: Haskell2010
 
 -- -----------------------------------------------------------------------------
+-- par-accel
+
+executable  fwaccel
+  main-is: fwaccel.hs
+  build-depends:   base >= 4.5 && < 4.7
+                 , accelerate >= 0.12
+  ghc-options: -O2
+  default-language: Haskell2010
+
+executable  fwaccel-gpu
+  main-is: fwaccel.hs
+  build-depends:   base >= 4.5 && < 4.7
+                 , accelerate >= 0.12
+  if flag(cuda)
+     build-depends: accelerate-cuda >= 0.12
+  else
+     buildable: False
+  ghc-options: -O2
+  default-language: Haskell2010
+
+executable  mandel
+  main-is: mandel.hs
+  other-modules: Config
+  hs-source-dirs: mandel
+  build-depends:   base >= 4.5 && < 4.7
+                 , accelerate >= 0.12
+                 , fclabels
+                 , accelerate-io
+  if flag(cuda)
+     build-depends: accelerate-cuda >= 0.12
+  else
+     buildable: False
+  ghc-options: -O2
+  default-language: Haskell2010
+
+-- -----------------------------------------------------------------------------
 -- conc-fork
 
 executable  fork
@@ -313,6 +366,7 @@ executable  chan2
 
 executable geturls1
   main-is: geturls1.hs
+  other-modules: GetURL
   build-depends:   base >= 4.5 && < 4.7
                  , containers >= 0.4 && < 0.6
                  , network >= 2.3 && < 2.5
@@ -322,6 +376,7 @@ executable geturls1
 
 executable  geturls2
   main-is: geturls2.hs
+  other-modules: GetURL
   build-depends:   base >= 4.5 && < 4.7
                  , stm ==2.4.*
                  , bytestring >= 0.9 && < 0.11
@@ -332,6 +387,7 @@ executable  geturls2
 
 executable  geturls3
   main-is: geturls3.hs
+  other-modules: TimeIt GetURL
   build-depends:   base >= 4.5 && < 4.7
                  , stm ==2.4.*
                  , bytestring >= 0.9 && < 0.11
@@ -342,6 +398,7 @@ executable  geturls3
 
 executable  geturls4
   main-is: geturls4.hs
+  other-modules: GetURL
   build-depends:   base >= 4.5 && < 4.7
                  , stm ==2.4.*
                  , bytestring >= 0.9 && < 0.11
@@ -352,6 +409,7 @@ executable  geturls4
 
 executable  geturls5
   main-is: geturls5.hs
+  other-modules: GetURL
   build-depends:   base >= 4.5 && < 4.7
                  , stm ==2.4.*
                  , bytestring >= 0.9 && < 0.11
@@ -362,6 +420,7 @@ executable  geturls5
 
 executable  geturls6
   main-is: geturls6.hs
+  other-modules: TimeIt GetURL
   build-depends:   base >= 4.5 && < 4.7
                  , stm ==2.4.*
                  , bytestring >= 0.9 && < 0.11
@@ -375,6 +434,7 @@ executable  geturls6
 
 executable  geturlscancel
   main-is: geturlscancel.hs
+  other-modules: TimeIt GetURL
   build-depends:   base >= 4.5 && < 4.7
                  , stm ==2.4.*
                  , bytestring >= 0.9 && < 0.11
@@ -385,6 +445,7 @@ executable  geturlscancel
 
 executable  geturlscancel2
   main-is: geturlscancel2.hs
+  other-modules: TimeIt GetURL
   build-depends:   base >= 4.5 && < 4.7
                  , stm ==2.4.*
                  , bytestring >= 0.9 && < 0.11
@@ -437,6 +498,7 @@ executable  tmvar
 
 executable  geturlsfirst
   main-is: geturlsfirst.hs
+  other-modules: ConcurrentUtils
   build-depends:   base >= 4.5 && < 4.7
                  , stm ==2.4.*
                  , bytestring >= 0.9 && < 0.11
@@ -474,6 +536,7 @@ executable  TBQueue
 
 executable  geturls7
   main-is: geturls7.hs
+  other-modules: ConcurrentUtils
   build-depends:   base >= 4.5 && < 4.7
                  , stm ==2.4.*
                  , bytestring >= 0.9 && < 0.11
@@ -536,6 +599,7 @@ executable findpar2
 
 executable findpar3
   main-is: findpar3.hs
+  other-modules: CasIORef
   build-depends:   base >= 4.5 && < 4.7
                  , filepath ==1.3.*
                  , directory >= 1.1 && < 1.3
@@ -560,6 +624,7 @@ executable findpar4
 
 executable  server
   main-is: server.hs
+  other-modules: ConcurrentUtils
   build-depends:   base >= 4.5 && < 4.7
                  , stm ==2.4.*
                  , network >= 2.3 && < 2.5
@@ -567,6 +632,7 @@ executable  server
 
 executable  server2
   main-is: server2.hs
+  other-modules: ConcurrentUtils
   build-depends:   base >= 4.5 && < 4.7
                  , stm ==2.4.*
                  , async ==2.0.*
@@ -575,6 +641,7 @@ executable  server2
 
 executable chat
   main-is: chat.hs
+  other-modules: ConcurrentUtils
   build-depends:   base >= 4.5 && < 4.7
                  , containers >= 0.4 && < 0.6
                  , async ==2.0.*
@@ -587,6 +654,7 @@ executable chat
 
 executable ping
   main-is: distrib-ping/ping.hs
+  other-modules: DistribUtils
   build-depends:   base >= 4.5 && < 4.7
                  , network >= 2.3 && < 2.5
                  , binary >= 0.5 && < 0.7
@@ -601,6 +669,7 @@ executable ping
 
 executable ping-multi
   main-is: distrib-ping/ping-multi.hs
+  other-modules: DistribUtils
   build-depends:   base >= 4.5 && < 4.7
                  , network >= 2.3 && < 2.5
                  , binary >= 0.5 && < 0.7
@@ -615,6 +684,7 @@ executable ping-multi
 
 executable ping-tc
   main-is: distrib-ping/ping-tc.hs
+  other-modules: DistribUtils
   build-depends:   base >= 4.5 && < 4.7
                  , network >= 2.3 && < 2.5
                  , binary >= 0.5 && < 0.7
@@ -629,6 +699,7 @@ executable ping-tc
 
 executable ping-tc-merge
   main-is: distrib-ping/ping-tc-merge.hs
+  other-modules: DistribUtils
   build-depends:   base >= 4.5 && < 4.7
                  , network >= 2.3 && < 2.5
                  , binary >= 0.5 && < 0.7
@@ -644,6 +715,7 @@ executable ping-tc-merge
 -- extra, not in the text?
 executable ping-tc-notify
   main-is: distrib-ping/ping-tc-notify.hs
+  other-modules: DistribUtils
   build-depends:   base >= 4.5 && < 4.7
                  , network >= 2.3 && < 2.5
                  , binary >= 0.5 && < 0.7
@@ -672,6 +744,7 @@ executable ping-fail
 
 executable distrib-chat
   main-is: distrib-chat/chat.hs
+  other-modules: ConcurrentUtils DistribUtils
   build-depends:   base >= 4.5 && < 4.7
                  , containers >= 0.4 && < 0.6
                  , stm ==2.4.*
@@ -690,6 +763,7 @@ executable distrib-chat
 
 executable distrib-chat-noslave
   main-is: distrib-chat/chat-noslave.hs
+  other-modules: ConcurrentUtils
   build-depends:   base >= 4.5 && < 4.7
                  , containers >= 0.4 && < 0.6
                  , stm ==2.4.*
@@ -709,6 +783,7 @@ executable distrib-chat-noslave
 executable distrib-db
   main-is: db.hs
   hs-source-dirs: . distrib-db
+  other-modules: DistribUtils Database
   build-depends:   base >= 4.5 && < 4.7
                  , containers >= 0.4 && < 0.6
                  , stm ==2.4.*
@@ -759,6 +834,8 @@ executable  threadperf2
 
 executable  bingtranslator
   main-is: bingtranslator.hs
+  other-modules: BingTranslate GetURL
+  hs-source-dirs: other .
   build-depends:   base >= 4.5 && < 4.7
                  , bytestring >= 0.9 && < 0.11
                  , time ==1.4.*
@@ -770,6 +847,8 @@ executable  bingtranslator
 
 executable  bingtranslatorconc
   main-is: bingtranslatorconc.hs
+  other-modules: BingTranslate GetURL
+  hs-source-dirs: other .
   build-depends:   base >= 4.5 && < 4.7
                  , bytestring >= 0.9 && < 0.11
                  , time ==1.4.*
@@ -781,6 +860,7 @@ executable  bingtranslatorconc
 
 executable  geturlsstm
   main-is: geturlsstm.hs
+  other-modules: TimeIt GetURL
   build-depends:   base >= 4.5 && < 4.7
                  , stm ==2.4.*
                  , bytestring >= 0.9 && < 0.11

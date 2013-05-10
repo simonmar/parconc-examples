@@ -55,8 +55,8 @@ SAMPLES = \
   Async \
   server \
   server2 \
-  bingtranslator \
-  bingtranslatorconc \
+  other/bingtranslator \
+  other/bingtranslatorconc \
   kmeans/kmeans \
   parinfer/parinfer \
   chat \
