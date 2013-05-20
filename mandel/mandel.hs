@@ -101,16 +101,16 @@ dot = lift1 f
 -- >>
 
 
--- <<iter0
+-- <<iter
 iter :: Exp Complex -> Exp (Complex,Int) -> Exp (Complex,Int)
 iter c p =
   let
-     (z,i) = unlift p :: (Exp Complex, Exp Int)
-     z' = next c z
+     (z,i) = unlift p :: (Exp Complex, Exp Int)    -- <1>
+     z' = next c z                                 -- <2>
   in
-  (dot z' >* 4.0) ?
-     ( p
-     , lift (z', i+1)
+  (dot z' >* 4.0) ?                                -- <3>
+     ( p                                           -- <4>
+     , lift (z', i+1)                              -- <5>
      )
 -- >>
 
