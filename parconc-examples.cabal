@@ -135,7 +135,7 @@ executable kmeans
                  , monad-par >= 0.3.4 && < 0.4
                    -- monad-par 0.3 has a bug:
                    -- https://github.com/simonmar/monad-par/issues/23
-                 , binary >= 0.5 && < 0.7
+                 , binary >=0.6.3 && < 0.7
                  , array ==0.4.*
                  , bytestring >= 0.9 && < 0.11
                  , vector >= 0.10 && < 0.11
@@ -146,7 +146,7 @@ executable GenSamples
   hs-source-dirs: kmeans
   main-is: GenSamples.hs
   build-depends:   base >= 4.5 && < 4.7
-                 , binary >= 0.5 && < 0.7
+                 , binary >=0.6.3 && < 0.7
                  , array ==0.4.*
                  , vector >= 0.10 && < 0.11
                  , random >= 1.0 && < 1.1
@@ -657,7 +657,7 @@ executable ping
   other-modules: DistribUtils
   build-depends:   base >= 4.5 && < 4.7
                  , network >= 2.3 && < 2.5
-                 , binary >= 0.5 && < 0.7
+                 , binary >=0.6.3 && < 0.7
                  , distributed-process >= 0.4.2 && < 0.5
                  , distributed-process-simplelocalnet ==0.2.*
                  , distributed-static ==0.2.*
@@ -672,7 +672,7 @@ executable ping-multi
   other-modules: DistribUtils
   build-depends:   base >= 4.5 && < 4.7
                  , network >= 2.3 && < 2.5
-                 , binary >= 0.5 && < 0.7
+                 , binary >=0.6.3 && < 0.7
                  , distributed-process >= 0.4.2 && < 0.5
                  , distributed-process-simplelocalnet ==0.2.*
                  , distributed-static ==0.2.*
@@ -687,7 +687,7 @@ executable ping-tc
   other-modules: DistribUtils
   build-depends:   base >= 4.5 && < 4.7
                  , network >= 2.3 && < 2.5
-                 , binary >= 0.5 && < 0.7
+                 , binary >=0.6.3 && < 0.7
                  , distributed-process >= 0.4.2 && < 0.5
                  , distributed-process-simplelocalnet ==0.2.*
                  , distributed-static ==0.2.*
@@ -702,7 +702,7 @@ executable ping-tc-merge
   other-modules: DistribUtils
   build-depends:   base >= 4.5 && < 4.7
                  , network >= 2.3 && < 2.5
-                 , binary >= 0.5 && < 0.7
+                 , binary >=0.6.3 && < 0.7
                  , distributed-process >= 0.4.2 && < 0.5
                  , distributed-process-simplelocalnet ==0.2.*
                  , distributed-static ==0.2.*
@@ -718,7 +718,7 @@ executable ping-tc-notify
   other-modules: DistribUtils
   build-depends:   base >= 4.5 && < 4.7
                  , network >= 2.3 && < 2.5
-                 , binary >= 0.5 && < 0.7
+                 , binary >=0.6.3 && < 0.7
                  , distributed-process >= 0.4.2 && < 0.5
                  , distributed-process-simplelocalnet ==0.2.*
                  , distributed-static ==0.2.*
@@ -732,7 +732,7 @@ executable ping-fail
   main-is: distrib-ping/ping-fail.hs
   build-depends:   base >= 4.5 && < 4.7
                  , network >= 2.3 && < 2.5
-                 , binary >= 0.5 && < 0.7
+                 , binary >=0.6.3 && < 0.7
                  , distributed-process >= 0.4.2 && < 0.5
                  , distributed-process-simplelocalnet ==0.2.*
                  , distributed-static ==0.2.*
@@ -750,7 +750,7 @@ executable distrib-chat
                  , stm ==2.4.*
                  , async ==2.0.*
                  , network >= 2.3 && < 2.5
-                 , binary >= 0.5 && < 0.7
+                 , binary >=0.6.3 && < 0.7
                  , distributed-process >= 0.4.2 && < 0.5
                  , distributed-process-simplelocalnet ==0.2.*
                  , distributed-static ==0.2.*
@@ -769,7 +769,7 @@ executable distrib-chat-noslave
                  , stm ==2.4.*
                  , async ==2.0.*
                  , network >= 2.3 && < 2.5
-                 , binary >= 0.5 && < 0.7
+                 , binary >=0.6.3 && < 0.7
                  , distributed-process >= 0.4.2 && < 0.5
                  , distributed-process-simplelocalnet ==0.2.*
                  , distributed-static ==0.2.*
@@ -789,7 +789,7 @@ executable distrib-db
                  , stm ==2.4.*
                  , async ==2.0.*
                  , network >= 2.3 && < 2.5
-                 , binary >= 0.5 && < 0.7
+                 , binary >=0.6.3 && < 0.7
                  , distributed-process >= 0.4.2 && < 0.5
                  , distributed-process-simplelocalnet ==0.2.*
                  , distributed-static ==0.2.*
