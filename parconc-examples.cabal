@@ -1,5 +1,5 @@
 name:                parconc-examples
-version:             0.2
+version:             0.3
 synopsis:            Examples to accompany the book "Parallel and Concurrent Programming in Haskell"
 -- description:         
 license:             BSD3
@@ -10,6 +10,26 @@ copyright:           (c) Simon Marlow 2011-2013
 category:            Sample Code
 build-type:          Simple
 cabal-version:       >=1.10
+
+extra-source-files:  sudoku17.1000.txt
+                     sudoku17.16000.txt
+                     sudoku17.49151.txt
+                     chanbench.hs
+                     findpar5.hs
+                     parlist.hs
+                     other/correcter.hs
+                     other/arithgame.hs
+                     other/game.hs
+                     other/README
+                     distrib-db/WorkerSample.hs
+                     distrib-db/DatabaseSample.hs
+                     sudoku-par1.hs
+                     sudoku-par2.hs
+                     sudoku-par3.hs
+                     sudoku-par4.hs
+                     kmeans/Makefile
+                     timeout2.hs
+                     parinfer/benchmark.in
 
 -- -----------------------------------------------------------------------------
 -- Flags
@@ -72,6 +92,15 @@ executable sudoku3
 
 executable sudoku4
   main-is: sudoku4.hs
+  other-modules: Sudoku
+  build-depends:   base >= 4.5 && < 4.7
+                 , parallel ==3.2.*
+                 , array ==0.4.*
+  ghc-options: -threaded
+  default-language: Haskell2010
+
+executable sudoku5
+  main-is: sudoku5.hs
   other-modules: Sudoku
   build-depends:   base >= 4.5 && < 4.7
                  , parallel ==3.2.*
@@ -240,6 +269,29 @@ executable  timetable3
                  , random >= 1.0 && < 1.1
   default-language: Haskell2010
 
+executable  parinfer
+  main-is: parinfer.hs
+  hs-source-dirs: parinfer
+  other-modules:  InferMonad
+                  Term
+                  FiniteMap
+                  Shows
+                  Environment
+                  Lex
+                  MaybeM
+                  Parse
+                  MyList
+                  Type
+                  Infer
+                  Substitution
+                  StateX
+  build-depends:   base >= 4.5 && < 4.7
+                 , containers >= 0.4 && < 0.6
+                 , deepseq ==1.3.*
+                 , monad-par >= 0.3.4 && < 0.4
+                 , array ==0.4.*
+  default-language: Haskell2010
+
 -- -----------------------------------------------------------------------------
 -- par-repa
 
@@ -286,7 +338,7 @@ executable  fwaccel
   default-language: Haskell2010
 
 executable  fwaccel-gpu
-  main-is: fwaccel.hs
+  main-is: fwaccel-gpu.hs
   build-depends:   base >= 4.5 && < 4.7
                  , accelerate >= 0.12
   if flag(cuda)
@@ -886,5 +938,4 @@ executable  Async
 --   euler35
 --   index
 --   sudoku-par{1,2,3,4,5}
---   parinfer
 
