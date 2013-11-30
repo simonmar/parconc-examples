@@ -41,8 +41,8 @@ step k g = generate (shape g) sp                           -- <1>
    sp ix = let
              (Z :. i :. j) = unlift ix                     -- <3>
            in
-             A.min (g ! (index2 i j))                      -- <4>
-                   (g ! (index2 i k') + g ! (index2 k' j))
+             min (g ! (index2 i j))                        -- <4>
+                 (g ! (index2 i k') + g ! (index2 k' j))
 -- >>
 
 -- -----------------------------------------------------------------------------
