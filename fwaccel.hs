@@ -13,6 +13,12 @@ type Weight = Int32
 type Graph = Array DIM2 Weight
 -- >>
 
+#if MIN_VERSION_accelerate(0,14,0)
+#define Amin min
+#else
+#define Amin A.min
+#endif
+
 -- -----------------------------------------------------------------------------
 -- shortestPaths
 
@@ -41,8 +47,8 @@ step k g = generate (shape g) sp                           -- <1>
    sp ix = let
              (Z :. i :. j) = unlift ix                     -- <3>
            in
-             A.min (g ! (index2 i j))                      -- <4>
-                   (g ! (index2 i k') + g ! (index2 k' j))
+             Amin (g ! (index2 i j))                       -- <4>
+                  (g ! (index2 i k') + g ! (index2 k' j))
 -- >>
 
 -- -----------------------------------------------------------------------------
