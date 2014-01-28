@@ -7,6 +7,7 @@ import Prelude
 import System.Environment
 import Data.Array.Accelerate as A
 import Data.Array.Accelerate.Interpreter
+import AccelerateCompat as A
 
 -- <<Graph
 type Weight = Int32
@@ -94,3 +95,5 @@ main = do
                            A.fromIntegral i * constant (Prelude.fromIntegral n)
                in
                A.foldAll (+) (constant 0) (shortestPathsAcc n g)))
+
+

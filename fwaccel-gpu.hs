@@ -7,6 +7,7 @@ import Prelude
 import System.Environment
 import Data.Array.Accelerate as A
 import Data.Array.Accelerate.CUDA
+import AccelerateCompat as A
 
 -- <<Graph
 type Weight = Int32
