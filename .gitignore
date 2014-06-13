@@ -11,6 +11,8 @@
 dist
 
 cabal-dev
+cabal.sandbox.config
+.cabal-sandbox
 
 bingtranslator
 bingtranslatorconc
