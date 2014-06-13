@@ -53,6 +53,16 @@ flag devil
 flag cuda
   default: False
 
+-- -f-accelerate: Do not build the examples that require accelerate.
+
+flag accelerate
+  default : True
+
+-- -f-distributed: Do not build the examples that require distributed-process.
+
+flag distributed
+  default : True
+
 -- -----------------------------------------------------------------------------
 -- par-eval
 
@@ -334,14 +344,20 @@ executable  fwaccel
   main-is: fwaccel.hs
   other-modules: AccelerateCompat
   build-depends:   base >= 4.5 && < 4.8
-                 , accelerate >= 0.12 && < 0.15
   ghc-options: -O2
+  if flag(accelerate)
+     build-depends: accelerate >= 0.12 && < 0.15
+  else
+     buildable: False
   default-language: Haskell2010
 
 executable  fwaccel-gpu
   main-is: fwaccel-gpu.hs
   build-depends:   base >= 4.5 && < 4.8
-                 , accelerate >= 0.12 && < 0.15
+  if flag(accelerate)
+     build-depends: accelerate >= 0.12 && < 0.15
+  else
+     buildable: False
   if flag(cuda)
      build-depends: accelerate-cuda >= 0.12 && < 0.15
   else
@@ -354,9 +370,12 @@ executable  mandel
   other-modules: Config
   hs-source-dirs: mandel
   build-depends:   base >= 4.5 && < 4.8
-                 , accelerate >= 0.12 && < 0.15
                  , fclabels
-                 , accelerate-io
+  if flag(accelerate)
+     build-depends: accelerate >= 0.12 && < 0.15
+                  , accelerate-io
+  else
+     buildable: False
   if flag(cuda)
      build-depends: accelerate-cuda >= 0.12 && < 0.15
   else
@@ -722,13 +741,17 @@ executable ping
   build-depends:   base >= 4.5 && < 4.8
                  , network >= 2.3 && < 2.5
                  , binary >=0.6.3 && < 0.8
-                 , distributed-process >= 0.4.2 && < 0.5
-                 , distributed-process-simplelocalnet ==0.2.*
-                 , distributed-static ==0.2.*
                  , template-haskell >= 2.7 && < 2.10
   if impl(ghc <= 7.6)
       -- prior to ghc-7.4 generics lived in ghc-prim
       build-depends: ghc-prim
+  if flag(distributed)
+     build-depends:
+                   distributed-process >= 0.4.2 && < 0.5
+                 , distributed-process-simplelocalnet ==0.2.*
+                 , distributed-static ==0.2.*
+  else
+     buildable: False
   default-language: Haskell2010
 
 executable ping-multi
@@ -737,13 +760,17 @@ executable ping-multi
   build-depends:   base >= 4.5 && < 4.8
                  , network >= 2.3 && < 2.5
                  , binary >=0.6.3 && < 0.8
-                 , distributed-process >= 0.4.2 && < 0.5
-                 , distributed-process-simplelocalnet ==0.2.*
-                 , distributed-static ==0.2.*
                  , template-haskell >= 2.7 && < 2.10
   if impl(ghc <= 7.6)
       -- prior to ghc-7.4 generics lived in ghc-prim
       build-depends: ghc-prim
+  if flag(distributed)
+     build-depends:
+                   distributed-process >= 0.4.2 && < 0.5
+                 , distributed-process-simplelocalnet ==0.2.*
+                 , distributed-static ==0.2.*
+  else
+     buildable: False
   default-language: Haskell2010
 
 executable ping-tc
@@ -752,13 +779,17 @@ executable ping-tc
   build-depends:   base >= 4.5 && < 4.8
                  , network >= 2.3 && < 2.5
                  , binary >=0.6.3 && < 0.8
-                 , distributed-process >= 0.4.2 && < 0.5
-                 , distributed-process-simplelocalnet ==0.2.*
-                 , distributed-static ==0.2.*
                  , template-haskell >= 2.7 && < 2.10
   if impl(ghc <= 7.6)
       -- prior to ghc-7.4 generics lived in ghc-prim
       build-depends: ghc-prim
+  if flag(distributed)
+     build-depends:
+                   distributed-process >= 0.4.2 && < 0.5
+                 , distributed-process-simplelocalnet ==0.2.*
+                 , distributed-static ==0.2.*
+  else
+     buildable: False
   default-language: Haskell2010
 
 executable ping-tc-merge
@@ -767,13 +798,17 @@ executable ping-tc-merge
   build-depends:   base >= 4.5 && < 4.8
                  , network >= 2.3 && < 2.5
                  , binary >=0.6.3 && < 0.8
-                 , distributed-process >= 0.4.2 && < 0.5
-                 , distributed-process-simplelocalnet ==0.2.*
-                 , distributed-static ==0.2.*
                  , template-haskell >= 2.7 && < 2.10
   if impl(ghc <= 7.6)
       -- prior to ghc-7.4 generics lived in ghc-prim
       build-depends: ghc-prim
+  if flag(distributed)
+     build-depends:
+                   distributed-process >= 0.4.2 && < 0.5
+                 , distributed-process-simplelocalnet ==0.2.*
+                 , distributed-static ==0.2.*
+  else
+     buildable: False
   default-language: Haskell2010
 
 -- extra, not in the text?
@@ -783,13 +818,17 @@ executable ping-tc-notify
   build-depends:   base >= 4.5 && < 4.8
                  , network >= 2.3 && < 2.5
                  , binary >=0.6.3 && < 0.8
-                 , distributed-process >= 0.4.2 && < 0.5
-                 , distributed-process-simplelocalnet ==0.2.*
-                 , distributed-static ==0.2.*
                  , template-haskell >= 2.7 && < 2.10
   if impl(ghc <= 7.6)
       -- prior to ghc-7.4 generics lived in ghc-prim
       build-depends: ghc-prim
+  if flag(distributed)
+     build-depends:
+                   distributed-process >= 0.4.2 && < 0.5
+                 , distributed-process-simplelocalnet ==0.2.*
+                 , distributed-static ==0.2.*
+  else
+     buildable: False
   default-language: Haskell2010
 
 executable ping-fail
@@ -797,13 +836,17 @@ executable ping-fail
   build-depends:   base >= 4.5 && < 4.8
                  , network >= 2.3 && < 2.5
                  , binary >=0.6.3 && < 0.8
-                 , distributed-process >= 0.4.2 && < 0.5
-                 , distributed-process-simplelocalnet ==0.2.*
-                 , distributed-static ==0.2.*
                  , template-haskell >= 2.7 && < 2.10
   if impl(ghc <= 7.6)
       -- prior to ghc-7.4 generics lived in ghc-prim
       build-depends: ghc-prim
+  if flag(distributed)
+     build-depends:
+                   distributed-process >= 0.4.2 && < 0.5
+                 , distributed-process-simplelocalnet ==0.2.*
+                 , distributed-static ==0.2.*
+  else
+     buildable: False
   default-language: Haskell2010
 
 executable distrib-chat
@@ -815,14 +858,18 @@ executable distrib-chat
                  , async ==2.0.*
                  , network >= 2.3 && < 2.5
                  , binary >=0.6.3 && < 0.8
-                 , distributed-process >= 0.4.2 && < 0.5
-                 , distributed-process-simplelocalnet ==0.2.*
-                 , distributed-static ==0.2.*
                  , transformers >=0.3 && <0.5
                  , template-haskell >= 2.7 && < 2.10
   if impl(ghc <= 7.6)
       -- prior to ghc-7.4 generics lived in ghc-prim
       build-depends: ghc-prim
+  if flag(distributed)
+     build-depends:
+                   distributed-process >= 0.4.2 && < 0.5
+                 , distributed-process-simplelocalnet ==0.2.*
+                 , distributed-static ==0.2.*
+  else
+     buildable: False
   default-language: Haskell2010
 
 executable distrib-chat-noslave
@@ -834,14 +881,18 @@ executable distrib-chat-noslave
                  , async ==2.0.*
                  , network >= 2.3 && < 2.5
                  , binary >=0.6.3 && < 0.8
-                 , distributed-process >= 0.4.2 && < 0.5
-                 , distributed-process-simplelocalnet ==0.2.*
-                 , distributed-static ==0.2.*
                  , transformers >=0.3 && <0.5
                  , template-haskell >= 2.7 && < 2.10
   if impl(ghc <= 7.6)
       -- prior to ghc-7.4 generics lived in ghc-prim
       build-depends: ghc-prim
+  if flag(distributed)
+     build-depends:
+                   distributed-process >= 0.4.2 && < 0.5
+                 , distributed-process-simplelocalnet ==0.2.*
+                 , distributed-static ==0.2.*
+  else
+     buildable: False
   default-language: Haskell2010
 
 executable distrib-db
@@ -854,14 +905,17 @@ executable distrib-db
                  , async ==2.0.*
                  , network >= 2.3 && < 2.5
                  , binary >=0.6.3 && < 0.8
-                 , distributed-process >= 0.4.2 && < 0.5
-                 , distributed-process-simplelocalnet ==0.2.*
-                 , distributed-static ==0.2.*
-                 , transformers >=0.3 && <0.5
                  , template-haskell >= 2.7 && < 2.10
   if impl(ghc <= 7.6)
       -- prior to ghc-7.4 generics lived in ghc-prim
       build-depends: ghc-prim
+  if flag(distributed)
+     build-depends:
+                   distributed-process >= 0.4.2 && < 0.5
+                 , distributed-process-simplelocalnet ==0.2.*
+                 , distributed-static ==0.2.*
+  else
+     buildable: False
   default-language: Haskell2010
 
 -- -----------------------------------------------------------------------------
