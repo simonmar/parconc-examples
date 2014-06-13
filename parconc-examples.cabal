@@ -1,5 +1,5 @@
 name:                parconc-examples
-version:             0.3.3
+version:             0.3.4
 synopsis:            Examples to accompany the book "Parallel and Concurrent Programming in Haskell"
 -- description:         
 license:             BSD3
@@ -906,6 +906,7 @@ executable distrib-db
                  , network >= 2.3 && < 2.5
                  , binary >=0.6.3 && < 0.8
                  , template-haskell >= 2.7 && < 2.10
+                 , transformers >=0.3 && <0.5
   if impl(ghc <= 7.6)
       -- prior to ghc-7.4 generics lived in ghc-prim
       build-depends: ghc-prim
