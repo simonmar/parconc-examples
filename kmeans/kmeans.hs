@@ -254,7 +254,8 @@ assign nclusters clusters points = Vector.create $ do
 
 data PointSum = PointSum {-# UNPACK #-} !Int {-# UNPACK #-} !Double {-# UNPACK #-} !Double
 
-instance NFData PointSum
+instance NFData PointSum where
+  rnf (PointSum count xs ys) = () -- all fields are strict
 
 -- <<addToPointSum
 addToPointSum :: PointSum -> Point -> PointSum

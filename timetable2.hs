@@ -16,7 +16,8 @@ import qualified Data.Map as Map
 newtype Talk = Talk Int
   deriving (Eq,Ord)
 
-instance NFData Talk
+instance NFData Talk where
+  rnf (Talk x) = x `seq` ()
 
 instance Show Talk where
   show (Talk t) = show t

@@ -19,7 +19,10 @@ import Control.DeepSeq
 data Point = Point {-#UNPACK#-}!Double {-#UNPACK#-}!Double
     deriving (Show,Read,Eq)
 
-instance NFData Point
+-- deepseq changed in GHC 7.10 to use Generic instances, so for backwards
+-- compatibility define it manually.
+instance NFData Point where
+  rnf (Point x y) = () -- all fields are strict
 
 -- <<point-ops
 zeroPoint :: Point
@@ -51,8 +54,8 @@ data Cluster
             }
   deriving (Show,Read,Eq)
 
-instance NFData Cluster  -- default is ok, all the fields are strict
-
+instance NFData Cluster where
+  rnf (Cluster id cent) = () -- all fields are strict
 
 makeCluster :: Int -> [Point] -> Cluster
 makeCluster clid points =

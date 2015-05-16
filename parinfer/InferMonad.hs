@@ -8,6 +8,9 @@ module InferMonad     (Infer, returnI, eachI, thenI, guardI, useI, getSubI,
                        substituteI, unifyI, freshI, freshesI)
                       where
 
+import Control.Applicative
+import Control.Monad
+
 import MaybeM
 import StateX         (StateX, returnSX, eachSX, thenSX, toSX, putSX, getSX, useSX)
 import Type
@@ -59,6 +62,9 @@ freshesI n            =  freshI               `thenI` (\x  ->
                          freshesI (n-1)       `thenI` (\xs ->
                                               returnI (x:xs)))
 
+instance Applicative Infer where
+  pure = return
+  (<*>) = ap
 
 instance Monad Infer where
   return = returnI

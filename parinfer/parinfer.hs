@@ -15,7 +15,7 @@ import InferMonad
 import Infer
 import  Control.Monad.Par.Scheds.Trace
 import System.IO
-import System.Exit
+import System.Exit (exitWith, ExitCode(..))
 import qualified Data.Map as Map
 
 main :: IO ()
