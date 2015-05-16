@@ -1,6 +1,7 @@
 {-# LANGUAGE TemplateHaskell, DeriveDataTypeable, DeriveGeneric #-}
 {-# LANGUAGE RecordWildCards #-}
-import Control.Distributed.Process hiding (mask, finally)
+import Control.Distributed.Process
+  hiding (Message, mask, finally, handleMessage, proxy)
 import Control.Distributed.Process.Closure
 import Control.Concurrent.Async
 import Control.Monad.IO.Class

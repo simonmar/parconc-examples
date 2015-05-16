@@ -1,6 +1,6 @@
 {-# LANGUAGE TemplateHaskell, DeriveDataTypeable, DeriveGeneric #-}
 {-# OPTIONS_GHC -Wall #-}
-import Control.Distributed.Process
+import Control.Distributed.Process hiding (Message)
 import Control.Distributed.Process.Closure
 
 import Control.Monad
