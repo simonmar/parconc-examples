@@ -1,5 +1,5 @@
 name:                parconc-examples
-version:             0.3.4
+version:             0.3.5
 synopsis:            Examples to accompany the book "Parallel and Concurrent Programming in Haskell"
 -- description:         
 license:             BSD3
