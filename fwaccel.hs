@@ -78,7 +78,7 @@ test = toList (shortestPaths testGraph) == toList expectedResult
 
 toAdjMatrix :: [[Weight]] -> Graph
 toAdjMatrix xs = A.fromList (Z :. k :. k) (concat xs)
-  where k = length xs
+  where k = Prelude.length xs
 
 
 main :: IO ()
