@@ -1,3 +1,7 @@
+# Version 0.4.1
+
+* Make findpar5.hs compile, and add it to the .cabal file
+
 # Version 0.4
 
 * Add `stack.yaml`, builds using LTS 4.2 (GHC 7.10.3)
