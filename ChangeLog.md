@@ -1,3 +1,7 @@
+# Version 0.4.3
+
+* Fix build with GHC 7.8
+
 # Version 0.4.2
 
 * Minor fixes to the .cabal file
