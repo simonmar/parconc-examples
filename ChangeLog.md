@@ -1,3 +1,7 @@
+# Version 0.4.2
+
+* Minor fixes to the .cabal file
+
 # Version 0.4.1
 
 * Make findpar5.hs compile, and add it to the .cabal file

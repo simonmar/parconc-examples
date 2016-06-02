@@ -1,5 +1,5 @@
 name:                parconc-examples
-version:             0.4.1
+version:             0.4.2
 synopsis:            Examples to accompany the book "Parallel and Concurrent Programming in Haskell"
 -- description:         
 license:             BSD3
@@ -10,6 +10,8 @@ copyright:           (c) Simon Marlow 2011-2013
 category:            Sample Code
 build-type:          Simple
 cabal-version:       >=1.10
+bug-reports:         https://github.com/simonmar/parconc-examples/issues
+homepage:            http://github.com/simonmar/parconc-examples
 
 extra-source-files:  sudoku17.1000.txt
                      sudoku17.16000.txt
@@ -34,6 +36,10 @@ extra-source-files:  sudoku17.1000.txt
                      windowman.hs
                      ChangeLog.md
                      README.md
+
+source-repository head
+    type:     git
+    location: https://github.com/simonmar/parconc-examples.git
 
 -- -----------------------------------------------------------------------------
 -- Flags
