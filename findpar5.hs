@@ -1,5 +1,6 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 import System.Directory
+import Control.Applicative
 import Control.Concurrent
 import Control.Monad
 import System.FilePath
