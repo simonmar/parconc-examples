@@ -32,6 +32,7 @@ extra-source-files:  sudoku17.1000.txt
                      parinfer/benchmark.in
                      tmvar.hs
                      windowman.hs
+                     ChangeLog.md
 
 -- -----------------------------------------------------------------------------
 -- Flags
