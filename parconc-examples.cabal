@@ -33,6 +33,7 @@ extra-source-files:  sudoku17.1000.txt
                      tmvar.hs
                      windowman.hs
                      ChangeLog.md
+                     README.md
 
 -- -----------------------------------------------------------------------------
 -- Flags

@@ -1,4 +1,4 @@
-This is the sample code for the book *Parallel and Concurrent Programming in Haskell* (Simon Marlow, O'Reilly 2013).
+This is the sample code to accompany the book *Parallel and Concurrent Programming in Haskell* (Simon Marlow, O'Reilly 2013).
 
 To build the code on your system, you need either:
 
@@ -6,7 +6,7 @@ To build the code on your system, you need either:
 * [A Minimal GHC installation](https://www.haskell.org/downloads)
 * [The Haskell Platform](https://www.haskell.org/downloads#platform)
 
-# Building with Stack
+## Building with Stack
 
 ```
 stack build
@@ -15,7 +15,7 @@ stack build
 will build all the executables and install them in a platform-specific
 subdirectory under `.stack-work/install`.
 
-# Building with Cabal
+## Building with Cabal
 
 ```
 cabal sandox init
