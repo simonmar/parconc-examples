@@ -1,13 +1,14 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 import System.Directory
 import Control.Concurrent
+import Control.Monad
 import System.FilePath
 import System.Environment
 import Data.List hiding (find)
 import GHC.Conc (getNumCapabilities)
 import Text.Printf
 
-import qualified Control.Monad.Par as P hiding (runParIO)
+import qualified Control.Monad.Par.Class as P hiding (runParIO)
 import Control.Monad.Par.IO
 import Control.Monad.IO.Class
 
@@ -62,6 +63,13 @@ subfind s p inner asyncs = do
 --
 
 newtype EParIO a = E { unE :: ParIO (Either SomeException a) }
+
+instance Functor EParIO where
+  fmap f e = e >>= return . f
+
+instance Applicative EParIO where
+  pure = return
+  (<*>) = ap
 
 instance Monad EParIO where
   return a = E (return (Right a))
