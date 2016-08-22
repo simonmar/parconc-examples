@@ -610,6 +610,11 @@ executable  catch-mask2
 -- -----------------------------------------------------------------------------
 -- conc-stm
 
+-- NB. The book refers to "tmvar.hs" and "windowmanager.hs", so we
+-- can't change rename these files.  However, we need to use proper
+-- upper-case module names, so we use symbolic links from a
+-- subdirectory (mismodules) so that the repo remains safe to use on
+-- case-insensitive filesystems (#15).
 executable  miscmodules
   main-is: miscmodules.hs
   hs-source-dirs: miscmodules .
