@@ -1,5 +1,4 @@
 {-# LANGUAGE PatternGuards #-}
-import Network.HTTP hiding (postRequest)
 import Control.Exception
 import Control.Monad
 import Text.Printf
@@ -9,9 +8,6 @@ import Network.URI
 import System.Environment
 import Control.Concurrent
 import Prelude hiding (catch)
-import Network.HTTP
-import Network.Browser
-import Network.URI
 import Data.ByteString (ByteString)
 import qualified Data.ByteString.Char8 as B
 import Text.XML.Light
