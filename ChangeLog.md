@@ -1,3 +1,11 @@
+# Version 0.4.5
+
+* Fix build with GHC 7.8
+
+# Version 0.4.4
+
+* Use http-conduit instead of HTTP (fixes problems with wikipedia URL examples)
+
 # Version 0.4.3
 
 * Fix build with GHC 7.8
