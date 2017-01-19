@@ -18,7 +18,7 @@ subdirectory under `.stack-work/install`.
 ## Building with Cabal
 
 ```
-cabal sandox init
+cabal sandbox init
 cabal install --only-dependencies
 cabal configure
 cabal build
