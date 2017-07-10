@@ -1,3 +1,8 @@
+# Version 0.4.6
+
+* Builds with GHC 7.10 and GHC 8.0.2
+* Test with cabal new-build, and addit to the instructions
+
 # Version 0.4.5
 
 * Fix build with GHC 7.8

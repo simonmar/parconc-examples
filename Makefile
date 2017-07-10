@@ -140,68 +140,68 @@ setup-kmeans:
 
 # Test as much as we can
 test:
-	cabal build
+#	cabal build
 #	bingtranslator/bingtranslator
 #	bingtranslatorconc/bingtranslatorconc
-	./dist/build/catch-mask2/catch-mask2
-	./dist/build/catch-mask/catch-mask
-	./dist/build/chan2/chan2
-	./dist/build/chan3/chan3
-	./dist/build/chan/chan
-#	./dist/build/chat/chat
-	if ! ./dist/build/deadlock1/deadlock1; then true; else false; fi
-	./dist/build/deadlock2/deadlock2
-#	./dist/build/distrib-chat/distrib-chat
-#	./dist/build/distrib-chat-noslave/distrib-chat-noslave
-	./dist/build/distrib-db/distrib-db
-#	./dist/build/findpar2/findpar2
-#	./dist/build/findpar3/findpar3
-#	./dist/build/findpar/findpar
-#	./dist/build/findseq/findseq
-#	./dist/build/fork/fork
-	./dist/build/fwsparse/fwsparse 100 80
-	./dist/build/fwsparse1/fwsparse1 1000 800 +RTS -N2
-	./dist/build/geturls1/geturls1
-	./dist/build/geturls2/geturls2
-	./dist/build/geturls3/geturls3
-	./dist/build/geturls4/geturls4
-	./dist/build/geturls5/geturls5
-	./dist/build/geturls6/geturls6
-	./dist/build/geturls7/geturls7
-	./dist/build/geturls8/geturls8
-	./dist/build/geturls9/geturls9
-	./dist/build/geturlscancel2/geturlscancel2
-	./dist/build/geturlscancel/geturlscancel
-	./dist/build/geturlsfirst/geturlsfirst
-	./dist/build/geturlsstm/geturlsstm
-	cd kmeans && ../dist/build/kmeans/kmeans seq
-	cd kmeans && ../dist/build/kmeans/kmeans strat 64 +RTS -N2
-	./dist/build/logger/logger
-	./dist/build/modifytwo/modifytwo
-	./dist/build/mvar1/mvar1
-	./dist/build/mvar2/mvar2
-	if ! ./dist/build/mvar3/mvar3; then true; else false; fi
-	./dist/build/ping-fail/ping-fail
-	./dist/build/ping-multi/ping-multi
-	./dist/build/ping/ping
-	./dist/build/ping-tc-merge/ping-tc-merge
-	./dist/build/ping-tc-notify/ping-tc-notify
-	./dist/build/ping-tc/ping-tc
-#	./dist/build/reminders2/reminders2
-#	./dist/build/reminders/reminders
-	echo testing | ./dist/build/rsa/rsa encrypt - | ./dist/build/rsa/rsa decrypt -
-	echo testing | ./dist/build/rsa1/rsa1 encrypt - +RTS -N2 | ./dist/build/rsa1/rsa1 decrypt -
-	echo testing | ./dist/build/rsa2/rsa2 encrypt - +RTS -N2 | ./dist/build/rsa2/rsa2 decrypt -
-#	./dist/build/server2/server2
-#	./dist/build/server/server
-	./dist/build/sudoku1/sudoku1 sudoku17.1000.txt
-	./dist/build/sudoku2/sudoku2 sudoku17.1000.txt +RTS -N2
-	./dist/build/sudoku3/sudoku3 sudoku17.1000.txt +RTS -N2
-	./dist/build/sudoku4/sudoku4 sudoku17.1000.txt +RTS -N2
-	./dist/build/threadperf1/threadperf1
-	./dist/build/threadperf2/threadperf2 +RTS -K32m
-	./dist/build/timeout2/timeout2
-	./dist/build/timeout/timeout
+	./dist-newstyle/build/parconc-examples-0.4.5/build/catch-mask2/catch-mask2
+	./dist-newstyle/build/parconc-examples-0.4.5/build/catch-mask/catch-mask
+	./dist-newstyle/build/parconc-examples-0.4.5/build/chan2/chan2
+	./dist-newstyle/build/parconc-examples-0.4.5/build/chan3/chan3
+	./dist-newstyle/build/parconc-examples-0.4.5/build/chan/chan
+#	./dist-newstyle/build/parconc-examples-0.4.5/build/chat/chat
+	if ! ./dist-newstyle/build/parconc-examples-0.4.5/build/deadlock1/deadlock1; then true; else false; fi
+	./dist-newstyle/build/parconc-examples-0.4.5/build/deadlock2/deadlock2
+#	./dist-newstyle/build/parconc-examples-0.4.5/build/distrib-chat/distrib-chat
+#	./dist-newstyle/build/parconc-examples-0.4.5/build/distrib-chat-noslave/distrib-chat-noslave
+#	./dist-newstyle/build/parconc-examples-0.4.5/build/distrib-db/distrib-db
+#	./dist-newstyle/build/parconc-examples-0.4.5/build/findpar2/findpar2
+#	./dist-newstyle/build/parconc-examples-0.4.5/build/findpar3/findpar3
+#	./dist-newstyle/build/parconc-examples-0.4.5/build/findpar/findpar
+#	./dist-newstyle/build/parconc-examples-0.4.5/build/findseq/findseq
+#	./dist-newstyle/build/parconc-examples-0.4.5/build/fork/fork
+	./dist-newstyle/build/parconc-examples-0.4.5/build/fwsparse/fwsparse 100 80
+	./dist-newstyle/build/parconc-examples-0.4.5/build/fwsparse1/fwsparse1 1000 800 +RTS -N2
+	./dist-newstyle/build/parconc-examples-0.4.5/build/geturls1/geturls1
+	./dist-newstyle/build/parconc-examples-0.4.5/build/geturls2/geturls2
+	./dist-newstyle/build/parconc-examples-0.4.5/build/geturls3/geturls3
+	./dist-newstyle/build/parconc-examples-0.4.5/build/geturls4/geturls4
+	./dist-newstyle/build/parconc-examples-0.4.5/build/geturls5/geturls5
+	./dist-newstyle/build/parconc-examples-0.4.5/build/geturls6/geturls6
+	./dist-newstyle/build/parconc-examples-0.4.5/build/geturls7/geturls7
+	./dist-newstyle/build/parconc-examples-0.4.5/build/geturls8/geturls8
+	./dist-newstyle/build/parconc-examples-0.4.5/build/geturls9/geturls9
+	./dist-newstyle/build/parconc-examples-0.4.5/build/geturlscancel2/geturlscancel2
+	./dist-newstyle/build/parconc-examples-0.4.5/build/geturlscancel/geturlscancel
+	./dist-newstyle/build/parconc-examples-0.4.5/build/geturlsfirst/geturlsfirst
+	./dist-newstyle/build/parconc-examples-0.4.5/build/geturlsstm/geturlsstm
+	cd kmeans && ../dist-newstyle/build/parconc-examples-0.4.5/build/kmeans/kmeans seq
+	cd kmeans && ../dist-newstyle/build/parconc-examples-0.4.5/build/kmeans/kmeans strat 64 +RTS -N2
+	./dist-newstyle/build/parconc-examples-0.4.5/build/logger/logger
+	./dist-newstyle/build/parconc-examples-0.4.5/build/modifytwo/modifytwo
+	./dist-newstyle/build/parconc-examples-0.4.5/build/mvar1/mvar1
+	./dist-newstyle/build/parconc-examples-0.4.5/build/mvar2/mvar2
+	if ! ./dist-newstyle/build/parconc-examples-0.4.5/build/mvar3/mvar3; then true; else false; fi
+	./dist-newstyle/build/parconc-examples-0.4.5/build/ping-fail/ping-fail
+	./dist-newstyle/build/parconc-examples-0.4.5/build/ping-multi/ping-multi
+	./dist-newstyle/build/parconc-examples-0.4.5/build/ping/ping
+	./dist-newstyle/build/parconc-examples-0.4.5/build/ping-tc-merge/ping-tc-merge
+	./dist-newstyle/build/parconc-examples-0.4.5/build/ping-tc-notify/ping-tc-notify
+	./dist-newstyle/build/parconc-examples-0.4.5/build/ping-tc/ping-tc
+#	./dist-newstyle/build/parconc-examples-0.4.5/build/reminders2/reminders2
+#	./dist-newstyle/build/parconc-examples-0.4.5/build/reminders/reminders
+	echo testing | ./dist-newstyle/build/parconc-examples-0.4.5/build/rsa/rsa encrypt - | ./dist-newstyle/build/parconc-examples-0.4.5/build/rsa/rsa decrypt -
+	echo testing | ./dist-newstyle/build/parconc-examples-0.4.5/build/rsa1/rsa1 encrypt - +RTS -N2 | ./dist-newstyle/build/parconc-examples-0.4.5/build/rsa1/rsa1 decrypt -
+	echo testing | ./dist-newstyle/build/parconc-examples-0.4.5/build/rsa2/rsa2 encrypt - +RTS -N2 | ./dist-newstyle/build/parconc-examples-0.4.5/build/rsa2/rsa2 decrypt -
+#	./dist-newstyle/build/parconc-examples-0.4.5/build/server2/server2
+#	./dist-newstyle/build/parconc-examples-0.4.5/build/server/server
+	./dist-newstyle/build/parconc-examples-0.4.5/build/sudoku1/sudoku1 sudoku17.1000.txt
+	./dist-newstyle/build/parconc-examples-0.4.5/build/sudoku2/sudoku2 sudoku17.1000.txt +RTS -N2
+	./dist-newstyle/build/parconc-examples-0.4.5/build/sudoku3/sudoku3 sudoku17.1000.txt +RTS -N2
+	./dist-newstyle/build/parconc-examples-0.4.5/build/sudoku4/sudoku4 sudoku17.1000.txt +RTS -N2
+	./dist-newstyle/build/parconc-examples-0.4.5/build/threadperf1/threadperf1
+	./dist-newstyle/build/parconc-examples-0.4.5/build/threadperf2/threadperf2 +RTS -K32m
+	./dist-newstyle/build/parconc-examples-0.4.5/build/timeout2/timeout2
+	./dist-newstyle/build/parconc-examples-0.4.5/build/timeout/timeout
 
 .PHONY: chanbench
 chanbench:
