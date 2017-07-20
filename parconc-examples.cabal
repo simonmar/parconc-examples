@@ -1,7 +1,7 @@
 name:                parconc-examples
 version:             0.4.6
 synopsis:            Examples to accompany the book "Parallel and Concurrent Programming in Haskell"
--- description:         
+description:         Examples to accompany the book "Parallel and Concurrent Programming in Haskell"
 license:             BSD3
 license-file:        LICENSE
 author:              Simon Marlow
