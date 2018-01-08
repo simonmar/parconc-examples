@@ -16,6 +16,7 @@ maxY = 10
 minSD = 1.5
 maxSD = 2.0
 
+main :: IO ()
 main = do
     n: minp: maxp: rest <- fmap (fmap read) getArgs
 
@@ -24,8 +25,8 @@ main = do
         _ -> return ()
 
     nps <- replicateM n (randomRIO (minp, maxp))
-    xs  <- replicateM n (randomRIO (minX, maxY))
-    ys  <- replicateM n (randomRIO (minX, maxY))
+    xs  <- replicateM n (randomRIO (minX, maxX))
+    ys  <- replicateM n (randomRIO (minY, maxY))
     sds <- replicateM n (randomRIO (minSD, maxSD))
 
     let params = zip5 nps xs ys sds sds
@@ -66,7 +67,6 @@ generate2DSamples :: Int                 -- number of samples to generate
                   -> Double -> Double    -- X and Y of the mean
                   -> Double -> Double    -- X and Y standard deviations
                   -> IO [Point]
-
 generate2DSamples n mx my sdx sdy = do
   gen <- newStdGen
   let (genx, geny) = split gen
