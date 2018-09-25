@@ -1,3 +1,7 @@
+# Version 0.4.7
+
+* Builds with GHC 8.2.x and 8.4.x
+
 # Version 0.4.6
 
 * Builds with GHC 7.10 and GHC 8.0.2
