@@ -84,8 +84,8 @@ flag network26
 
 executable rpar
   main-is: rpar.hs
-  build-depends:   base >= 4.5 && < 4.11
-                 , time >= 1.4 && < 1.9
+  build-depends:   base >= 4.5 && < 4.12
+                 , time >= 1.4 && < 1.10
                  , parallel ==3.2.*
   ghc-options: -threaded
   default-language: Haskell2010
@@ -93,7 +93,7 @@ executable rpar
 executable sudoku1
   main-is: sudoku1.hs
   other-modules: Sudoku
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
                  , parallel ==3.2.*
                  , array >= 0.4 && <0.6
   default-language: Haskell2010
@@ -101,7 +101,7 @@ executable sudoku1
 executable sudoku2
   main-is: sudoku2.hs
   other-modules: Sudoku
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
                  , parallel ==3.2.*
                  , array >= 0.4 && <0.6
                  , deepseq >= 1.3 && < 1.5
@@ -111,7 +111,7 @@ executable sudoku2
 executable sudoku3
   main-is: sudoku3.hs
   other-modules: Sudoku
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
                  , parallel ==3.2.*
                  , array >= 0.4 && <0.6
   ghc-options: -threaded
@@ -120,7 +120,7 @@ executable sudoku3
 executable sudoku4
   main-is: sudoku4.hs
   other-modules: Sudoku
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
                  , parallel ==3.2.*
                  , array >= 0.4 && <0.6
   ghc-options: -threaded
@@ -129,7 +129,7 @@ executable sudoku4
 executable sudoku5
   main-is: sudoku5.hs
   other-modules: Sudoku
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
                  , parallel ==3.2.*
                  , array >= 0.4 && <0.6
   ghc-options: -threaded
@@ -140,21 +140,21 @@ executable sudoku5
 
 executable strat
   main-is: strat.hs
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
                  , parallel ==3.2.*
   ghc-options: -threaded
   default-language: Haskell2010
 
 executable strat2
   main-is: strat2.hs
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
                  , parallel ==3.2.*
   ghc-options: -threaded
   default-language: Haskell2010
 
 executable strat3
   main-is: strat3.hs
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
                  , parallel ==3.2.*
   ghc-options: -threaded
   default-language: Haskell2010
@@ -162,7 +162,7 @@ executable strat3
 executable rsa
   main-is: rsa.hs
   other-modules: ByteStringCompat
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
                  , bytestring >= 0.9 && < 0.11
                  , deepseq >= 1.3 && < 1.5
   default-language: Haskell2010
@@ -170,7 +170,7 @@ executable rsa
 executable rsa1
   main-is: rsa1.hs
   other-modules: ByteStringCompat
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
                  , bytestring >= 0.9 && < 0.11
                  , parallel ==3.2.*
                  , deepseq >= 1.3 && < 1.5
@@ -180,7 +180,7 @@ executable rsa1
 executable rsa2
   main-is: rsa2.hs
   other-modules: ByteStringCompat
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
                  , bytestring >= 0.9 && < 0.11
                  , parallel ==3.2.*
                  , deepseq >= 1.3 && < 1.5
@@ -191,14 +191,14 @@ executable kmeans
   hs-source-dirs: kmeans
   main-is: kmeans.hs
   other-modules: KMeansCore
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
                  , parallel ==3.2.*
-                 , time >= 1.4 && < 1.9
+                 , time >= 1.4 && < 1.10
                  , deepseq >= 1.3 && < 1.5
                  , monad-par >= 0.3.4 && < 0.4
                    -- monad-par 0.3 has a bug:
                    -- https://github.com/simonmar/monad-par/issues/23
-                 , binary >=0.6.3 && < 0.9
+                 , binary >=0.6.3 && < 0.11
                  , array >= 0.4 && <0.6
                  , bytestring >= 0.9 && < 0.11
                  , vector >= 0.10 && < 0.13
@@ -209,8 +209,8 @@ executable GenSamples
   hs-source-dirs: kmeans
   main-is: GenSamples.hs
   other-modules: KMeansCore
-  build-depends:   base >= 4.5 && < 4.11
-                 , binary >=0.6.3 && < 0.9
+  build-depends:   base >= 4.5 && < 4.12
+                 , binary >=0.6.3 && < 0.11
                  , array >= 0.4 && <0.6
                  , vector >= 0.10 && < 0.13
                  , random >= 1.0 && < 1.2
@@ -224,7 +224,7 @@ executable GenSamples
 
 executable parmonad
   main-is: parmonad.hs
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
                  , monad-par >= 0.3.4 && < 0.4
   ghc-options: -threaded
   default-language: Haskell2010
@@ -232,7 +232,7 @@ executable parmonad
 executable rsa-pipeline
   main-is: rsa-pipeline.hs
   other-modules: ByteStringCompat Stream
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
                  , bytestring >= 0.9 && < 0.11
                  , monad-par >= 0.3.4 && < 0.4
                  , deepseq >= 1.3 && < 1.5
@@ -243,7 +243,7 @@ executable fwsparse
   main-is: fwsparse.hs
   other-modules: SparseGraph MapCompat
   hs-source-dirs: fwsparse
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
                  , random >= 1.0 && < 1.2
                  , array >= 0.4 && <0.6
                  , containers >= 0.4 && < 0.6
@@ -253,7 +253,7 @@ executable fwsparse1
   main-is: fwsparse1.hs
   other-modules: SparseGraph MapCompat
   hs-source-dirs: fwsparse
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
                  , random >= 1.0 && < 1.2
                  , array >= 0.4 && <0.6
                  , containers >= 0.4 && < 0.6
@@ -264,7 +264,7 @@ executable fwsparse1
 
 executable  timetable
   main-is: timetable.hs
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
                  , containers >= 0.4 && < 0.6
                  , deepseq >= 1.3 && < 1.5
                  , random >= 1.0 && < 1.2
@@ -272,7 +272,7 @@ executable  timetable
 
 executable  timetable1
   main-is: timetable1.hs
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
                  , containers >= 0.4 && < 0.6
                  , deepseq >= 1.3 && < 1.5
                  , monad-par >= 0.3.4 && < 0.4
@@ -281,7 +281,7 @@ executable  timetable1
 
 executable  timetable2
   main-is: timetable2.hs
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
                  , containers >= 0.4 && < 0.6
                  , deepseq >= 1.3 && < 1.5
                  , monad-par >= 0.3.4 && < 0.4
@@ -290,7 +290,7 @@ executable  timetable2
 
 executable  timetable3
   main-is: timetable3.hs
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
                  , containers >= 0.4 && < 0.6
                  , deepseq >= 1.3 && < 1.5
                  , monad-par >= 0.3.4 && < 0.4
@@ -313,7 +313,7 @@ executable  parinfer
                   Infer
                   Substitution
                   StateX
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
                  , containers >= 0.4 && < 0.6
                  , deepseq >= 1.3 && < 1.5
                  , monad-par >= 0.3.4 && < 0.4
@@ -327,7 +327,7 @@ executable  parinfer
 
 executable  fwdense
   main-is: fwdense.hs
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
                  , repa >= 3.2 && < 3.5
   ghc-options: -O2
   if flag(llvm)
@@ -336,7 +336,7 @@ executable  fwdense
 
 executable  fwdense1
   main-is: fwdense1.hs
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
                  , repa >= 3.2 && < 3.5
                  , transformers >=0.3 && <0.6
   ghc-options: -O2 -threaded
@@ -346,7 +346,7 @@ executable  fwdense1
 
 executable rotateimage
   main-is: rotateimage.hs
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
                  , repa >= 3.2 && < 3.5
   ghc-options: -O2 -threaded
   if flag(devil)
@@ -363,19 +363,19 @@ executable rotateimage
 executable  fwaccel
   main-is: fwaccel.hs
   other-modules: AccelerateCompat
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
   ghc-options: -O2
   if flag(accelerate)
-     build-depends: accelerate >= 0.12 && < 1.1
+     build-depends: accelerate >= 0.12 && < 1.3
   else
      buildable: False
   default-language: Haskell2010
 
 executable  fwaccel-gpu
   main-is: fwaccel-gpu.hs
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
   if flag(accelerate)
-     build-depends: accelerate >= 0.12 && < 1.1
+     build-depends: accelerate >= 0.12 && < 1.3
   else
      buildable: False
   if flag(cuda)
@@ -389,10 +389,10 @@ executable  mandel
   main-is: mandel.hs
   other-modules: Config
   hs-source-dirs: mandel
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
                  , fclabels
   if flag(accelerate)
-     build-depends: accelerate >= 0.12 && < 1.1
+     build-depends: accelerate >= 0.12 && < 1.3
                   , accelerate-io
   else
      buildable: False
@@ -408,17 +408,17 @@ executable  mandel
 
 executable  fork
   main-is: fork.hs
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
   default-language: Haskell2010
 
 executable  reminders
   main-is: reminders.hs
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
   default-language: Haskell2010
 
 executable  reminders2
   main-is: reminders2.hs
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
   default-language: Haskell2010
 
 -- -----------------------------------------------------------------------------
@@ -426,38 +426,38 @@ executable  reminders2
 
 executable  mvar1
   main-is: mvar1.hs
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
   default-language: Haskell2010
 
 executable  mvar2
   main-is: mvar2.hs
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
   default-language: Haskell2010
 
 executable  mvar3
   main-is: mvar3.hs
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
   default-language: Haskell2010
 
 executable  logger
   main-is: logger.hs
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
   default-language: Haskell2010
 
 executable  phonebook
   main-is: phonebook.hs
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
                  , containers >= 0.4 && < 0.6
   default-language: Haskell2010
 
 executable  chan
   main-is: chan.hs
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
   default-language: Haskell2010
 
 executable  chan2
   main-is: chan2.hs
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
   default-language: Haskell2010
 
 -- -----------------------------------------------------------------------------
@@ -466,12 +466,12 @@ executable  chan2
 executable geturls1
   main-is: geturls1.hs
   other-modules: GetURL
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
                  , containers >= 0.4 && < 0.6
-                 , http-conduit >= 2.1 && < 2.3
+                 , http-conduit >= 2.1 && < 2.4
                  , bytestring >= 0.9 && < 0.11
   if flag(network26)
-      build-depends: network >= 2.6 && < 2.7
+      build-depends: network >= 2.6 && < 2.9
                    , network-uri >= 2.6 && < 2.7
   else
       build-depends: network >= 2.3 && < 2.6
@@ -480,13 +480,13 @@ executable geturls1
 executable  geturls2
   main-is: geturls2.hs
   other-modules: GetURL
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
                  , stm ==2.4.*
                  , bytestring >= 0.9 && < 0.11
-                 , time >= 1.4 && < 1.9
-                 , http-conduit >= 2.1 && < 2.3
+                 , time >= 1.4 && < 1.10
+                 , http-conduit >= 2.1 && < 2.4
   if flag(network26)
-      build-depends: network >= 2.6 && < 2.7
+      build-depends: network >= 2.6 && < 2.9
                    , network-uri >= 2.6 && < 2.7
   else
       build-depends: network >= 2.3 && < 2.6
@@ -495,13 +495,13 @@ executable  geturls2
 executable  geturls3
   main-is: geturls3.hs
   other-modules: TimeIt GetURL
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
                  , stm ==2.4.*
                  , bytestring >= 0.9 && < 0.11
-                 , time >= 1.4 && < 1.9
-                 , http-conduit >= 2.1 && < 2.3
+                 , time >= 1.4 && < 1.10
+                 , http-conduit >= 2.1 && < 2.4
   if flag(network26)
-      build-depends: network >= 2.6 && < 2.7
+      build-depends: network >= 2.6 && < 2.9
                    , network-uri >= 2.6 && < 2.7
   else
       build-depends: network >= 2.3 && < 2.6
@@ -510,13 +510,13 @@ executable  geturls3
 executable  geturls4
   main-is: geturls4.hs
   other-modules: GetURL
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
                  , stm ==2.4.*
                  , bytestring >= 0.9 && < 0.11
-                 , time >= 1.4 && < 1.9
-                 , http-conduit >= 2.1 && < 2.3
+                 , time >= 1.4 && < 1.10
+                 , http-conduit >= 2.1 && < 2.4
   if flag(network26)
-      build-depends: network >= 2.6 && < 2.7
+      build-depends: network >= 2.6 && < 2.9
                    , network-uri >= 2.6 && < 2.7
   else
       build-depends: network >= 2.3 && < 2.6
@@ -525,13 +525,13 @@ executable  geturls4
 executable  geturls5
   main-is: geturls5.hs
   other-modules: GetURL
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
                  , stm ==2.4.*
                  , bytestring >= 0.9 && < 0.11
-                 , time >= 1.4 && < 1.9
-                 , http-conduit >= 2.1 && < 2.3
+                 , time >= 1.4 && < 1.10
+                 , http-conduit >= 2.1 && < 2.4
   if flag(network26)
-      build-depends: network >= 2.6 && < 2.7
+      build-depends: network >= 2.6 && < 2.9
                    , network-uri >= 2.6 && < 2.7
   else
       build-depends: network >= 2.3 && < 2.6
@@ -540,13 +540,13 @@ executable  geturls5
 executable  geturls6
   main-is: geturls6.hs
   other-modules: TimeIt GetURL
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
                  , stm ==2.4.*
                  , bytestring >= 0.9 && < 0.11
-                 , time >= 1.4 && < 1.9
-                 , http-conduit >= 2.1 && < 2.3
+                 , time >= 1.4 && < 1.10
+                 , http-conduit >= 2.1 && < 2.4
   if flag(network26)
-      build-depends: network >= 2.6 && < 2.7
+      build-depends: network >= 2.6 && < 2.9
                    , network-uri >= 2.6 && < 2.7
   else
       build-depends: network >= 2.3 && < 2.6
@@ -558,13 +558,13 @@ executable  geturls6
 executable  geturlscancel
   main-is: geturlscancel.hs
   other-modules: TimeIt GetURL
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
                  , stm ==2.4.*
                  , bytestring >= 0.9 && < 0.11
-                 , time >= 1.4 && < 1.9
-                 , http-conduit >= 2.1 && < 2.3
+                 , time >= 1.4 && < 1.10
+                 , http-conduit >= 2.1 && < 2.4
   if flag(network26)
-      build-depends: network >= 2.6 && < 2.7
+      build-depends: network >= 2.6 && < 2.9
                    , network-uri >= 2.6 && < 2.7
   else
       build-depends: network >= 2.3 && < 2.6
@@ -573,13 +573,13 @@ executable  geturlscancel
 executable  geturlscancel2
   main-is: geturlscancel2.hs
   other-modules: TimeIt GetURL
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
                  , stm ==2.4.*
                  , bytestring >= 0.9 && < 0.11
-                 , time >= 1.4 && < 1.9
-                 , http-conduit >= 2.1 && < 2.3
+                 , time >= 1.4 && < 1.10
+                 , http-conduit >= 2.1 && < 2.4
   if flag(network26)
-      build-depends: network >= 2.6 && < 2.7
+      build-depends: network >= 2.6 && < 2.9
                    , network-uri >= 2.6 && < 2.7
   else
       build-depends: network >= 2.3 && < 2.6
@@ -587,27 +587,27 @@ executable  geturlscancel2
 
 executable  modifytwo
   main-is: modifytwo.hs
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
   default-language: Haskell2010
 
 executable  chan3
   main-is: chan3.hs
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
   default-language: Haskell2010
 
 executable  timeout
   main-is: timeout.hs
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
   default-language: Haskell2010
 
 executable  catch-mask
   main-is: catch-mask.hs
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
   default-language: Haskell2010
 
 executable  catch-mask2
   main-is: catch-mask2.hs
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
   default-language: Haskell2010
 
 -- -----------------------------------------------------------------------------
@@ -622,7 +622,7 @@ executable  miscmodules
   main-is: miscmodules.hs
   hs-source-dirs: miscmodules .
   other-modules: TMVar, TList, TQueue, TBQueue, WindowManager
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
                  , containers >= 0.4 && < 0.6
                  , stm ==2.4.*
   default-language: Haskell2010
@@ -630,13 +630,13 @@ executable  miscmodules
 executable  geturlsfirst
   main-is: geturlsfirst.hs
   other-modules: ConcurrentUtils, GetURL
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
                  , stm ==2.4.*
                  , bytestring >= 0.9 && < 0.11
-                 , time >= 1.4 && < 1.9
-                 , http-conduit >= 2.1 && < 2.3
+                 , time >= 1.4 && < 1.10
+                 , http-conduit >= 2.1 && < 2.4
   if flag(network26)
-      build-depends: network >= 2.6 && < 2.7
+      build-depends: network >= 2.6 && < 2.9
                    , network-uri >= 2.6 && < 2.7
   else
       build-depends: network >= 2.3 && < 2.6
@@ -644,7 +644,7 @@ executable  geturlsfirst
 
 executable  TChan
   main-is: TChan.hs
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
                  , stm ==2.4.*
   default-language: Haskell2010
 
@@ -654,13 +654,13 @@ executable  TChan
 executable  geturls7
   main-is: geturls7.hs
   other-modules: ConcurrentUtils, GetURL
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
                  , stm ==2.4.*
                  , bytestring >= 0.9 && < 0.11
-                 , time >= 1.4 && < 1.9
-                 , http-conduit >= 2.1 && < 2.3
+                 , time >= 1.4 && < 1.10
+                 , http-conduit >= 2.1 && < 2.4
   if flag(network26)
-      build-depends: network >= 2.6 && < 2.7
+      build-depends: network >= 2.6 && < 2.9
                    , network-uri >= 2.6 && < 2.7
   else
       build-depends: network >= 2.3 && < 2.6
@@ -669,13 +669,13 @@ executable  geturls7
 executable  geturls8
   main-is: geturls8.hs
   other-modules: Async, GetURL
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
                  , stm ==2.4.*
                  , bytestring >= 0.9 && < 0.11
-                 , time >= 1.4 && < 1.9
-                 , http-conduit >= 2.1 && < 2.3
+                 , time >= 1.4 && < 1.10
+                 , http-conduit >= 2.1 && < 2.4
   if flag(network26)
-      build-depends: network >= 2.6 && < 2.7
+      build-depends: network >= 2.6 && < 2.9
                    , network-uri >= 2.6 && < 2.7
   else
       build-depends: network >= 2.3 && < 2.6
@@ -684,13 +684,13 @@ executable  geturls8
 executable  geturls9
   main-is: geturls9.hs
   other-modules: Async, GetURL
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
                  , stm ==2.4.*
                  , bytestring >= 0.9 && < 0.11
-                 , time >= 1.4 && < 1.9
-                 , http-conduit >= 2.1 && < 2.3
+                 , time >= 1.4 && < 1.10
+                 , http-conduit >= 2.1 && < 2.4
   if flag(network26)
-      build-depends: network >= 2.6 && < 2.7
+      build-depends: network >= 2.6 && < 2.9
                    , network-uri >= 2.6 && < 2.7
   else
       build-depends: network >= 2.3 && < 2.6
@@ -698,8 +698,8 @@ executable  geturls9
 
 executable  timeout2
   main-is: timeout.hs
-  build-depends:   base >= 4.5 && < 4.11
-                 , async >= 2.0 && < 2.2
+  build-depends:   base >= 4.5 && < 4.12
+                 , async >= 2.0 && < 2.3
   default-language: Haskell2010
 
 -- -----------------------------------------------------------------------------
@@ -707,7 +707,7 @@ executable  timeout2
 
 executable findseq
   main-is: findseq.hs
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
                  , filepath >= 1.3 && < 1.5
                  , directory >= 1.1 && < 1.4
   default-language: Haskell2010
@@ -715,39 +715,39 @@ executable findseq
 executable findpar
   main-is: findpar.hs
   ghc-options: -threaded
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
                  , filepath >= 1.3 && < 1.5
                  , directory >= 1.1 && < 1.4
-                 , async >= 2.0 && < 2.2
+                 , async >= 2.0 && < 2.3
   default-language: Haskell2010
 
 executable findpar2
   main-is: findpar2.hs
   ghc-options: -threaded
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
                  , filepath >= 1.3 && < 1.5
                  , directory >= 1.1 && < 1.4
-                 , async >= 2.0 && < 2.2
+                 , async >= 2.0 && < 2.3
   default-language: Haskell2010
 
 executable findpar3
   main-is: findpar3.hs
   other-modules: CasIORef
   ghc-options: -threaded
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
                  , filepath >= 1.3 && < 1.5
                  , directory >= 1.1 && < 1.4
-                 , async >= 2.0 && < 2.2
+                 , async >= 2.0 && < 2.3
                  , stm ==2.4.*
   default-language: Haskell2010
 
 executable findpar4
   main-is: findpar4.hs
   ghc-options: -threaded
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
                  , filepath >= 1.3 && < 1.5
                  , directory >= 1.1 && < 1.4
-                 , async >= 2.0 && < 2.2
+                 , async >= 2.0 && < 2.3
                  , stm ==2.4.*
                  , transformers >=0.3 && <0.6
                  , abstract-par ==0.3.*
@@ -757,7 +757,7 @@ executable findpar4
 executable findpar5
   main-is: findpar5.hs
   ghc-options: -threaded
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
                  , filepath >= 1.3 && < 1.5
                  , directory >= 1.1 && < 1.4
                  , transformers >=0.3 && <0.6
@@ -771,10 +771,10 @@ executable findpar5
 executable  server
   main-is: server.hs
   other-modules: ConcurrentUtils
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
                  , stm ==2.4.*
   if flag(network26)
-      build-depends: network >= 2.6 && < 2.7
+      build-depends: network >= 2.6 && < 2.9
                    , network-uri >= 2.6 && < 2.7
   else
       build-depends: network >= 2.3 && < 2.6
@@ -783,11 +783,11 @@ executable  server
 executable  server2
   main-is: server2.hs
   other-modules: ConcurrentUtils
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
                  , stm ==2.4.*
-                 , async >= 2.0 && < 2.2
+                 , async >= 2.0 && < 2.3
   if flag(network26)
-      build-depends: network >= 2.6 && < 2.7
+      build-depends: network >= 2.6 && < 2.9
                    , network-uri >= 2.6 && < 2.7
   else
       build-depends: network >= 2.3 && < 2.6
@@ -796,12 +796,12 @@ executable  server2
 executable chat
   main-is: chat.hs
   other-modules: ConcurrentUtils
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
                  , containers >= 0.4 && < 0.6
-                 , async >= 2.0 && < 2.2
+                 , async >= 2.0 && < 2.3
                  , stm ==2.4.*
   if flag(network26)
-      build-depends: network >= 2.6 && < 2.7
+      build-depends: network >= 2.6 && < 2.9
                    , network-uri >= 2.6 && < 2.7
   else
       build-depends: network >= 2.3 && < 2.6
@@ -813,11 +813,11 @@ executable chat
 executable ping
   main-is: distrib-ping/ping.hs
   other-modules: DistribUtils
-  build-depends:   base >= 4.5 && < 4.11
-                 , binary >=0.6.3 && < 0.9
-                 , template-haskell >= 2.7 && < 2.12
+  build-depends:   base >= 4.5 && < 4.12
+                 , binary >=0.6.3 && < 0.11
+                 , template-haskell >= 2.7 && < 2.15
   if flag(network26)
-      build-depends: network >= 2.6 && < 2.7
+      build-depends: network >= 2.6 && < 2.9
                    , network-uri >= 2.6 && < 2.7
   else
       build-depends: network >= 2.3 && < 2.6
@@ -836,11 +836,11 @@ executable ping
 executable ping-multi
   main-is: distrib-ping/ping-multi.hs
   other-modules: DistribUtils
-  build-depends:   base >= 4.5 && < 4.11
-                 , binary >=0.6.3 && < 0.9
-                 , template-haskell >= 2.7 && < 2.12
+  build-depends:   base >= 4.5 && < 4.12
+                 , binary >=0.6.3 && < 0.11
+                 , template-haskell >= 2.7 && < 2.15
   if flag(network26)
-      build-depends: network >= 2.6 && < 2.7
+      build-depends: network >= 2.6 && < 2.9
                    , network-uri >= 2.6 && < 2.7
   else
       build-depends: network >= 2.3 && < 2.6
@@ -859,11 +859,11 @@ executable ping-multi
 executable ping-tc
   main-is: distrib-ping/ping-tc.hs
   other-modules: DistribUtils
-  build-depends:   base >= 4.5 && < 4.11
-                 , binary >=0.6.3 && < 0.9
-                 , template-haskell >= 2.7 && < 2.12
+  build-depends:   base >= 4.5 && < 4.12
+                 , binary >=0.6.3 && < 0.11
+                 , template-haskell >= 2.7 && < 2.15
   if flag(network26)
-      build-depends: network >= 2.6 && < 2.7
+      build-depends: network >= 2.6 && < 2.9
                    , network-uri >= 2.6 && < 2.7
   else
       build-depends: network >= 2.3 && < 2.6
@@ -882,11 +882,11 @@ executable ping-tc
 executable ping-tc-merge
   main-is: distrib-ping/ping-tc-merge.hs
   other-modules: DistribUtils
-  build-depends:   base >= 4.5 && < 4.11
-                 , binary >=0.6.3 && < 0.9
-                 , template-haskell >= 2.7 && < 2.12
+  build-depends:   base >= 4.5 && < 4.12
+                 , binary >=0.6.3 && < 0.11
+                 , template-haskell >= 2.7 && < 2.15
   if flag(network26)
-      build-depends: network >= 2.6 && < 2.7
+      build-depends: network >= 2.6 && < 2.9
                    , network-uri >= 2.6 && < 2.7
   else
       build-depends: network >= 2.3 && < 2.6
@@ -906,11 +906,11 @@ executable ping-tc-merge
 executable ping-tc-notify
   main-is: distrib-ping/ping-tc-notify.hs
   other-modules: DistribUtils
-  build-depends:   base >= 4.5 && < 4.11
-                 , binary >=0.6.3 && < 0.9
-                 , template-haskell >= 2.7 && < 2.12
+  build-depends:   base >= 4.5 && < 4.12
+                 , binary >=0.6.3 && < 0.11
+                 , template-haskell >= 2.7 && < 2.15
   if flag(network26)
-      build-depends: network >= 2.6 && < 2.7
+      build-depends: network >= 2.6 && < 2.9
                    , network-uri >= 2.6 && < 2.7
   else
       build-depends: network >= 2.3 && < 2.6
@@ -929,11 +929,11 @@ executable ping-tc-notify
 executable ping-fail
   main-is: distrib-ping/ping-fail.hs
   other-modules: DistribUtils
-  build-depends:   base >= 4.5 && < 4.11
-                 , binary >=0.6.3 && < 0.9
-                 , template-haskell >= 2.7 && < 2.12
+  build-depends:   base >= 4.5 && < 4.12
+                 , binary >=0.6.3 && < 0.11
+                 , template-haskell >= 2.7 && < 2.15
   if flag(network26)
-      build-depends: network >= 2.6 && < 2.7
+      build-depends: network >= 2.6 && < 2.9
                    , network-uri >= 2.6 && < 2.7
   else
       build-depends: network >= 2.3 && < 2.6
@@ -952,15 +952,15 @@ executable ping-fail
 executable distrib-chat
   main-is: distrib-chat/chat.hs
   other-modules: ConcurrentUtils DistribUtils
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
                  , containers >= 0.4 && < 0.6
                  , stm ==2.4.*
-                 , async >= 2.0 && < 2.2
-                 , binary >=0.6.3 && < 0.9
+                 , async >= 2.0 && < 2.3
+                 , binary >=0.6.3 && < 0.11
                  , transformers >=0.3 && <0.6
-                 , template-haskell >= 2.7 && < 2.12
+                 , template-haskell >= 2.7 && < 2.15
   if flag(network26)
-      build-depends: network >= 2.6 && < 2.7
+      build-depends: network >= 2.6 && < 2.9
                    , network-uri >= 2.6 && < 2.7
   else
       build-depends: network >= 2.3 && < 2.6
@@ -979,15 +979,15 @@ executable distrib-chat
 executable distrib-chat-noslave
   main-is: distrib-chat/chat-noslave.hs
   other-modules: ConcurrentUtils
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
                  , containers >= 0.4 && < 0.6
                  , stm ==2.4.*
-                 , async >= 2.0 && < 2.2
-                 , binary >=0.6.3 && < 0.9
+                 , async >= 2.0 && < 2.3
+                 , binary >=0.6.3 && < 0.11
                  , transformers >=0.3 && <0.6
-                 , template-haskell >= 2.7 && < 2.12
+                 , template-haskell >= 2.7 && < 2.15
   if flag(network26)
-      build-depends: network >= 2.6 && < 2.7
+      build-depends: network >= 2.6 && < 2.9
                    , network-uri >= 2.6 && < 2.7
   else
       build-depends: network >= 2.3 && < 2.6
@@ -1007,15 +1007,15 @@ executable distrib-db
   main-is: db.hs
   hs-source-dirs: . distrib-db
   other-modules: DistribUtils Database
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
                  , containers >= 0.4 && < 0.6
                  , stm ==2.4.*
-                 , async >= 2.0 && < 2.2
-                 , binary >=0.6.3 && < 0.9
-                 , template-haskell >= 2.7 && < 2.12
+                 , async >= 2.0 && < 2.3
+                 , binary >=0.6.3 && < 0.11
+                 , template-haskell >= 2.7 && < 2.15
                  , transformers >=0.3 && <0.6
   if flag(network26)
-      build-depends: network >= 2.6 && < 2.7
+      build-depends: network >= 2.6 && < 2.9
                    , network-uri >= 2.6 && < 2.7
   else
       build-depends: network >= 2.3 && < 2.6
@@ -1036,27 +1036,27 @@ executable distrib-db
 
 executable  mvar4
   main-is: mvar4.hs
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
   default-language: Haskell2010
 
 executable  deadlock1
   main-is: deadlock1.hs
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
   default-language: Haskell2010
 
 executable  deadlock2
   main-is: deadlock2.hs
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
   default-language: Haskell2010
 
 executable  threadperf1
   main-is: threadperf1.hs
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
   default-language: Haskell2010
 
 executable  threadperf2
   main-is: threadperf2.hs
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
   ghc-options: -rtsopts
   default-language: Haskell2010
 
@@ -1067,14 +1067,14 @@ executable  bingtranslator
   main-is: bingtranslator.hs
   other-modules: BingTranslate GetURL
   hs-source-dirs: other .
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
                  , bytestring >= 0.9 && < 0.11
-                 , time >= 1.4 && < 1.9
-                 , http-conduit >= 2.1 && < 2.3
+                 , time >= 1.4 && < 1.10
+                 , http-conduit >= 2.1 && < 2.4
                  , utf8-string >= 0.3 && < 1.1
                  , xml ==1.3.*
   if flag(network26)
-      build-depends: network >= 2.6 && < 2.7
+      build-depends: network >= 2.6 && < 2.9
                    , network-uri >= 2.6 && < 2.7
   else
       build-depends: network >= 2.3 && < 2.6
@@ -1084,14 +1084,14 @@ executable  bingtranslatorconc
   main-is: bingtranslatorconc.hs
   other-modules: BingTranslate GetURL
   hs-source-dirs: other .
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
                  , bytestring >= 0.9 && < 0.11
-                 , time >= 1.4 && < 1.9
-                 , http-conduit >= 2.1 && < 2.3
+                 , time >= 1.4 && < 1.10
+                 , http-conduit >= 2.1 && < 2.4
                  , utf8-string >= 0.3 && < 1.1
                  , xml ==1.3.*
   if flag(network26)
-      build-depends: network >= 2.6 && < 2.7
+      build-depends: network >= 2.6 && < 2.9
                    , network-uri >= 2.6 && < 2.7
   else
       build-depends: network >= 2.3 && < 2.6
@@ -1100,13 +1100,13 @@ executable  bingtranslatorconc
 executable  geturlsstm
   main-is: geturlsstm.hs
   other-modules: TimeIt GetURL
-  build-depends:   base >= 4.5 && < 4.11
+  build-depends:   base >= 4.5 && < 4.12
                  , stm ==2.4.*
                  , bytestring >= 0.9 && < 0.11
-                 , time >= 1.4 && < 1.9
-                 , http-conduit >= 2.1 && < 2.3
+                 , time >= 1.4 && < 1.10
+                 , http-conduit >= 2.1 && < 2.4
   if flag(network26)
-      build-depends: network >= 2.6 && < 2.7
+      build-depends: network >= 2.6 && < 2.9
                    , network-uri >= 2.6 && < 2.7
   else
       build-depends: network >= 2.3 && < 2.6
