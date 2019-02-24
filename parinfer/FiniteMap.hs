@@ -37,4 +37,4 @@ ranFM (MkFM abs)                      =   [ b | (a,b) <- abs ]
 disjointFM                            ::  (Eq a) => FM a b -> FM a b -> Bool
 f `disjointFM` g                      =   domFM f `disjoint` domFM g
 disjoint                              ::  (Eq a) => [a] -> [a] -> Bool
-xs `disjoint` ys                      =   and [ not (x `elem` ys) | x <- xs ]
+xs `disjoint` ys                      =   and [ x `notElem` ys | x <- xs ]

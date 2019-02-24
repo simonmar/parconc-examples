@@ -71,4 +71,4 @@ instance Monad Infer where
   (>>=) = thenI
 
 instance Functor Infer where
-  fmap f x = x >>= return . f
+  fmap = (<$>)

@@ -39,7 +39,7 @@ unify t (TVar y) s                    =  unifyTVar y t s
 unify (TCon j ts) (TCon k us) s       =  (j == k) `guardM` unifies ts us s
 unifies                               :: [MonoType] -> [MonoType] -> Sub -> Maybe Sub
 unifies [] [] s                       =  returnM s
-unifies (t:ts) (u:us) s               =  unify t u s `thenM` (\s' -> unifies ts us s')
+unifies (t:ts) (u:us) s               =  unify t u s `thenM` unifies ts us
 unifyTVar                             :: TVarId -> MonoType -> Sub -> Maybe Sub
 unifyTVar x t s | x `elem` domSub s     =  unify (lookupSub s x) t s
                 | TVar x == t         =  returnM s

@@ -8,13 +8,29 @@
 
 *.old
 
-dist
-
 cabal-dev
 cabal.sandbox.config
 .cabal-sandbox
 
 .stack-work
+
+dist
+dist-*
+cabal-dev
+*.chi
+*.chs.h
+*.dyn_o
+*.dyn_hi
+.hpc
+.hsenv
+*.prof
+*.aux
+*.hp
+*.eventlog
+cabal.project.local
+cabal.project.local~
+.HTF/
+.ghc.environment.*
 
 bingtranslator
 bingtranslatorconc
@@ -81,3 +97,5 @@ sudoku5
 threadperf1
 threadperf2
 timeout
+
+

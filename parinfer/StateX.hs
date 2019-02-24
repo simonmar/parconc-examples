@@ -14,4 +14,4 @@ thenSX thenX xSX kSX  =   MkSX (\s -> rep xSX s `thenX` (\(x,s') -> rep (kSX x) 
 toSX eachX xX         =   MkSX (\s -> xX `eachX` (\x -> (x,s)))
 putSX returnX s'      =   MkSX (\s -> returnX ((), s'))
 getSX returnX         =   MkSX (\s -> returnX (s,s))
-useSX eachX s xSX     =   rep xSX s `eachX` (\(x,s') -> x)
+useSX eachX s xSX     =   rep xSX s `eachX` fst
