@@ -40,6 +40,7 @@
  - ignore: {name: Redundant bracket}
  - ignore: {name: Use camelCase}
  - ignore: {name: Unused LANGUAGE pragma}
+ - ignore: {name: Use otherwise}
 
 # Turn on hints that are off by default
 #

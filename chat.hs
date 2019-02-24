@@ -119,7 +119,7 @@ data Message = Notice String
 broadcast :: Server -> Message -> STM ()
 broadcast Server{..} msg = do
   clientmap <- readTVar clients
-  mapM_ (\client -> sendMessage client msg) (Map.elems clientmap)
+  mapM_ (`sendMessage` msg) (Map.elems clientmap)
 -- >>
 
 -- <<sendMessage
@@ -220,7 +220,7 @@ runClient serv@Server{..} client@Client{..} = do
         msg <- readTChan clientSendChan
         return $ do
             continue <- handleMessage serv client msg
-            when continue $ server
+            when continue server
 -- >>
 
 -- <<handleMessage

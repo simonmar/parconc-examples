@@ -42,7 +42,7 @@ writeChan (Chan _ writeVar) val = do
 
 -- <<readChan
 readChan :: Chan a -> IO a
-readChan (Chan readVar _) = do
+readChan (Chan readVar _) =
   modifyMVar readVar $ \stream -> do
     Item val tail <- readMVar stream
     return (tail, val)
