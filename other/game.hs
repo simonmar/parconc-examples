@@ -17,7 +17,7 @@ main = do
 
  forkIO $ forever $ do
       score <- readMVar scorem
-      threadDelay (truncate (fromIntegral 1000000 * (0.9 ^ score)))
+      threadDelay (truncate (1000000 * (0.9 ^ score)))
       putMVar m Time
 
  forkIO $ forever (do c <- getChar; putMVar m (C c))

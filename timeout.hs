@@ -28,8 +28,8 @@ timeout t m
            (\_ -> return Nothing)                       -- <6>
            (bracket (forkIO $ do threadDelay t          -- <7>
                                  throwTo pid ex)
-                    (\tid -> throwTo tid ThreadKilled)  -- <8>
+                    (`throwTo` ThreadKilled)            -- <8>
                     (\_ -> fmap Just m))                -- <9>
 -- >>
 
-main = (timeout 200000 $ timeout 100000 $ timeout 300000 $ threadDelay 1000000) >>= print
+main = timeout 200000 (timeout 100000 $ timeout 300000 $ threadDelay 1000000) >>= print

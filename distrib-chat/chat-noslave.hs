@@ -181,7 +181,7 @@ kick server@Server{..} who by = do
     Just (ClientLocal victim) -> do
       writeTVar (clientKicked victim) $ Just ("by " ++ by)
       void $ sendToName server by (Notice $ "you kicked " ++ who)
-    Just (ClientRemote victim) -> do
+    Just (ClientRemote victim) ->
       sendRemote server (clientHome victim) (MsgKick who by)
 -- >>
 
@@ -254,7 +254,7 @@ runClient serv@Server{..} client@LocalClient{..} = do
         msg <- readTChan clientSendChan
         return $ do
             continue <- handleMessage serv client msg
-            when continue $ server
+            when continue server
 -- >>
 
 -- <<handleMessage
@@ -352,7 +352,7 @@ handleRemoteMessage server@Server{..} m =
 
     MsgNewClient name pid -> liftIO $ atomically $ do
         ok <- checkAddClient server (ClientRemote (RemoteClient name pid))
-        when (not ok) $
+        unless ok $
           sendRemote server pid (MsgKick name "SYSTEM")
 
     MsgClientDisconnected name pid -> liftIO $ atomically $ do
@@ -379,7 +379,7 @@ newServerInfo server@Server{..} rsvp pid remote_clients = do
             -- ToDo: also deal with conflicts
     writeTVar clients new_clientmap
 
-    when rsvp $ do
+    when rsvp $
       sendRemote server pid
          (MsgServerInfo False spid (localClientNames new_clientmap))
 
@@ -404,7 +404,7 @@ master backend port = do
   mypid <- getSelfPid
   register "chatServer" mypid
 
-  forM_ peers $ \peer -> do
+  forM_ peers $ \peer ->
     whereisRemoteAsync peer "chatServer"
 
   chatServer (read port :: Int)

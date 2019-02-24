@@ -30,6 +30,6 @@ talk h = do
     if line == "end"                                           -- <4>
        then hPutStrLn h ("Thank you for using the " ++         -- <5>
                          "Haskell doubling service.")
-       else do hPutStrLn h (show (2 * (read line :: Integer))) -- <6>
+       else do hPrint h (2 * (read line :: Integer))           -- <6>
                loop                                            -- <7>
 -- >>

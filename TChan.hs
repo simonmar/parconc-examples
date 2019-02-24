@@ -59,7 +59,7 @@ isEmptyTChan (TChan read _write) = do
 -- >>
 
 main = do
-  c <- atomically $ newTChan
+  c <- atomically newTChan
   atomically $ writeTChan c 'a'
   atomically (readTChan c) >>= print
   atomically (isEmptyTChan c) >>= print

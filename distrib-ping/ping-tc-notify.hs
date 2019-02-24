@@ -50,7 +50,7 @@ master peers = do
     return recvport
 
   let loop [] = return ()
-      loop (port:ps) = do
+      loop (port:ps) =
         receiveWait
           [ match $ \(ProcessMonitorNotification ref pid reason) -> do
               say (show pid ++ " died: " ++ show reason)

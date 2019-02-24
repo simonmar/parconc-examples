@@ -42,7 +42,7 @@ pipeline n e d b = runPar $ do
   s0 <- streamFromList (chunk (size n) b)
   s1 <- encrypt n e s0
   s2 <- decrypt n d s1
-  xs <- streamFold (\x y -> (y : x)) [] s2
+  xs <- streamFold (flip (:)) [] s2
   return (B.unlines (reverse xs))
 -- >>
 

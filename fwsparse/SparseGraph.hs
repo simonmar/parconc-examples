@@ -77,6 +77,6 @@ chunk n xs = as : chunk n bs
   where (as,bs) = splitAt n xs
 
 checksum :: Graph -> Int
-checksum m = sum (concat (map Map.elems (Map.elems m)))
+checksum m = sum (concatMap Map.elems (Map.elems m))
 
 

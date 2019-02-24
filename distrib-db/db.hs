@@ -25,7 +25,7 @@ master peers = do
 
   forever $ do
     l <- liftIO $ do putStr "key: "; hFlush stdout; getLine
-    when (not (null l)) $ do
+    unlesst (null l) $ do
       r <- get db l
       liftIO $ putStrLn ("response: " ++ show r)
 

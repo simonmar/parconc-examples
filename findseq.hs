@@ -17,7 +17,7 @@ find :: String -> FilePath -> IO (Maybe FilePath)
 find s d = do
   fs <- getDirectoryContents d                         -- <1>
   let fs' = sort $ filter (`notElem` [".",".."]) fs    -- <2>
-  if any (== s) fs'                                    -- <3>
+  if s `elem` fs'                                      -- <3>
      then return (Just (d </> s))
      else loop fs'                                     -- <4>
  where

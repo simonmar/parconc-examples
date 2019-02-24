@@ -92,6 +92,6 @@ streamFilter p instr = do
              tail <- new
              put_ outstr (Cons x tail)
              loop instr' tail
-          | otherwise -> do
+          | otherwise ->
              loop instr' outstr
 

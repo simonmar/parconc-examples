@@ -30,7 +30,7 @@ detectLanguage text = do
 translateText :: String -> String -> String -> IO String
 translateText text fromLang toLang = do
   r <- getURL (printf "%s&text=%s&from=%s&to=%s" translateUri text fromLang toLang)
-  return (concat (map getString (parseXML (UTF8.toString r))))
+  return (concatMap getString (parseXML (UTF8.toString r)))
 
 -----------------------------------------------------------------------------
 -- Hacky XML decoding

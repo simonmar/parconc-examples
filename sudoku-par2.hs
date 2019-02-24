@@ -7,7 +7,7 @@ import Control.Monad.Par.Scheds.Trace
 main :: IO ()
 main = do
     [f] <- getArgs
-    grids <- fmap lines $ readFile f
+    grids <- lines <$> readFile f
 
     let (as,bs) = splitAt (length grids `div` 2) grids
 
