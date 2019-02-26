@@ -57,7 +57,7 @@ chunk n xs = as : chunk n bs
   where (as,bs) = B.splitAt (fromIntegral n) xs
 
 size :: Integer -> Int
-size n = (length (show n) * 47) `div` 100	-- log_128 10 = 0.4745
+size n = (length (show n) * 47) `div` 100        -- log_128 10 = 0.4745
 
 ------- Constructing keys -------------------------
 
@@ -65,7 +65,7 @@ makeKeys :: Integer -> Integer -> (Integer, Integer, Integer)
 makeKeys r s = (p*q, d, invert ((p-1)*(q-1)) d)
    where   p = nextPrime r
            q = nextPrime s
-	   d = nextPrime (p+q+1)
+           d = nextPrime (p+q+1)
 
 nextPrime :: Integer -> Integer
 nextPrime a = head (filter prime [odd,odd+2..])
@@ -86,7 +86,7 @@ iter g v h w = iter h w (g `mod` h) (v - (g `div` h)*w)
 power :: Integer -> Integer -> Integer -> Integer
 power 0 m x          = 1
 power n m x | even n = sqr (power (n `div` 2) m x) `mod` m
-	    | True   = (x * power (n-1) m x) `mod` m
+            | True   = (x * power (n-1) m x) `mod` m
 
 sqr :: Integer -> Integer
 sqr x = x * x
