@@ -28,7 +28,7 @@ timeout t m
            (\_ -> return Nothing)                       -- <6>
            (bracket (forkIO $ do threadDelay t          -- <7>
                                  throwTo pid ex)
-                    (`throwTo` ThreadKilled)            -- <8>
+                    (\tid -> throwTo tid ThreadKilled)  -- <8>
                     (\_ -> fmap Just m))                -- <9>
 -- >>
 

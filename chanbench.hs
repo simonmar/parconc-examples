@@ -63,7 +63,7 @@ runtest n test = do
     1 -> do
       replicateM_ n $ writec c (1 :: Int)
       replicateM_ n $ readc c
-    2 -> 
+    2 ->  do
       replicateM_ (n `quot` bufsiz) $ do
         replicateM_ bufsiz $ writec c (1 :: Int)
         replicateM_ bufsiz $ readc c

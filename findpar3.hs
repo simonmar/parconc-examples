@@ -70,14 +70,12 @@ newNBSem i = do
 tryWaitNBSem :: NBSem -> IO Bool
 tryWaitNBSem (NBSem m) =
   atomicModifyIORef m $ \i ->
-  if i == 0
-     then (i, False)
-     else let !z = i-1 in (z, True)
+    if i == 0
+       then (i, False)
+       else let !z = i-1 in (z, True)
 
 signalNBSem :: NBSem -> IO ()
 signalNBSem (NBSem m) =
   atomicModifyIORef m $ \i ->
     let !z = i+1 in (z, ())
 -- >>
-
-

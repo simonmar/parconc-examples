@@ -65,7 +65,7 @@ waitEither a b = atomically $
 -- <<waitAny
 waitAny :: [Async a] -> IO a
 waitAny asyncs =
-  atomically $ foldr (orElse . waitSTM) retry asyncs
+  atomically $ foldr orElse retry $ map waitSTM asyncs
 -- >>
 
 -- <<withAsync

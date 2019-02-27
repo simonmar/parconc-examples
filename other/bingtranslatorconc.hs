@@ -26,7 +26,8 @@ main = do
     map (\lang -> do r <- Bing.translateText text fromLang lang; return (lang,r))
       (filter (/= fromLang) languages)
 
-  forM_ translations $ uncurry (printf "%s: %s\n")
+  forM_ translations $ \(lang,str) ->
+    printf "%s: %s\n" lang str
 
 -----------------------------------------------------------------------------
 -- Our Async API:

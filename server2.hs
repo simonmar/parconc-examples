@@ -41,7 +41,7 @@ receive h c = forever $ do
 -- <<server
 server :: Handle -> TVar Integer -> TChan String -> IO ()
 server h factor c = do
-  f <- readTVarIO factor                -- <1>
+  f <- atomically $ readTVar factor     -- <1>
   hPrintf h "Current factor: %d\n" f    -- <2>
   loop f                                -- <3>
  where

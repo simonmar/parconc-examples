@@ -14,7 +14,7 @@ sites = ["http://www.google.com",
 
 -- <<main
 main = do
-  xs <- foldr (conc . getURL) (return []) sites
+  xs <- foldr conc (return []) (map getURL sites)
   print (map B.length xs)
  where
   conc ioa ioas = do
