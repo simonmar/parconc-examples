@@ -66,7 +66,7 @@ subfind s p inner asyncs = do
 newtype EParIO a = E { unE :: ParIO (Either SomeException a) }
 
 instance Functor EParIO where
-  fmap f e = f <$> e
+  fmap f e = e >>= return . f
 
 instance Applicative EParIO where
   pure = return
