@@ -7,5 +7,5 @@ import Control.Monad.Par
 main :: IO ()
 main = do
     [f] <- getArgs
-    grids <- fmap lines $ readFile f
+    grids <- lines <$> readFile f
     print (length (filter isJust (runPar $ parMap solve grids)))

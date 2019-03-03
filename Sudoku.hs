@@ -139,9 +139,9 @@ gridToString g =
       -- ["1  2  3 "," 4  5  6 ", ...]
       l3 = (sublist 3) l2
       -- [["1  2  3 "," 4  5  6 "," 7  8  9 "],...] 
-      l4 = (map (concat . intersperse "|")) l3
+      l4 = (map (intercalate "|")) l3
       -- ["1  2  3 | 4  5  6 | 7  8  9 ",...]
-      l5 = (concat . intersperse [line] . sublist 3) l4
+      l5 = (intercalate [line] . sublist 3) l4
   in unlines l5 
      where sublist n [] = []
            sublist n xs = ys : sublist n zs

@@ -70,7 +70,7 @@ main = do
   forever $ do
     putStr "search (^D to end): "
     eof <- isEOF
-    when eof $ exitWith ExitSuccess
+    when eof exitSuccess
     s <- B.getLine
     putStr "wait... "
 

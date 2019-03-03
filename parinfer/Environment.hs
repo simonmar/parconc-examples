@@ -34,7 +34,7 @@ lookupEnv env x       =   fromJust (Map.lookup x (rep env))
 domEnv                ::  Env -> [VarId]
 domEnv env            =   Map.keys (rep env)
 freeTVarEnv           ::  Env -> [TVarId]
-freeTVarEnv env       =   concat (map freeTVarPoly (Map.elems (rep env)))
+freeTVarEnv env       =   concatMap freeTVarPoly (Map.elems (rep env))
 instance  Show Env  where
       showsPrec d  =  showsEnv
 showsEnv              :: Shows Env

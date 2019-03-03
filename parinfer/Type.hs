@@ -33,15 +33,15 @@ intType               = TCon "Int" []
 
 freeTVarMono                  :: MonoType -> [TVarId]
 freeTVarMono (TVar x)         =  [x]
-freeTVarMono (TCon k ts)      =  concat (map freeTVarMono ts)
+freeTVarMono (TCon k ts)      =  concatMap freeTVarMono ts
 freeTVarPoly                  :: PolyType -> [TVarId]
 freeTVarPoly (All xs t)       =  nub (freeTVarMono t) `minus` xs
 
 -- WDP: too bad deriving doesn't work
 instance Eq MonoType where
-    (TVar tv1)       == (TVar tv2)	 = tv1 == tv2
+    (TVar tv1)       == (TVar tv2)       = tv1 == tv2
     (TCon tc1 args1) == (TCon tc2 args2) = tc1 == tc2 && (args1 == args2)
-    other1	     == other2		 = False
+    other1           == other2           = False
 -- end of too bad
 
 instance  Show MonoType  where

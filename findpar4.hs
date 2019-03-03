@@ -1,4 +1,4 @@
-{-# LANGUAGE GeneralizedNewtypeDeriving #-}
+
 import System.Directory
 import Control.Concurrent
 import System.FilePath
@@ -24,7 +24,7 @@ find :: String -> FilePath -> ParIO (Maybe FilePath)
 find s d = do
   fs <- liftIO $ getDirectoryContents d
   let fs' = sort $ filter (`notElem` [".",".."]) fs
-  if any (== s) fs'
+  if s `elem` fs'
      then return (Just (d </> s))
      else do
        let ps = map (d </>) fs'

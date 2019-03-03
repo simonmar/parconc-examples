@@ -1,4 +1,4 @@
-{-# LANGUAGE GeneralizedNewtypeDeriving #-}
+
 import System.Directory
 import Control.Applicative
 import Control.Concurrent
@@ -25,7 +25,7 @@ find :: String -> FilePath -> EParIO (Maybe FilePath)
 find s d = do
   fs <- liftIO $ getDirectoryContents d
   let fs' = sort $ filter (`notElem` [".",".."]) fs
-  if any (== s) fs'
+  if s `elem` fs'
      then return (Just (d </> s))
      else do
        let ps = map (d </>) fs'         -- <1>
@@ -84,7 +84,7 @@ instance MonadIO EParIO where
   liftIO io = E $ liftIO (try io)
 
 liftPar :: ParIO a -> EParIO a
-liftPar p = E $ p >>= return . Right
+liftPar p = E $ Right <$> p
 
 type EVar a = IVar (Either SomeException a)
 
@@ -95,5 +95,5 @@ get :: EVar a -> EParIO a
 get evar = E $ P.get evar
 
 putResult :: EParIO a -> EVar a -> ParIO ()
-putResult (E e) var = do e >>= P.put_ var
+putResult (E e) var = e >>= P.put_ var
 

@@ -32,4 +32,4 @@ timeout t m
                     (\_ -> fmap Just m))                -- <9>
 -- >>
 
-main = (timeout 200000 $ timeout 100000 $ timeout 300000 $ threadDelay 1000000) >>= print
+main = timeout 200000 (timeout 100000 $ timeout 300000 $ threadDelay 1000000) >>= print

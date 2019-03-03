@@ -286,7 +286,7 @@ combine = Vector.zipWith addPointSums
 parSteps_strat :: Int -> [Cluster] -> [[Point]] -> [Cluster]
 parSteps_strat nclusters clusters pointss
   = makeNewClusters $
-      foldr1 combine $
+      foldr1 combine
           (map (assign nclusters clusters) pointss
             `using` parList rseq)
 -- >>
@@ -295,7 +295,7 @@ steps_par :: Int -> [Cluster] -> [[Point]] -> [Cluster]
 steps_par nclusters clusters pointss
   = makeNewClusters $
       foldl1' combine $
-          (runPar $ Par.parMap (assign nclusters clusters) pointss)
+          runPar ( Par.parMap (assign nclusters clusters) pointss)
 
 -- <<makeNewClusters
 makeNewClusters :: Vector PointSum -> [Cluster]

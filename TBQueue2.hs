@@ -34,7 +34,7 @@ writeTBQueue :: TBQueue a -> a -> STM ()
 writeTBQueue (TBQueue rsize _read wsize write) a = do
   w <- readTVar wsize
   if (w /= 0)
-     then do writeTVar wsize (w - 1)
+     then writeTVar wsize (w - 1)
      else do
           r <- readTVar rsize
           if (r /= 0)

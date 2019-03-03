@@ -25,7 +25,7 @@ find :: NBSem -> String -> FilePath -> IO (Maybe FilePath)
 find sem s d = do
   fs <- getDirectoryContents d
   let fs' = sort $ filter (`notElem` [".",".."]) fs
-  if any (== s) fs'
+  if s `elem` fs'
      then return (Just (d </> s))
      else do
        let ps = map (d </>) fs'         -- <1>
@@ -68,7 +68,7 @@ newNBSem i = do
   return (NBSem m)
 
 tryWaitNBSem :: NBSem -> IO Bool
-tryWaitNBSem (NBSem m) = do
+tryWaitNBSem (NBSem m) =
   atomicModifyIORef m $ \i ->
     if i == 0
        then (i, False)

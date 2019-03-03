@@ -17,4 +17,4 @@ timeout n m
           Right a -> return (Just a)
 -- >>
 
-main = (timeout 200000 $ timeout 100000 $ timeout 300000 $ threadDelay 1000000) >>= print
+main = timeout 200000 (timeout 100000 $ timeout 300000 $ threadDelay 1000000) >>= print

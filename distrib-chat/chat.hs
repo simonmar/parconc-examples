@@ -176,7 +176,7 @@ kick server@Server{..} who by = do
     Just (ClientLocal victim) -> do
       writeTVar (clientKicked victim) $ Just ("by " ++ by)
       void $ sendToName server by (Notice $ "you kicked " ++ who)
-    Just (ClientRemote victim) -> do
+    Just (ClientRemote victim) ->
       sendRemote server (clientHome victim) (MsgKick who by)
 -- >>
 
@@ -249,7 +249,7 @@ runClient serv@Server{..} client@LocalClient{..} = do
         msg <- readTChan clientSendChan
         return $ do
             continue <- handleMessage serv client msg
-            when continue $ server
+            when continue server
 -- >>
 
 -- <<handleMessage
@@ -319,7 +319,7 @@ handleRemoteMessage server@Server{..} m = liftIO $ atomically $
 
     MsgNewClient name pid -> do                                   -- <3>
         ok <- checkAddClient server (ClientRemote (RemoteClient name pid))
-        when (not ok) $
+        unless ok $
           sendRemote server pid (MsgKick name "SYSTEM")
 
     MsgClientDisconnected name pid -> do                          -- <4>

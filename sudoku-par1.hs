@@ -6,5 +6,5 @@ import Data.Maybe
 main :: IO ()
 main = do
     [f] <- getArgs
-    grids <- fmap lines $ readFile f
+    grids <- lines <$> readFile f
     print (length (filter isJust (map solve grids)))

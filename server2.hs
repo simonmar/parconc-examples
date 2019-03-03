@@ -45,15 +45,14 @@ server h factor c = do
   hPrintf h "Current factor: %d\n" f    -- <2>
   loop f                                -- <3>
  where
-  loop f = do
-    action <- atomically $ do           -- <4>
+  loop f = join
+    (atomically $ do                    -- <4>
       f' <- readTVar factor             -- <5>
       if (f /= f')                      -- <6>
          then return (newfactor f')     -- <7>
          else do
            l <- readTChan c             -- <8>
-           return (command f l)         -- <9>
-    action
+           return (command f l))        -- <9>
 
   newfactor f = do                      -- <10>
     hPrintf h "new factor: %d\n" f
@@ -68,7 +67,7 @@ server h factor c = do
         atomically $ writeTVar factor (read s :: Integer) -- <13>
         loop f
       line  -> do
-        hPutStrLn h (show (f * (read line :: Integer)))
+        hPrint h (f * (read line :: Integer))
         loop f
 -- >>
 

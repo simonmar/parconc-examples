@@ -50,7 +50,7 @@ search finished refine emptysoln = generate emptysoln
   where
     generate partial
        | Just soln <- finished partial = [soln]
-       | otherwise  = concat (map generate (refine partial))
+       | otherwise  = concatMap generate (refine partial)
 -- >>
 
 -- <<parsearch

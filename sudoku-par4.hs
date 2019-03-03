@@ -8,11 +8,11 @@ import Control.DeepSeq
 main :: IO ()
 main = do
     [f,n] <- getArgs
-    grids <- fmap lines $ readFile f
+    grids <- lines <$> readFile f
     print (length (filter isJust (runPar $ parMapChunk (read n) solve grids)))
 
 parMapChunk :: NFData b => Int -> (a -> b) -> [a] -> Par [b]
-parMapChunk n f xs = fmap concat $ parMap (map f) (chunk n xs)
+parMapChunk n f xs = concat <$> parMap (map f) (chunk n xs)
 
 chunk :: Int -> [a] -> [[a]]
 chunk _ [] = []

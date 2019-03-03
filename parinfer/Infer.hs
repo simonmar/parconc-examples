@@ -35,8 +35,8 @@ generaliseI aa tt             =  getSubI `thenI` (\s ->
                                  returnI (All xxs tt)
                                  )
 freeTVarSubEnv                :: Sub -> Env -> [TVarId]
-freeTVarSubEnv s aa           =  concat (map (freeTVarMono . lookupSub s)
-                                             (freeTVarEnv aa))
+freeTVarSubEnv s aa           =  concatMap (freeTVarMono . lookupSub s)
+                                             (freeTVarEnv aa)
 
 inferTerm  ::  Env -> Term -> Infer MonoType
 inferTerm _  (Int _)  = returnI intType
@@ -44,8 +44,8 @@ inferTerm aa (Var x)  =
       (x `elem` domEnv aa)                      `guardI` (
       let ss = lookupEnv aa x in
       specialiseI ss                          `thenI`  (\tt ->
-      substituteI tt                          `thenI`  (\uu  ->
-                                              returnI  uu)))
+      substituteI tt                          `thenI`  returnI
+                                              ))
 inferTerm aa (Abs x v)  =
       freshI                                  `thenI` (\xx ->
       inferTerm (extendLocal aa x xx) v       `thenI` (\vv ->
@@ -56,8 +56,8 @@ inferTerm aa (App t u)  =
       inferTerm aa u                          `thenI` (\uu ->
       freshI                                  `thenI` (\xx ->
       unifyI tt (uu `arrow` xx)               `thenI` (\() ->
-      substituteI xx                          `thenI` (\vv ->
-                                              returnI vv)))))
+      substituteI xx                          `thenI` returnI
+                                              ))))
 inferTerm aa (Let x u v)  = do
     ss <- inferRhs aa u
     inferTerm (extendGlobal aa x ss) v

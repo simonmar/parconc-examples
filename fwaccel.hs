@@ -55,7 +55,7 @@ inf = 999
 -- >>
 
 testGraph :: Graph
-testGraph = toAdjMatrix $
+testGraph = toAdjMatrix
         [[  0, inf, inf,  13, inf, inf],
          [inf,   0, inf, inf,   4,   9],
          [ 11, inf,   0, inf, inf, inf],
@@ -65,7 +65,7 @@ testGraph = toAdjMatrix $
 
 -- correct result:
 expectedResult :: Graph
-expectedResult = toAdjMatrix $
+expectedResult = toAdjMatrix
          [[0,  16, inf, 13, 20, 20],
           [19,  0, inf,  5,  4,  9],
           [11, 27,   0, 24, 31, 31],
