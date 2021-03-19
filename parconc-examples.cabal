@@ -826,7 +826,7 @@ executable ping
       build-depends: ghc-prim
   if flag(distributed)
      build-depends:
-                   distributed-process >= 0.5 && < 0.7
+                   distributed-process >= 0.5 && < 0.8
                  , distributed-process-simplelocalnet ==0.2.*
                  , distributed-static >= 0.2 && < 0.4
   else
@@ -849,7 +849,7 @@ executable ping-multi
       build-depends: ghc-prim
   if flag(distributed)
      build-depends:
-                   distributed-process >= 0.5 && < 0.7
+                   distributed-process >= 0.5 && < 0.8
                  , distributed-process-simplelocalnet ==0.2.*
                  , distributed-static >= 0.2 && < 0.4
   else
@@ -872,7 +872,7 @@ executable ping-tc
       build-depends: ghc-prim
   if flag(distributed)
      build-depends:
-                   distributed-process >= 0.5 && < 0.7
+                   distributed-process >= 0.5 && < 0.8
                  , distributed-process-simplelocalnet ==0.2.*
                  , distributed-static >= 0.2 && < 0.4
   else
@@ -895,7 +895,7 @@ executable ping-tc-merge
       build-depends: ghc-prim
   if flag(distributed)
      build-depends:
-                   distributed-process >= 0.5 && < 0.7
+                   distributed-process >= 0.5 && < 0.8
                  , distributed-process-simplelocalnet ==0.2.*
                  , distributed-static >= 0.2 && < 0.4
   else
@@ -919,7 +919,7 @@ executable ping-tc-notify
       build-depends: ghc-prim
   if flag(distributed)
      build-depends:
-                   distributed-process >= 0.5 && < 0.7
+                   distributed-process >= 0.5 && < 0.8
                  , distributed-process-simplelocalnet ==0.2.*
                  , distributed-static >= 0.2 && < 0.4
   else
@@ -942,7 +942,7 @@ executable ping-fail
       build-depends: ghc-prim
   if flag(distributed)
      build-depends:
-                   distributed-process >= 0.5 && < 0.7
+                   distributed-process >= 0.5 && < 0.8
                  , distributed-process-simplelocalnet ==0.2.*
                  , distributed-static >= 0.2 && < 0.4
   else
@@ -969,7 +969,7 @@ executable distrib-chat
       build-depends: ghc-prim
   if flag(distributed)
      build-depends:
-                   distributed-process >= 0.5 && < 0.7
+                   distributed-process >= 0.5 && < 0.8
                  , distributed-process-simplelocalnet ==0.2.*
                  , distributed-static >= 0.2 && < 0.4
   else
@@ -996,7 +996,7 @@ executable distrib-chat-noslave
       build-depends: ghc-prim
   if flag(distributed)
      build-depends:
-                   distributed-process >= 0.5 && < 0.7
+                   distributed-process >= 0.5 && < 0.8
                  , distributed-process-simplelocalnet ==0.2.*
                  , distributed-static >= 0.2 && < 0.4
   else
@@ -1024,7 +1024,7 @@ executable distrib-db
       build-depends: ghc-prim
   if flag(distributed)
      build-depends:
-                   distributed-process >= 0.5 && < 0.7
+                   distributed-process >= 0.5 && < 0.8
                  , distributed-process-simplelocalnet ==0.2.*
                  , distributed-static >= 0.2 && < 0.4
   else
@@ -1116,4 +1116,3 @@ executable  geturlsstm
 --   euler35
 --   index
 --   sudoku-par{1,2,3,4,5}
-

@@ -1,12 +1,5 @@
-resolver: lts-8.21
+resolver: lts-10.10
 flags:
   parconc-examples:
     distributed: true
     accelerate: true
-extra-package-dbs: []
-packages:
-- '.'
-extra-deps:
-  - normaldistribution-1.1.0.3
-  - accelerate-io-1.0.0.0
-  - accelerate-1.0.0.0
