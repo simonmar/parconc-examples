@@ -42,7 +42,7 @@ master = do
   say $ printf "sending ping to %s" (show pid)
 
 -- <<withMonitor
-  withMonitor pid $ do
+  withMonitor pid $ \_ -> do
     send pid (Pong mypid)               -- <1>
     receiveWait
       [ match $ \(Pong _) -> do
