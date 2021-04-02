@@ -1,3 +1,8 @@
+# Verison 0.4.8
+
+* Builds with GHC 8.6.x and 8.8.x
+* Requires cabal-install 2.2 or later
+
 # Version 0.4.7
 
 * Builds with GHC 8.2.x and 8.4.x

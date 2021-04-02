@@ -1,15 +1,15 @@
+cabal-version:       2.2
 name:                parconc-examples
-version:             0.4.7
+version:             0.4.8
 synopsis:            Examples to accompany the book "Parallel and Concurrent Programming in Haskell"
 description:         Examples to accompany the book "Parallel and Concurrent Programming in Haskell"
-license:             BSD3
+license:             BSD-3-Clause
 license-file:        LICENSE
 author:              Simon Marlow
 maintainer:          Simon Marlow <marlowsd@gmail.com>
 copyright:           (c) Simon Marlow 2011-2013
 category:            Sample Code
 build-type:          Simple
-cabal-version:       >=1.10
 bug-reports:         https://github.com/simonmar/parconc-examples/issues
 homepage:            http://github.com/simonmar/parconc-examples
 
@@ -79,225 +79,190 @@ flag distributed
 flag network26
   default : True
 
+common deps
+  default-language: Haskell2010
+  build-depends:
+     array >= 0.4 && <0.6,
+     async >= 2.0 && < 2.3,
+     base >= 4.5 && < 4.14,
+     binary >=0.6.3 && < 0.11,
+     bytestring >= 0.9 && < 0.12,
+     containers >= 0.4 && < 0.6,
+     deepseq >= 1.3 && < 1.5,
+     directory >= 1.1 && < 1.4,
+     filepath >= 1.3 && < 1.5,
+     monad-par >= 0.3.4 && < 0.4,
+       -- monad-par 0.3 has a bug:
+       -- https://github.com/simonmar/monad-par/issues/23
+     parallel ==3.2.*,
+     random >= 1.0 && < 1.3,
+     stm >=2.4 && < 2.6,
+     time >= 1.4 && < 1.12,
+     template-haskell >= 2.7 && < 2.16,
+     transformers >=0.3 && <0.6,
+     utf8-string >= 0.3 && < 1.1,
+     vector >= 0.10 && < 0.13,
+     xml ==1.3.*,
+
+common network
+  if flag(network26)
+      build-depends: network >= 2.6 && < 2.9
+                   , network-uri >= 2.6 && < 2.7
+  else
+      build-depends: network >= 2.3 && < 2.6
+
+common http
+  build-depends:
+    http-conduit >= 2.1 && < 2.4
+
+common monad-par
+  build-depends:
+    abstract-par ==0.3.*,
+    monad-par >= 0.3.4 && < 0.4
+
+common distributed
+  if flag(distributed)
+     build-depends:
+                   distributed-process >= 0.5 && < 0.8
+                 , distributed-process-simplelocalnet ==0.2.*
+                 , distributed-static >= 0.2 && < 0.4
+  else
+     buildable: False
+  if impl(ghc <= 7.6)
+      -- prior to ghc-7.4 generics lived in ghc-prim
+      build-depends: ghc-prim
+
 -- -----------------------------------------------------------------------------
 -- par-eval
 
 executable rpar
+  import: deps
   main-is: rpar.hs
-  build-depends:   base >= 4.5 && < 4.12
-                 , time >= 1.4 && < 1.10
-                 , parallel ==3.2.*
   ghc-options: -threaded
-  default-language: Haskell2010
 
 executable sudoku1
+  import: deps
   main-is: sudoku1.hs
   other-modules: Sudoku
-  build-depends:   base >= 4.5 && < 4.12
-                 , parallel ==3.2.*
-                 , array >= 0.4 && <0.6
-  default-language: Haskell2010
 
 executable sudoku2
+  import: deps
   main-is: sudoku2.hs
   other-modules: Sudoku
-  build-depends:   base >= 4.5 && < 4.12
-                 , parallel ==3.2.*
-                 , array >= 0.4 && <0.6
-                 , deepseq >= 1.3 && < 1.5
   ghc-options: -threaded
-  default-language: Haskell2010
 
 executable sudoku3
+  import: deps
   main-is: sudoku3.hs
   other-modules: Sudoku
-  build-depends:   base >= 4.5 && < 4.12
-                 , parallel ==3.2.*
-                 , array >= 0.4 && <0.6
   ghc-options: -threaded
-  default-language: Haskell2010
 
 executable sudoku4
+  import: deps
   main-is: sudoku4.hs
   other-modules: Sudoku
-  build-depends:   base >= 4.5 && < 4.12
-                 , parallel ==3.2.*
-                 , array >= 0.4 && <0.6
   ghc-options: -threaded
-  default-language: Haskell2010
 
 executable sudoku5
+  import: deps
   main-is: sudoku5.hs
   other-modules: Sudoku
-  build-depends:   base >= 4.5 && < 4.12
-                 , parallel ==3.2.*
-                 , array >= 0.4 && <0.6
   ghc-options: -threaded
-  default-language: Haskell2010
 
 -- -----------------------------------------------------------------------------
 -- par-strat
 
 executable strat
+  import: deps
   main-is: strat.hs
-  build-depends:   base >= 4.5 && < 4.12
-                 , parallel ==3.2.*
   ghc-options: -threaded
-  default-language: Haskell2010
 
 executable strat2
+  import: deps
   main-is: strat2.hs
-  build-depends:   base >= 4.5 && < 4.12
-                 , parallel ==3.2.*
   ghc-options: -threaded
-  default-language: Haskell2010
 
 executable strat3
+  import: deps
   main-is: strat3.hs
-  build-depends:   base >= 4.5 && < 4.12
-                 , parallel ==3.2.*
   ghc-options: -threaded
-  default-language: Haskell2010
 
 executable rsa
+  import: deps
   main-is: rsa.hs
   other-modules: ByteStringCompat
-  build-depends:   base >= 4.5 && < 4.12
-                 , bytestring >= 0.9 && < 0.11
-                 , deepseq >= 1.3 && < 1.5
-  default-language: Haskell2010
 
 executable rsa1
+  import: deps
   main-is: rsa1.hs
   other-modules: ByteStringCompat
-  build-depends:   base >= 4.5 && < 4.12
-                 , bytestring >= 0.9 && < 0.11
-                 , parallel ==3.2.*
-                 , deepseq >= 1.3 && < 1.5
   ghc-options: -threaded
-  default-language: Haskell2010
 
 executable rsa2
+  import: deps
   main-is: rsa2.hs
   other-modules: ByteStringCompat
-  build-depends:   base >= 4.5 && < 4.12
-                 , bytestring >= 0.9 && < 0.11
-                 , parallel ==3.2.*
-                 , deepseq >= 1.3 && < 1.5
   ghc-options: -threaded
-  default-language: Haskell2010
 
 executable kmeans
+  import: deps
   hs-source-dirs: kmeans
   main-is: kmeans.hs
   other-modules: KMeansCore
-  build-depends:   base >= 4.5 && < 4.12
-                 , parallel ==3.2.*
-                 , time >= 1.4 && < 1.10
-                 , deepseq >= 1.3 && < 1.5
-                 , monad-par >= 0.3.4 && < 0.4
-                   -- monad-par 0.3 has a bug:
-                   -- https://github.com/simonmar/monad-par/issues/23
-                 , binary >=0.6.3 && < 0.11
-                 , array >= 0.4 && <0.6
-                 , bytestring >= 0.9 && < 0.11
-                 , vector >= 0.10 && < 0.13
   ghc-options: -threaded
-  default-language: Haskell2010
 
 executable GenSamples
+  import: deps
   hs-source-dirs: kmeans
   main-is: GenSamples.hs
   other-modules: KMeansCore
-  build-depends:   base >= 4.5 && < 4.12
-                 , binary >=0.6.3 && < 0.11
-                 , array >= 0.4 && <0.6
-                 , vector >= 0.10 && < 0.13
-                 , random >= 1.0 && < 1.2
-                 , normaldistribution >= 1.1 && < 1.2
-                 , deepseq >= 1.3 && < 1.5
-                 , bytestring >= 0.9 && < 0.11
-  default-language: Haskell2010
+  build-depends: normaldistribution >= 1.1 && < 1.2
 
 -- -----------------------------------------------------------------------------
 -- par-monad
 
 executable parmonad
+  import: deps
   main-is: parmonad.hs
-  build-depends:   base >= 4.5 && < 4.12
-                 , monad-par >= 0.3.4 && < 0.4
   ghc-options: -threaded
-  default-language: Haskell2010
 
 executable rsa-pipeline
+  import: deps
   main-is: rsa-pipeline.hs
   other-modules: ByteStringCompat Stream
-  build-depends:   base >= 4.5 && < 4.12
-                 , bytestring >= 0.9 && < 0.11
-                 , monad-par >= 0.3.4 && < 0.4
-                 , deepseq >= 1.3 && < 1.5
   ghc-options: -threaded
-  default-language: Haskell2010
 
 executable fwsparse
+  import: deps
   main-is: fwsparse.hs
   other-modules: SparseGraph MapCompat
   hs-source-dirs: fwsparse
-  build-depends:   base >= 4.5 && < 4.12
-                 , random >= 1.0 && < 1.2
-                 , array >= 0.4 && <0.6
-                 , containers >= 0.4 && < 0.6
-  default-language: Haskell2010
 
 executable fwsparse1
+  import: deps
   main-is: fwsparse1.hs
   other-modules: SparseGraph MapCompat
   hs-source-dirs: fwsparse
-  build-depends:   base >= 4.5 && < 4.12
-                 , random >= 1.0 && < 1.2
-                 , array >= 0.4 && <0.6
-                 , containers >= 0.4 && < 0.6
-                 , monad-par >= 0.3.4 && < 0.4
-                 , deepseq >= 1.3 && < 1.5
   ghc-options: -threaded
-  default-language: Haskell2010
 
 executable  timetable
+  import: deps
   main-is: timetable.hs
-  build-depends:   base >= 4.5 && < 4.12
-                 , containers >= 0.4 && < 0.6
-                 , deepseq >= 1.3 && < 1.5
-                 , random >= 1.0 && < 1.2
-  default-language: Haskell2010
 
 executable  timetable1
+  import: deps
   main-is: timetable1.hs
-  build-depends:   base >= 4.5 && < 4.12
-                 , containers >= 0.4 && < 0.6
-                 , deepseq >= 1.3 && < 1.5
-                 , monad-par >= 0.3.4 && < 0.4
-                 , random >= 1.0 && < 1.2
-  default-language: Haskell2010
 
 executable  timetable2
+  import: deps
   main-is: timetable2.hs
-  build-depends:   base >= 4.5 && < 4.12
-                 , containers >= 0.4 && < 0.6
-                 , deepseq >= 1.3 && < 1.5
-                 , monad-par >= 0.3.4 && < 0.4
-                 , random >= 1.0 && < 1.2
-  default-language: Haskell2010
 
 executable  timetable3
+  import: deps
   main-is: timetable3.hs
-  build-depends:   base >= 4.5 && < 4.12
-                 , containers >= 0.4 && < 0.6
-                 , deepseq >= 1.3 && < 1.5
-                 , monad-par >= 0.3.4 && < 0.4
-                 , random >= 1.0 && < 1.2
-  default-language: Haskell2010
 
 executable  parinfer
+  import: deps
   main-is: parinfer.hs
   hs-source-dirs: parinfer
   other-modules:  InferMonad
@@ -313,41 +278,35 @@ executable  parinfer
                   Infer
                   Substitution
                   StateX
-  build-depends:   base >= 4.5 && < 4.12
-                 , containers >= 0.4 && < 0.6
-                 , deepseq >= 1.3 && < 1.5
-                 , monad-par >= 0.3.4 && < 0.4
-                 , array >= 0.4 && <0.6
   build-tools:     alex
                  , happy
-  default-language: Haskell2010
 
 -- -----------------------------------------------------------------------------
 -- par-repa
 
 executable  fwdense
+  import: deps
   main-is: fwdense.hs
-  build-depends:   base >= 4.5 && < 4.12
-                 , repa >= 3.2 && < 3.5
+  build-depends:
+    repa >= 3.2 && < 3.5
   ghc-options: -O2
   if flag(llvm)
      ghc-options: -fllvm
-  default-language: Haskell2010
 
 executable  fwdense1
+  import: deps
   main-is: fwdense1.hs
-  build-depends:   base >= 4.5 && < 4.12
-                 , repa >= 3.2 && < 3.5
-                 , transformers >=0.3 && <0.6
+  build-depends:
+    repa >= 3.2 && < 3.5
   ghc-options: -O2 -threaded
   if flag(llvm)
      ghc-options: -fllvm
-  default-language: Haskell2010
 
 executable rotateimage
+  import: deps
   main-is: rotateimage.hs
-  build-depends:   base >= 4.5 && < 4.12
-                 , repa >= 3.2 && < 3.5
+  build-depends:
+    repa >= 3.2 && < 3.5
   ghc-options: -O2 -threaded
   if flag(devil)
      build-depends: repa-devil == 0.3.*
@@ -355,25 +314,23 @@ executable rotateimage
      buildable: False
   if flag(llvm)
      ghc-options: -fllvm
-  default-language: Haskell2010
 
 -- -----------------------------------------------------------------------------
 -- par-accel
 
 executable  fwaccel
+  import: deps
   main-is: fwaccel.hs
   other-modules: AccelerateCompat
-  build-depends:   base >= 4.5 && < 4.12
   ghc-options: -O2
   if flag(accelerate)
      build-depends: accelerate >= 0.12 && < 1.3
   else
      buildable: False
-  default-language: Haskell2010
 
 executable  fwaccel-gpu
+  import: deps
   main-is: fwaccel-gpu.hs
-  build-depends:   base >= 4.5 && < 4.12
   if flag(accelerate)
      build-depends: accelerate >= 0.12 && < 1.3
   else
@@ -383,14 +340,13 @@ executable  fwaccel-gpu
   else
      buildable: False
   ghc-options: -O2
-  default-language: Haskell2010
 
 executable  mandel
+  import: deps
   main-is: mandel.hs
   other-modules: Config
   hs-source-dirs: mandel
-  build-depends:   base >= 4.5 && < 4.12
-                 , fclabels
+  build-depends:   fclabels
   if flag(accelerate)
      build-depends: accelerate >= 0.12 && < 1.3
                   , accelerate-io
@@ -401,214 +357,118 @@ executable  mandel
   else
      buildable: False
   ghc-options: -O2
-  default-language: Haskell2010
 
 -- -----------------------------------------------------------------------------
 -- conc-fork
 
 executable  fork
+  import: deps
   main-is: fork.hs
-  build-depends:   base >= 4.5 && < 4.12
-  default-language: Haskell2010
 
 executable  reminders
+  import: deps
   main-is: reminders.hs
-  build-depends:   base >= 4.5 && < 4.12
-  default-language: Haskell2010
 
 executable  reminders2
+  import: deps
   main-is: reminders2.hs
-  build-depends:   base >= 4.5 && < 4.12
-  default-language: Haskell2010
 
 -- -----------------------------------------------------------------------------
 -- conc-mvar
 
 executable  mvar1
+  import: deps
   main-is: mvar1.hs
-  build-depends:   base >= 4.5 && < 4.12
-  default-language: Haskell2010
 
 executable  mvar2
+  import: deps
   main-is: mvar2.hs
-  build-depends:   base >= 4.5 && < 4.12
-  default-language: Haskell2010
 
 executable  mvar3
+  import: deps
   main-is: mvar3.hs
-  build-depends:   base >= 4.5 && < 4.12
-  default-language: Haskell2010
 
 executable  logger
+  import: deps
   main-is: logger.hs
-  build-depends:   base >= 4.5 && < 4.12
-  default-language: Haskell2010
 
 executable  phonebook
+  import: deps
   main-is: phonebook.hs
-  build-depends:   base >= 4.5 && < 4.12
-                 , containers >= 0.4 && < 0.6
-  default-language: Haskell2010
 
 executable  chan
+  import: deps
   main-is: chan.hs
-  build-depends:   base >= 4.5 && < 4.12
-  default-language: Haskell2010
 
 executable  chan2
+  import: deps
   main-is: chan2.hs
-  build-depends:   base >= 4.5 && < 4.12
-  default-language: Haskell2010
 
 -- -----------------------------------------------------------------------------
 -- conc-overlap
 
 executable geturls1
+  import: deps, network, http
   main-is: geturls1.hs
   other-modules: GetURL
-  build-depends:   base >= 4.5 && < 4.12
-                 , containers >= 0.4 && < 0.6
-                 , http-conduit >= 2.1 && < 2.4
-                 , bytestring >= 0.9 && < 0.11
-  if flag(network26)
-      build-depends: network >= 2.6 && < 2.9
-                   , network-uri >= 2.6 && < 2.7
-  else
-      build-depends: network >= 2.3 && < 2.6
-  default-language: Haskell2010
 
 executable  geturls2
+  import: deps, network, http
   main-is: geturls2.hs
   other-modules: GetURL
-  build-depends:   base >= 4.5 && < 4.12
-                 , stm ==2.4.*
-                 , bytestring >= 0.9 && < 0.11
-                 , time >= 1.4 && < 1.10
-                 , http-conduit >= 2.1 && < 2.4
-  if flag(network26)
-      build-depends: network >= 2.6 && < 2.9
-                   , network-uri >= 2.6 && < 2.7
-  else
-      build-depends: network >= 2.3 && < 2.6
-  default-language: Haskell2010
 
 executable  geturls3
+  import: deps, network, http
   main-is: geturls3.hs
   other-modules: TimeIt GetURL
-  build-depends:   base >= 4.5 && < 4.12
-                 , stm ==2.4.*
-                 , bytestring >= 0.9 && < 0.11
-                 , time >= 1.4 && < 1.10
-                 , http-conduit >= 2.1 && < 2.4
-  if flag(network26)
-      build-depends: network >= 2.6 && < 2.9
-                   , network-uri >= 2.6 && < 2.7
-  else
-      build-depends: network >= 2.3 && < 2.6
-  default-language: Haskell2010
 
 executable  geturls4
+  import: deps, network, http
   main-is: geturls4.hs
   other-modules: GetURL
-  build-depends:   base >= 4.5 && < 4.12
-                 , stm ==2.4.*
-                 , bytestring >= 0.9 && < 0.11
-                 , time >= 1.4 && < 1.10
-                 , http-conduit >= 2.1 && < 2.4
-  if flag(network26)
-      build-depends: network >= 2.6 && < 2.9
-                   , network-uri >= 2.6 && < 2.7
-  else
-      build-depends: network >= 2.3 && < 2.6
-  default-language: Haskell2010
 
 executable  geturls5
+  import: deps, network, http
   main-is: geturls5.hs
   other-modules: GetURL
-  build-depends:   base >= 4.5 && < 4.12
-                 , stm ==2.4.*
-                 , bytestring >= 0.9 && < 0.11
-                 , time >= 1.4 && < 1.10
-                 , http-conduit >= 2.1 && < 2.4
-  if flag(network26)
-      build-depends: network >= 2.6 && < 2.9
-                   , network-uri >= 2.6 && < 2.7
-  else
-      build-depends: network >= 2.3 && < 2.6
-  default-language: Haskell2010
 
 executable  geturls6
+  import: deps, network, http
   main-is: geturls6.hs
   other-modules: TimeIt GetURL
-  build-depends:   base >= 4.5 && < 4.12
-                 , stm ==2.4.*
-                 , bytestring >= 0.9 && < 0.11
-                 , time >= 1.4 && < 1.10
-                 , http-conduit >= 2.1 && < 2.4
-  if flag(network26)
-      build-depends: network >= 2.6 && < 2.9
-                   , network-uri >= 2.6 && < 2.7
-  else
-      build-depends: network >= 2.3 && < 2.6
-  default-language: Haskell2010
 
 -- -----------------------------------------------------------------------------
 -- conc-asyncex
 
 executable  geturlscancel
+  import: deps, network, http
   main-is: geturlscancel.hs
   other-modules: TimeIt GetURL
-  build-depends:   base >= 4.5 && < 4.12
-                 , stm ==2.4.*
-                 , bytestring >= 0.9 && < 0.11
-                 , time >= 1.4 && < 1.10
-                 , http-conduit >= 2.1 && < 2.4
-  if flag(network26)
-      build-depends: network >= 2.6 && < 2.9
-                   , network-uri >= 2.6 && < 2.7
-  else
-      build-depends: network >= 2.3 && < 2.6
-  default-language: Haskell2010
 
 executable  geturlscancel2
+  import: deps, network, http
   main-is: geturlscancel2.hs
   other-modules: TimeIt GetURL
-  build-depends:   base >= 4.5 && < 4.12
-                 , stm ==2.4.*
-                 , bytestring >= 0.9 && < 0.11
-                 , time >= 1.4 && < 1.10
-                 , http-conduit >= 2.1 && < 2.4
-  if flag(network26)
-      build-depends: network >= 2.6 && < 2.9
-                   , network-uri >= 2.6 && < 2.7
-  else
-      build-depends: network >= 2.3 && < 2.6
-  default-language: Haskell2010
 
 executable  modifytwo
+  import: deps
   main-is: modifytwo.hs
-  build-depends:   base >= 4.5 && < 4.12
-  default-language: Haskell2010
 
 executable  chan3
+  import: deps
   main-is: chan3.hs
-  build-depends:   base >= 4.5 && < 4.12
-  default-language: Haskell2010
 
 executable  timeout
+  import: deps
   main-is: timeout.hs
-  build-depends:   base >= 4.5 && < 4.12
-  default-language: Haskell2010
 
 executable  catch-mask
+  import: deps
   main-is: catch-mask.hs
-  build-depends:   base >= 4.5 && < 4.12
-  default-language: Haskell2010
 
 executable  catch-mask2
+  import: deps
   main-is: catch-mask2.hs
-  build-depends:   base >= 4.5 && < 4.12
-  default-language: Haskell2010
 
 -- -----------------------------------------------------------------------------
 -- conc-stm
@@ -619,498 +479,186 @@ executable  catch-mask2
 -- subdirectory (mismodules) so that the repo remains safe to use on
 -- case-insensitive filesystems (#15).
 executable  miscmodules
+  import: deps
   main-is: miscmodules.hs
   hs-source-dirs: miscmodules .
   other-modules: TMVar, TList, TQueue, TBQueue, WindowManager
-  build-depends:   base >= 4.5 && < 4.12
-                 , containers >= 0.4 && < 0.6
-                 , stm ==2.4.*
-  default-language: Haskell2010
 
 executable  geturlsfirst
+  import: deps, network, http
   main-is: geturlsfirst.hs
   other-modules: ConcurrentUtils, GetURL
-  build-depends:   base >= 4.5 && < 4.12
-                 , stm ==2.4.*
-                 , bytestring >= 0.9 && < 0.11
-                 , time >= 1.4 && < 1.10
-                 , http-conduit >= 2.1 && < 2.4
-  if flag(network26)
-      build-depends: network >= 2.6 && < 2.9
-                   , network-uri >= 2.6 && < 2.7
-  else
-      build-depends: network >= 2.3 && < 2.6
-  default-language: Haskell2010
 
 executable  TChan
+  import: deps
   main-is: TChan.hs
-  build-depends:   base >= 4.5 && < 4.12
-                 , stm ==2.4.*
-  default-language: Haskell2010
 
 -- -----------------------------------------------------------------------------
 -- conc-higher
 
 executable  geturls7
+  import: deps, network, http
   main-is: geturls7.hs
   other-modules: ConcurrentUtils, GetURL
-  build-depends:   base >= 4.5 && < 4.12
-                 , stm ==2.4.*
-                 , bytestring >= 0.9 && < 0.11
-                 , time >= 1.4 && < 1.10
-                 , http-conduit >= 2.1 && < 2.4
-  if flag(network26)
-      build-depends: network >= 2.6 && < 2.9
-                   , network-uri >= 2.6 && < 2.7
-  else
-      build-depends: network >= 2.3 && < 2.6
-  default-language: Haskell2010
 
 executable  geturls8
+  import: deps, network, http
   main-is: geturls8.hs
   other-modules: Async, GetURL
-  build-depends:   base >= 4.5 && < 4.12
-                 , stm ==2.4.*
-                 , bytestring >= 0.9 && < 0.11
-                 , time >= 1.4 && < 1.10
-                 , http-conduit >= 2.1 && < 2.4
-  if flag(network26)
-      build-depends: network >= 2.6 && < 2.9
-                   , network-uri >= 2.6 && < 2.7
-  else
-      build-depends: network >= 2.3 && < 2.6
-  default-language: Haskell2010
 
 executable  geturls9
+  import: deps, network, http
   main-is: geturls9.hs
   other-modules: Async, GetURL
-  build-depends:   base >= 4.5 && < 4.12
-                 , stm ==2.4.*
-                 , bytestring >= 0.9 && < 0.11
-                 , time >= 1.4 && < 1.10
-                 , http-conduit >= 2.1 && < 2.4
-  if flag(network26)
-      build-depends: network >= 2.6 && < 2.9
-                   , network-uri >= 2.6 && < 2.7
-  else
-      build-depends: network >= 2.3 && < 2.6
-  default-language: Haskell2010
 
 executable  timeout2
+  import: deps
   main-is: timeout.hs
-  build-depends:   base >= 4.5 && < 4.12
-                 , async >= 2.0 && < 2.3
-  default-language: Haskell2010
 
 -- -----------------------------------------------------------------------------
 -- conc-par
 
 executable findseq
+  import: deps
   main-is: findseq.hs
-  build-depends:   base >= 4.5 && < 4.12
-                 , filepath >= 1.3 && < 1.5
-                 , directory >= 1.1 && < 1.4
-  default-language: Haskell2010
 
 executable findpar
+  import: deps
   main-is: findpar.hs
   ghc-options: -threaded
-  build-depends:   base >= 4.5 && < 4.12
-                 , filepath >= 1.3 && < 1.5
-                 , directory >= 1.1 && < 1.4
-                 , async >= 2.0 && < 2.3
-  default-language: Haskell2010
 
 executable findpar2
+  import: deps
   main-is: findpar2.hs
   ghc-options: -threaded
-  build-depends:   base >= 4.5 && < 4.12
-                 , filepath >= 1.3 && < 1.5
-                 , directory >= 1.1 && < 1.4
-                 , async >= 2.0 && < 2.3
-  default-language: Haskell2010
 
 executable findpar3
+  import: deps
   main-is: findpar3.hs
   other-modules: CasIORef
   ghc-options: -threaded
-  build-depends:   base >= 4.5 && < 4.12
-                 , filepath >= 1.3 && < 1.5
-                 , directory >= 1.1 && < 1.4
-                 , async >= 2.0 && < 2.3
-                 , stm ==2.4.*
-  default-language: Haskell2010
 
 executable findpar4
+  import: deps, monad-par
   main-is: findpar4.hs
   ghc-options: -threaded
-  build-depends:   base >= 4.5 && < 4.12
-                 , filepath >= 1.3 && < 1.5
-                 , directory >= 1.1 && < 1.4
-                 , async >= 2.0 && < 2.3
-                 , stm ==2.4.*
-                 , transformers >=0.3 && <0.6
-                 , abstract-par ==0.3.*
-                 , monad-par >= 0.3.4 && < 0.4
-  default-language: Haskell2010
 
 executable findpar5
+  import: deps, monad-par
   main-is: findpar5.hs
   ghc-options: -threaded
-  build-depends:   base >= 4.5 && < 4.12
-                 , filepath >= 1.3 && < 1.5
-                 , directory >= 1.1 && < 1.4
-                 , transformers >=0.3 && <0.6
-                 , abstract-par ==0.3.*
-                 , monad-par >= 0.3.4 && < 0.4
-  default-language: Haskell2010
 
 -- -----------------------------------------------------------------------------
 -- conc-server
 
 executable  server
+  import: deps, network
   main-is: server.hs
   other-modules: ConcurrentUtils
-  build-depends:   base >= 4.5 && < 4.12
-                 , stm ==2.4.*
-  if flag(network26)
-      build-depends: network >= 2.6 && < 2.9
-                   , network-uri >= 2.6 && < 2.7
-  else
-      build-depends: network >= 2.3 && < 2.6
-  default-language: Haskell2010
 
 executable  server2
+  import: deps, network
   main-is: server2.hs
   other-modules: ConcurrentUtils
-  build-depends:   base >= 4.5 && < 4.12
-                 , stm ==2.4.*
-                 , async >= 2.0 && < 2.3
-  if flag(network26)
-      build-depends: network >= 2.6 && < 2.9
-                   , network-uri >= 2.6 && < 2.7
-  else
-      build-depends: network >= 2.3 && < 2.6
-  default-language: Haskell2010
 
 executable chat
+  import: deps, network
   main-is: chat.hs
   other-modules: ConcurrentUtils
-  build-depends:   base >= 4.5 && < 4.12
-                 , containers >= 0.4 && < 0.6
-                 , async >= 2.0 && < 2.3
-                 , stm ==2.4.*
-  if flag(network26)
-      build-depends: network >= 2.6 && < 2.9
-                   , network-uri >= 2.6 && < 2.7
-  else
-      build-depends: network >= 2.3 && < 2.6
-  default-language: Haskell2010
 
 -- -----------------------------------------------------------------------------
 -- conc-distrib
 
 executable ping
+  import: deps, network, distributed
   main-is: distrib-ping/ping.hs
   other-modules: DistribUtils
-  build-depends:   base >= 4.5 && < 4.12
-                 , binary >=0.6.3 && < 0.11
-                 , template-haskell >= 2.7 && < 2.15
-  if flag(network26)
-      build-depends: network >= 2.6 && < 2.9
-                   , network-uri >= 2.6 && < 2.7
-  else
-      build-depends: network >= 2.3 && < 2.6
-  if impl(ghc <= 7.6)
-      -- prior to ghc-7.4 generics lived in ghc-prim
-      build-depends: ghc-prim
-  if flag(distributed)
-     build-depends:
-                   distributed-process >= 0.5 && < 0.8
-                 , distributed-process-simplelocalnet ==0.2.*
-                 , distributed-static >= 0.2 && < 0.4
-  else
-     buildable: False
-  default-language: Haskell2010
 
 executable ping-multi
+  import: deps, network, distributed
   main-is: distrib-ping/ping-multi.hs
   other-modules: DistribUtils
-  build-depends:   base >= 4.5 && < 4.12
-                 , binary >=0.6.3 && < 0.11
-                 , template-haskell >= 2.7 && < 2.15
-  if flag(network26)
-      build-depends: network >= 2.6 && < 2.9
-                   , network-uri >= 2.6 && < 2.7
-  else
-      build-depends: network >= 2.3 && < 2.6
-  if impl(ghc <= 7.6)
-      -- prior to ghc-7.4 generics lived in ghc-prim
-      build-depends: ghc-prim
-  if flag(distributed)
-     build-depends:
-                   distributed-process >= 0.5 && < 0.8
-                 , distributed-process-simplelocalnet ==0.2.*
-                 , distributed-static >= 0.2 && < 0.4
-  else
-     buildable: False
-  default-language: Haskell2010
 
 executable ping-tc
+  import: deps, network, distributed
   main-is: distrib-ping/ping-tc.hs
   other-modules: DistribUtils
-  build-depends:   base >= 4.5 && < 4.12
-                 , binary >=0.6.3 && < 0.11
-                 , template-haskell >= 2.7 && < 2.15
-  if flag(network26)
-      build-depends: network >= 2.6 && < 2.9
-                   , network-uri >= 2.6 && < 2.7
-  else
-      build-depends: network >= 2.3 && < 2.6
-  if impl(ghc <= 7.6)
-      -- prior to ghc-7.4 generics lived in ghc-prim
-      build-depends: ghc-prim
-  if flag(distributed)
-     build-depends:
-                   distributed-process >= 0.5 && < 0.8
-                 , distributed-process-simplelocalnet ==0.2.*
-                 , distributed-static >= 0.2 && < 0.4
-  else
-     buildable: False
-  default-language: Haskell2010
 
 executable ping-tc-merge
+  import: deps, network, distributed
   main-is: distrib-ping/ping-tc-merge.hs
   other-modules: DistribUtils
-  build-depends:   base >= 4.5 && < 4.12
-                 , binary >=0.6.3 && < 0.11
-                 , template-haskell >= 2.7 && < 2.15
-  if flag(network26)
-      build-depends: network >= 2.6 && < 2.9
-                   , network-uri >= 2.6 && < 2.7
-  else
-      build-depends: network >= 2.3 && < 2.6
-  if impl(ghc <= 7.6)
-      -- prior to ghc-7.4 generics lived in ghc-prim
-      build-depends: ghc-prim
-  if flag(distributed)
-     build-depends:
-                   distributed-process >= 0.5 && < 0.8
-                 , distributed-process-simplelocalnet ==0.2.*
-                 , distributed-static >= 0.2 && < 0.4
-  else
-     buildable: False
-  default-language: Haskell2010
 
 -- extra, not in the text?
 executable ping-tc-notify
+  import: deps, network, distributed
   main-is: distrib-ping/ping-tc-notify.hs
   other-modules: DistribUtils
-  build-depends:   base >= 4.5 && < 4.12
-                 , binary >=0.6.3 && < 0.11
-                 , template-haskell >= 2.7 && < 2.15
-  if flag(network26)
-      build-depends: network >= 2.6 && < 2.9
-                   , network-uri >= 2.6 && < 2.7
-  else
-      build-depends: network >= 2.3 && < 2.6
-  if impl(ghc <= 7.6)
-      -- prior to ghc-7.4 generics lived in ghc-prim
-      build-depends: ghc-prim
-  if flag(distributed)
-     build-depends:
-                   distributed-process >= 0.5 && < 0.8
-                 , distributed-process-simplelocalnet ==0.2.*
-                 , distributed-static >= 0.2 && < 0.4
-  else
-     buildable: False
-  default-language: Haskell2010
 
 executable ping-fail
+  import: deps, network, distributed
   main-is: distrib-ping/ping-fail.hs
   other-modules: DistribUtils
-  build-depends:   base >= 4.5 && < 4.12
-                 , binary >=0.6.3 && < 0.11
-                 , template-haskell >= 2.7 && < 2.15
-  if flag(network26)
-      build-depends: network >= 2.6 && < 2.9
-                   , network-uri >= 2.6 && < 2.7
-  else
-      build-depends: network >= 2.3 && < 2.6
-  if impl(ghc <= 7.6)
-      -- prior to ghc-7.4 generics lived in ghc-prim
-      build-depends: ghc-prim
-  if flag(distributed)
-     build-depends:
-                   distributed-process >= 0.5 && < 0.8
-                 , distributed-process-simplelocalnet ==0.2.*
-                 , distributed-static >= 0.2 && < 0.4
-  else
-     buildable: False
-  default-language: Haskell2010
 
 executable distrib-chat
+  import: deps, network, distributed
   main-is: distrib-chat/chat.hs
   other-modules: ConcurrentUtils DistribUtils
-  build-depends:   base >= 4.5 && < 4.12
-                 , containers >= 0.4 && < 0.6
-                 , stm ==2.4.*
-                 , async >= 2.0 && < 2.3
-                 , binary >=0.6.3 && < 0.11
-                 , transformers >=0.3 && <0.6
-                 , template-haskell >= 2.7 && < 2.15
-  if flag(network26)
-      build-depends: network >= 2.6 && < 2.9
-                   , network-uri >= 2.6 && < 2.7
-  else
-      build-depends: network >= 2.3 && < 2.6
-  if impl(ghc <= 7.6)
-      -- prior to ghc-7.4 generics lived in ghc-prim
-      build-depends: ghc-prim
-  if flag(distributed)
-     build-depends:
-                   distributed-process >= 0.5 && < 0.8
-                 , distributed-process-simplelocalnet ==0.2.*
-                 , distributed-static >= 0.2 && < 0.4
-  else
-     buildable: False
-  default-language: Haskell2010
 
 executable distrib-chat-noslave
+  import: deps, network, distributed
   main-is: distrib-chat/chat-noslave.hs
   other-modules: ConcurrentUtils
-  build-depends:   base >= 4.5 && < 4.12
-                 , containers >= 0.4 && < 0.6
-                 , stm ==2.4.*
-                 , async >= 2.0 && < 2.3
-                 , binary >=0.6.3 && < 0.11
-                 , transformers >=0.3 && <0.6
-                 , template-haskell >= 2.7 && < 2.15
-  if flag(network26)
-      build-depends: network >= 2.6 && < 2.9
-                   , network-uri >= 2.6 && < 2.7
-  else
-      build-depends: network >= 2.3 && < 2.6
-  if impl(ghc <= 7.6)
-      -- prior to ghc-7.4 generics lived in ghc-prim
-      build-depends: ghc-prim
-  if flag(distributed)
-     build-depends:
-                   distributed-process >= 0.5 && < 0.8
-                 , distributed-process-simplelocalnet ==0.2.*
-                 , distributed-static >= 0.2 && < 0.4
-  else
-     buildable: False
-  default-language: Haskell2010
 
 executable distrib-db
+  import: deps, network, distributed
   main-is: db.hs
   hs-source-dirs: . distrib-db
   other-modules: DistribUtils Database
-  build-depends:   base >= 4.5 && < 4.12
-                 , containers >= 0.4 && < 0.6
-                 , stm ==2.4.*
-                 , async >= 2.0 && < 2.3
-                 , binary >=0.6.3 && < 0.11
-                 , template-haskell >= 2.7 && < 2.15
-                 , transformers >=0.3 && <0.6
-  if flag(network26)
-      build-depends: network >= 2.6 && < 2.9
-                   , network-uri >= 2.6 && < 2.7
-  else
-      build-depends: network >= 2.3 && < 2.6
-  if impl(ghc <= 7.6)
-      -- prior to ghc-7.4 generics lived in ghc-prim
-      build-depends: ghc-prim
-  if flag(distributed)
-     build-depends:
-                   distributed-process >= 0.5 && < 0.8
-                 , distributed-process-simplelocalnet ==0.2.*
-                 , distributed-static >= 0.2 && < 0.4
-  else
-     buildable: False
-  default-language: Haskell2010
 
 -- -----------------------------------------------------------------------------
 -- conc-debugging-tuning
 
 executable  mvar4
+  import: deps
   main-is: mvar4.hs
-  build-depends:   base >= 4.5 && < 4.12
-  default-language: Haskell2010
 
 executable  deadlock1
+  import: deps
   main-is: deadlock1.hs
-  build-depends:   base >= 4.5 && < 4.12
-  default-language: Haskell2010
 
 executable  deadlock2
+  import: deps
   main-is: deadlock2.hs
-  build-depends:   base >= 4.5 && < 4.12
-  default-language: Haskell2010
 
 executable  threadperf1
+  import: deps
   main-is: threadperf1.hs
-  build-depends:   base >= 4.5 && < 4.12
-  default-language: Haskell2010
 
 executable  threadperf2
+  import: deps
   main-is: threadperf2.hs
-  build-depends:   base >= 4.5 && < 4.12
   ghc-options: -rtsopts
-  default-language: Haskell2010
 
 -- -----------------------------------------------------------------------------
 -- Extras (exercises etc.)
 
 executable  bingtranslator
+  import: deps, network, http
   main-is: bingtranslator.hs
   other-modules: BingTranslate GetURL
   hs-source-dirs: other .
-  build-depends:   base >= 4.5 && < 4.12
-                 , bytestring >= 0.9 && < 0.11
-                 , time >= 1.4 && < 1.10
-                 , http-conduit >= 2.1 && < 2.4
-                 , utf8-string >= 0.3 && < 1.1
-                 , xml ==1.3.*
-  if flag(network26)
-      build-depends: network >= 2.6 && < 2.9
-                   , network-uri >= 2.6 && < 2.7
-  else
-      build-depends: network >= 2.3 && < 2.6
-  default-language: Haskell2010
 
 executable  bingtranslatorconc
+  import: deps, network, http
   main-is: bingtranslatorconc.hs
   other-modules: BingTranslate GetURL
   hs-source-dirs: other .
-  build-depends:   base >= 4.5 && < 4.12
-                 , bytestring >= 0.9 && < 0.11
-                 , time >= 1.4 && < 1.10
-                 , http-conduit >= 2.1 && < 2.4
-                 , utf8-string >= 0.3 && < 1.1
-                 , xml ==1.3.*
-  if flag(network26)
-      build-depends: network >= 2.6 && < 2.9
-                   , network-uri >= 2.6 && < 2.7
-  else
-      build-depends: network >= 2.3 && < 2.6
-  default-language: Haskell2010
 
 executable  geturlsstm
+  import: deps, network, http
   main-is: geturlsstm.hs
   other-modules: TimeIt GetURL
-  build-depends:   base >= 4.5 && < 4.12
-                 , stm ==2.4.*
-                 , bytestring >= 0.9 && < 0.11
-                 , time >= 1.4 && < 1.10
-                 , http-conduit >= 2.1 && < 2.4
-  if flag(network26)
-      build-depends: network >= 2.6 && < 2.9
-                   , network-uri >= 2.6 && < 2.7
-  else
-      build-depends: network >= 2.3 && < 2.6
-  default-language: Haskell2010
 
 -- ToDo:
 --   euler35
