@@ -278,8 +278,7 @@ executable  parinfer
                   Infer
                   Substitution
                   StateX
-  build-tools:     alex
-                 , happy
+  build-tool-depends: alex:alex, happy:happy
 
 -- -----------------------------------------------------------------------------
 -- par-repa
