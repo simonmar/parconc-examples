@@ -2,6 +2,8 @@
 
 * Builds with GHC 8.6.x and 8.8.x
 * Requires cabal-install 2.2 or later
+* Bugfix to the chat example, prevent two users simultaneously kicking
+  each other
 
 # Version 0.4.7
 

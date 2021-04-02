@@ -218,13 +218,14 @@ runClient serv@Server{..} client@Client{..} = do
         hPutStrLn clientHandle $ "You have been kicked: " ++ reason
       Nothing -> do
         msg <- readTChan clientSendChan
+        io <- handleMessage serv client msg
         return $ do
-            continue <- handleMessage serv client msg
+            continue <- io
             when continue $ server
 -- >>
 
 -- <<handleMessage
-handleMessage :: Server -> Client -> Message -> IO Bool
+handleMessage :: Server -> Client -> Message -> STM (IO Bool)
 handleMessage server client@Client{..} message =
   case message of
      Notice msg         -> output $ "*** " ++ msg
@@ -233,19 +234,20 @@ handleMessage server client@Client{..} message =
      Command msg ->
        case words msg of
            ["/kick", who] -> do
-               atomically $ kick server who clientName
-               return True
+               kick server who clientName
+               return $ return True
            "/tell" : who : what -> do
-               tell server client who (unwords what)
-               return True
+               return $ do
+                 tell server client who (unwords what)
+                 return True
            ["/quit"] ->
-               return False
-           ('/':_):_ -> do
+               return $ return False
+           ('/':_):_ -> return $ do
                hPutStrLn clientHandle $ "Unrecognised command: " ++ msg
                return True
            _ -> do
-               atomically $ broadcast server $ Broadcast clientName msg
-               return True
+               broadcast server $ Broadcast clientName msg
+               return $ return True
  where
-   output s = do hPutStrLn clientHandle s; return True
+   output s = return $ do hPutStrLn clientHandle s; return True
 -- >>
