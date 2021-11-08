@@ -265,6 +265,7 @@ executable  parinfer
   import: deps
   main-is: parinfer.hs
   hs-source-dirs: parinfer
+  ghc-options: -threaded
   other-modules:  InferMonad
                   Term
                   FiniteMap
