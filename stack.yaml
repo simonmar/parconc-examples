@@ -1,5 +1,12 @@
-resolver: lts-10.10
+resolver: lts-16.31
 flags:
   parconc-examples:
     distributed: true
     accelerate: true
+
+nix:
+  enable: true
+  shell-file: shell.nix
+  packages: [ zlib.dev, zlib.out, pkg-config ]
+
+
