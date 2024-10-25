@@ -5,7 +5,7 @@ flags:
     accelerate: true
 
 nix:
-  enable: true
+  enable: false 
   shell-file: shell.nix
   packages: [ zlib.dev, zlib.out, pkg-config ]
 
