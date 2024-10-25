@@ -7,6 +7,6 @@ flags:
 nix:
   enable: false 
   shell-file: shell.nix
-  packages: [ zlib.dev, zlib.out, pkg-config ]
+  # packages: [ zlib.dev, zlib.out, pkg-config ]
 
 
