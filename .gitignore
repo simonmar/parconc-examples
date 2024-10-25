@@ -9,6 +9,7 @@
 *.old
 
 dist
+dist-newstyle
 
 cabal-dev
 cabal.sandbox.config
