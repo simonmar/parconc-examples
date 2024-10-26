@@ -1,11 +1,15 @@
-resolver: lts-16.31
+resolver: lts-10.10
 flags:
   parconc-examples:
     distributed: true
     accelerate: true
 
+extra-deps:
+  - Cabal-2.2.0.1
+  - text-1.2.5.0
+
 nix:
-  enable: false 
+  enable: true 
   shell-file: shell.nix
   # packages: [ zlib.dev, zlib.out, pkg-config ]
 

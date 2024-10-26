@@ -14,8 +14,10 @@ dist-newstyle
 cabal-dev
 cabal.sandbox.config
 .cabal-sandbox
+cabal.project*
 
 .stack-work
+stack.yaml.lock
 
 bingtranslator
 bingtranslatorconc
