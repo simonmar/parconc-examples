@@ -1,4 +1,4 @@
-resolver: lts-10.10
+resolver: lts-16.31
 flags:
   parconc-examples:
     distributed: true
@@ -6,7 +6,18 @@ flags:
 
 extra-deps:
   - Cabal-2.2.0.1
-  - text-1.2.5.0
+  # - text-1.2.5.0
+  - accelerate-1.2.0.1@sha256:bb1928efe602545df4043692916ed427c959110cbd678d03c3f9c3be25d1ae88,20112
+  - distributed-process-0.7.7@sha256:a46d7e159ead20f479c3cd7e7f0758321e1f3d64ad53ab8bd8df101a2c832bf7,7868
+  - distributed-process-simplelocalnet-0.2.4@sha256:044a003f81a648f9fb9b1c7ae9cd8f753f5f1c32d9db5ff8b31e91e91f525ed7,3189
+  - distributed-static-0.3.11@sha256:a38f56c6128d10f1c1aeb498d5a5891cd75d7a3eeb5b5f7bb8e866a46906d8c5,2732
+  - normaldistribution-1.1.0.3@sha256:2615b784c4112cbf6ffa0e2b55b76790290a9b9dff18a05d8c89aa374b213477,2160
+  - parsec-3.1.17.0@sha256:8407cbd428d7f640a0fff8891bd2f7aca13cebe70a5e654856f8abec9a648b56,5149
+  - repa-3.4.1.5@sha256:18688f4bfecb2c454386fe149f12e73bd1d83eefd48214cae26d4e6a7ac283ae,3697
+  - network-multicast-0.2.0@sha256:7cc2bd715f98ab0d891e8893b60a9a0048b5ae5b804acea96849f4ecf7260ac2,1009
+  - network-transport-tcp-0.6.1@sha256:04cf5c191eb2b93b2941027840e26ed47ab76a68e37ec958ed0feeefa285da86,3399
+
+allow-newer: true
 
 nix:
   enable: true 
