@@ -1,0 +1,532 @@
+cradle:
+  cabal:
+    - path: "./rpar.hs"
+      component: "parconc-examples:exe:rpar"
+
+    - path: "./sudoku1.hs"
+      component: "parconc-examples:exe:sudoku1"
+
+    - path: "./Sudoku.hs"
+      component: "parconc-examples:exe:sudoku1"
+
+    - path: "./sudoku2.hs"
+      component: "parconc-examples:exe:sudoku2"
+
+    - path: "./Sudoku.hs"
+      component: "parconc-examples:exe:sudoku2"
+
+    - path: "./sudoku3.hs"
+      component: "parconc-examples:exe:sudoku3"
+
+    - path: "./Sudoku.hs"
+      component: "parconc-examples:exe:sudoku3"
+
+    - path: "./sudoku4.hs"
+      component: "parconc-examples:exe:sudoku4"
+
+    - path: "./Sudoku.hs"
+      component: "parconc-examples:exe:sudoku4"
+
+    - path: "./sudoku5.hs"
+      component: "parconc-examples:exe:sudoku5"
+
+    - path: "./Sudoku.hs"
+      component: "parconc-examples:exe:sudoku5"
+
+    - path: "./strat.hs"
+      component: "parconc-examples:exe:strat"
+
+    - path: "./strat2.hs"
+      component: "parconc-examples:exe:strat2"
+
+    - path: "./strat3.hs"
+      component: "parconc-examples:exe:strat3"
+
+    - path: "./rsa.hs"
+      component: "parconc-examples:exe:rsa"
+
+    - path: "./ByteStringCompat.hs"
+      component: "parconc-examples:exe:rsa"
+
+    - path: "./rsa1.hs"
+      component: "parconc-examples:exe:rsa1"
+
+    - path: "./ByteStringCompat.hs"
+      component: "parconc-examples:exe:rsa1"
+
+    - path: "./rsa2.hs"
+      component: "parconc-examples:exe:rsa2"
+
+    - path: "./ByteStringCompat.hs"
+      component: "parconc-examples:exe:rsa2"
+
+    - path: "kmeans/kmeans.hs"
+      component: "parconc-examples:exe:kmeans"
+
+    - path: "kmeans/KMeansCore.hs"
+      component: "parconc-examples:exe:kmeans"
+
+    - path: "kmeans/GenSamples.hs"
+      component: "parconc-examples:exe:GenSamples"
+
+    - path: "kmeans/KMeansCore.hs"
+      component: "parconc-examples:exe:GenSamples"
+
+    - path: "./parmonad.hs"
+      component: "parconc-examples:exe:parmonad"
+
+    - path: "./rsa-pipeline.hs"
+      component: "parconc-examples:exe:rsa-pipeline"
+
+    - path: "./ByteStringCompat.hs"
+      component: "parconc-examples:exe:rsa-pipeline"
+
+    - path: "./Stream.hs"
+      component: "parconc-examples:exe:rsa-pipeline"
+
+    - path: "fwsparse/fwsparse.hs"
+      component: "parconc-examples:exe:fwsparse"
+
+    - path: "fwsparse/SparseGraph.hs"
+      component: "parconc-examples:exe:fwsparse"
+
+    - path: "fwsparse/MapCompat.hs"
+      component: "parconc-examples:exe:fwsparse"
+
+    - path: "fwsparse/fwsparse1.hs"
+      component: "parconc-examples:exe:fwsparse1"
+
+    - path: "fwsparse/SparseGraph.hs"
+      component: "parconc-examples:exe:fwsparse1"
+
+    - path: "fwsparse/MapCompat.hs"
+      component: "parconc-examples:exe:fwsparse1"
+
+    - path: "./timetable.hs"
+      component: "parconc-examples:exe:timetable"
+
+    - path: "./timetable1.hs"
+      component: "parconc-examples:exe:timetable1"
+
+    - path: "./timetable2.hs"
+      component: "parconc-examples:exe:timetable2"
+
+    - path: "./timetable3.hs"
+      component: "parconc-examples:exe:timetable3"
+
+    - path: "parinfer/parinfer.hs"
+      component: "parconc-examples:exe:parinfer"
+
+    - path: "parinfer/InferMonad.hs"
+      component: "parconc-examples:exe:parinfer"
+
+    - path: "parinfer/Term.hs"
+      component: "parconc-examples:exe:parinfer"
+
+    - path: "parinfer/FiniteMap.hs"
+      component: "parconc-examples:exe:parinfer"
+
+    - path: "parinfer/Shows.hs"
+      component: "parconc-examples:exe:parinfer"
+
+    - path: "parinfer/Environment.hs"
+      component: "parconc-examples:exe:parinfer"
+
+    - path: "parinfer/Lex.hs"
+      component: "parconc-examples:exe:parinfer"
+
+    - path: "parinfer/MaybeM.hs"
+      component: "parconc-examples:exe:parinfer"
+
+    - path: "parinfer/Parse.hs"
+      component: "parconc-examples:exe:parinfer"
+
+    - path: "parinfer/MyList.hs"
+      component: "parconc-examples:exe:parinfer"
+
+    - path: "parinfer/Type.hs"
+      component: "parconc-examples:exe:parinfer"
+
+    - path: "parinfer/Infer.hs"
+      component: "parconc-examples:exe:parinfer"
+
+    - path: "parinfer/Substitution.hs"
+      component: "parconc-examples:exe:parinfer"
+
+    - path: "parinfer/StateX.hs"
+      component: "parconc-examples:exe:parinfer"
+
+    - path: "./fwdense.hs"
+      component: "parconc-examples:exe:fwdense"
+
+    - path: "./fwdense1.hs"
+      component: "parconc-examples:exe:fwdense1"
+
+    - path: "./rotateimage.hs"
+      component: "parconc-examples:exe:rotateimage"
+
+    - path: "./fwaccel.hs"
+      component: "parconc-examples:exe:fwaccel"
+
+    - path: "./AccelerateCompat.hs"
+      component: "parconc-examples:exe:fwaccel"
+
+    - path: "./fwaccel-gpu.hs"
+      component: "parconc-examples:exe:fwaccel-gpu"
+
+    - path: "mandel/mandel.hs"
+      component: "parconc-examples:exe:mandel"
+
+    - path: "mandel/Config.hs"
+      component: "parconc-examples:exe:mandel"
+
+    - path: "./fork.hs"
+      component: "parconc-examples:exe:fork"
+
+    - path: "./reminders.hs"
+      component: "parconc-examples:exe:reminders"
+
+    - path: "./reminders2.hs"
+      component: "parconc-examples:exe:reminders2"
+
+    - path: "./mvar1.hs"
+      component: "parconc-examples:exe:mvar1"
+
+    - path: "./mvar2.hs"
+      component: "parconc-examples:exe:mvar2"
+
+    - path: "./mvar3.hs"
+      component: "parconc-examples:exe:mvar3"
+
+    - path: "./logger.hs"
+      component: "parconc-examples:exe:logger"
+
+    - path: "./phonebook.hs"
+      component: "parconc-examples:exe:phonebook"
+
+    - path: "./chan.hs"
+      component: "parconc-examples:exe:chan"
+
+    - path: "./chan2.hs"
+      component: "parconc-examples:exe:chan2"
+
+    - path: "./geturls1.hs"
+      component: "parconc-examples:exe:geturls1"
+
+    - path: "./GetURL.hs"
+      component: "parconc-examples:exe:geturls1"
+
+    - path: "./geturls2.hs"
+      component: "parconc-examples:exe:geturls2"
+
+    - path: "./GetURL.hs"
+      component: "parconc-examples:exe:geturls2"
+
+    - path: "./geturls3.hs"
+      component: "parconc-examples:exe:geturls3"
+
+    - path: "./TimeIt.hs"
+      component: "parconc-examples:exe:geturls3"
+
+    - path: "./GetURL.hs"
+      component: "parconc-examples:exe:geturls3"
+
+    - path: "./geturls4.hs"
+      component: "parconc-examples:exe:geturls4"
+
+    - path: "./GetURL.hs"
+      component: "parconc-examples:exe:geturls4"
+
+    - path: "./geturls5.hs"
+      component: "parconc-examples:exe:geturls5"
+
+    - path: "./GetURL.hs"
+      component: "parconc-examples:exe:geturls5"
+
+    - path: "./geturls6.hs"
+      component: "parconc-examples:exe:geturls6"
+
+    - path: "./TimeIt.hs"
+      component: "parconc-examples:exe:geturls6"
+
+    - path: "./GetURL.hs"
+      component: "parconc-examples:exe:geturls6"
+
+    - path: "./geturlscancel.hs"
+      component: "parconc-examples:exe:geturlscancel"
+
+    - path: "./TimeIt.hs"
+      component: "parconc-examples:exe:geturlscancel"
+
+    - path: "./GetURL.hs"
+      component: "parconc-examples:exe:geturlscancel"
+
+    - path: "./geturlscancel2.hs"
+      component: "parconc-examples:exe:geturlscancel2"
+
+    - path: "./TimeIt.hs"
+      component: "parconc-examples:exe:geturlscancel2"
+
+    - path: "./GetURL.hs"
+      component: "parconc-examples:exe:geturlscancel2"
+
+    - path: "./modifytwo.hs"
+      component: "parconc-examples:exe:modifytwo"
+
+    - path: "./chan3.hs"
+      component: "parconc-examples:exe:chan3"
+
+    - path: "./timeout.hs"
+      component: "parconc-examples:exe:timeout"
+
+    - path: "./catch-mask.hs"
+      component: "parconc-examples:exe:catch-mask"
+
+    - path: "./catch-mask2.hs"
+      component: "parconc-examples:exe:catch-mask2"
+
+    - path: "miscmodules/miscmodules.hs"
+      component: "parconc-examples:exe:miscmodules"
+
+    - path: "./miscmodules.hs"
+      component: "parconc-examples:exe:miscmodules"
+
+    - path: "miscmodules/TMVar.hs"
+      component: "parconc-examples:exe:miscmodules"
+
+    - path: "miscmodules/TList.hs"
+      component: "parconc-examples:exe:miscmodules"
+
+    - path: "miscmodules/TQueue.hs"
+      component: "parconc-examples:exe:miscmodules"
+
+    - path: "miscmodules/TBQueue.hs"
+      component: "parconc-examples:exe:miscmodules"
+
+    - path: "miscmodules/WindowManager.hs"
+      component: "parconc-examples:exe:miscmodules"
+
+    - path: "./TMVar.hs"
+      component: "parconc-examples:exe:miscmodules"
+
+    - path: "./TList.hs"
+      component: "parconc-examples:exe:miscmodules"
+
+    - path: "./TQueue.hs"
+      component: "parconc-examples:exe:miscmodules"
+
+    - path: "./TBQueue.hs"
+      component: "parconc-examples:exe:miscmodules"
+
+    - path: "./WindowManager.hs"
+      component: "parconc-examples:exe:miscmodules"
+
+    - path: "./geturlsfirst.hs"
+      component: "parconc-examples:exe:geturlsfirst"
+
+    - path: "./ConcurrentUtils.hs"
+      component: "parconc-examples:exe:geturlsfirst"
+
+    - path: "./GetURL.hs"
+      component: "parconc-examples:exe:geturlsfirst"
+
+    - path: "./TChan.hs"
+      component: "parconc-examples:exe:TChan"
+
+    - path: "./geturls7.hs"
+      component: "parconc-examples:exe:geturls7"
+
+    - path: "./ConcurrentUtils.hs"
+      component: "parconc-examples:exe:geturls7"
+
+    - path: "./GetURL.hs"
+      component: "parconc-examples:exe:geturls7"
+
+    - path: "./geturls8.hs"
+      component: "parconc-examples:exe:geturls8"
+
+    - path: "./Async.hs"
+      component: "parconc-examples:exe:geturls8"
+
+    - path: "./GetURL.hs"
+      component: "parconc-examples:exe:geturls8"
+
+    - path: "./geturls9.hs"
+      component: "parconc-examples:exe:geturls9"
+
+    - path: "./Async.hs"
+      component: "parconc-examples:exe:geturls9"
+
+    - path: "./GetURL.hs"
+      component: "parconc-examples:exe:geturls9"
+
+    - path: "./timeout.hs"
+      component: "parconc-examples:exe:timeout2"
+
+    - path: "./findseq.hs"
+      component: "parconc-examples:exe:findseq"
+
+    - path: "./findpar.hs"
+      component: "parconc-examples:exe:findpar"
+
+    - path: "./findpar2.hs"
+      component: "parconc-examples:exe:findpar2"
+
+    - path: "./findpar3.hs"
+      component: "parconc-examples:exe:findpar3"
+
+    - path: "./CasIORef.hs"
+      component: "parconc-examples:exe:findpar3"
+
+    - path: "./findpar4.hs"
+      component: "parconc-examples:exe:findpar4"
+
+    - path: "./findpar5.hs"
+      component: "parconc-examples:exe:findpar5"
+
+    - path: "./server.hs"
+      component: "parconc-examples:exe:server"
+
+    - path: "./ConcurrentUtils.hs"
+      component: "parconc-examples:exe:server"
+
+    - path: "./server2.hs"
+      component: "parconc-examples:exe:server2"
+
+    - path: "./ConcurrentUtils.hs"
+      component: "parconc-examples:exe:server2"
+
+    - path: "./chat.hs"
+      component: "parconc-examples:exe:chat"
+
+    - path: "./ConcurrentUtils.hs"
+      component: "parconc-examples:exe:chat"
+
+    - path: "./distrib-ping/ping.hs"
+      component: "parconc-examples:exe:ping"
+
+    - path: "./DistribUtils.hs"
+      component: "parconc-examples:exe:ping"
+
+    - path: "./distrib-ping/ping-multi.hs"
+      component: "parconc-examples:exe:ping-multi"
+
+    - path: "./DistribUtils.hs"
+      component: "parconc-examples:exe:ping-multi"
+
+    - path: "./distrib-ping/ping-tc.hs"
+      component: "parconc-examples:exe:ping-tc"
+
+    - path: "./DistribUtils.hs"
+      component: "parconc-examples:exe:ping-tc"
+
+    - path: "./distrib-ping/ping-tc-merge.hs"
+      component: "parconc-examples:exe:ping-tc-merge"
+
+    - path: "./DistribUtils.hs"
+      component: "parconc-examples:exe:ping-tc-merge"
+
+    - path: "./distrib-ping/ping-tc-notify.hs"
+      component: "parconc-examples:exe:ping-tc-notify"
+
+    - path: "./DistribUtils.hs"
+      component: "parconc-examples:exe:ping-tc-notify"
+
+    - path: "./distrib-ping/ping-fail.hs"
+      component: "parconc-examples:exe:ping-fail"
+
+    - path: "./DistribUtils.hs"
+      component: "parconc-examples:exe:ping-fail"
+
+    - path: "./distrib-chat/chat.hs"
+      component: "parconc-examples:exe:distrib-chat"
+
+    - path: "./ConcurrentUtils.hs"
+      component: "parconc-examples:exe:distrib-chat"
+
+    - path: "./DistribUtils.hs"
+      component: "parconc-examples:exe:distrib-chat"
+
+    - path: "./distrib-chat/chat-noslave.hs"
+      component: "parconc-examples:exe:distrib-chat-noslave"
+
+    - path: "./ConcurrentUtils.hs"
+      component: "parconc-examples:exe:distrib-chat-noslave"
+
+    - path: "./db.hs"
+      component: "parconc-examples:exe:distrib-db"
+
+    - path: "distrib-db/db.hs"
+      component: "parconc-examples:exe:distrib-db"
+
+    - path: "./DistribUtils.hs"
+      component: "parconc-examples:exe:distrib-db"
+
+    - path: "./Database.hs"
+      component: "parconc-examples:exe:distrib-db"
+
+    - path: "distrib-db/DistribUtils.hs"
+      component: "parconc-examples:exe:distrib-db"
+
+    - path: "distrib-db/Database.hs"
+      component: "parconc-examples:exe:distrib-db"
+
+    - path: "./mvar4.hs"
+      component: "parconc-examples:exe:mvar4"
+
+    - path: "./deadlock1.hs"
+      component: "parconc-examples:exe:deadlock1"
+
+    - path: "./deadlock2.hs"
+      component: "parconc-examples:exe:deadlock2"
+
+    - path: "./threadperf1.hs"
+      component: "parconc-examples:exe:threadperf1"
+
+    - path: "./threadperf2.hs"
+      component: "parconc-examples:exe:threadperf2"
+
+    - path: "other/bingtranslator.hs"
+      component: "parconc-examples:exe:bingtranslator"
+
+    - path: "./bingtranslator.hs"
+      component: "parconc-examples:exe:bingtranslator"
+
+    - path: "other/BingTranslate.hs"
+      component: "parconc-examples:exe:bingtranslator"
+
+    - path: "other/GetURL.hs"
+      component: "parconc-examples:exe:bingtranslator"
+
+    - path: "./BingTranslate.hs"
+      component: "parconc-examples:exe:bingtranslator"
+
+    - path: "./GetURL.hs"
+      component: "parconc-examples:exe:bingtranslator"
+
+    - path: "other/bingtranslatorconc.hs"
+      component: "parconc-examples:exe:bingtranslatorconc"
+
+    - path: "./bingtranslatorconc.hs"
+      component: "parconc-examples:exe:bingtranslatorconc"
+
+    - path: "other/BingTranslate.hs"
+      component: "parconc-examples:exe:bingtranslatorconc"
+
+    - path: "other/GetURL.hs"
+      component: "parconc-examples:exe:bingtranslatorconc"
+
+    - path: "./BingTranslate.hs"
+      component: "parconc-examples:exe:bingtranslatorconc"
+
+    - path: "./GetURL.hs"
+      component: "parconc-examples:exe:bingtranslatorconc"
+
+    - path: "./geturlsstm.hs"
+      component: "parconc-examples:exe:geturlsstm"
+
+    - path: "./TimeIt.hs"
+      component: "parconc-examples:exe:geturlsstm"
+
+    - path: "./GetURL.hs"
+      component: "parconc-examples:exe:geturlsstm"
