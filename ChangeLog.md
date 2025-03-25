@@ -1,3 +1,7 @@
+# Verison 0.4.9
+
+* Builds with GHC 9.2.x
+
 # Verison 0.4.8
 
 * Builds with GHC 8.6.x and 8.8.x
