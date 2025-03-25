@@ -1,4 +1,4 @@
-import Network
+import NetworkUtils
 import Control.Monad
 import Control.Concurrent
 import System.IO
@@ -10,13 +10,13 @@ import ConcurrentUtils (forkFinally)
 
 -- <<main
 main = withSocketsDo $ do
-  sock <- listenOn (PortNumber (fromIntegral port))
-  printf "Listening on port %d\n" port
-  factor <- atomically $ newTVar 2                               -- <1>
-  forever $ do
-    (handle, host, port) <- accept sock
-    printf "Accepted connection from %s: %s\n" host (show port)
-    forkFinally (talk handle factor) (\_ -> hClose handle)       -- <2>
+  listenOn port $ \sock -> do
+    printf "Listening on port %d\n" port
+    factor <- atomically $ newTVar 2                               -- <1>
+    forever $ do
+      accept sock $ \(handle, peer) -> do
+        printf "Accepted connection from %s\n" (show peer)
+        forkFinally (talk handle factor) (\_ -> hClose handle)       -- <2>
 
 port :: Int
 port = 44444

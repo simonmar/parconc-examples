@@ -1,5 +1,5 @@
 import ConcurrentUtils
-import Network
+import NetworkUtils
 import Control.Monad
 import Control.Concurrent (forkIO)
 import System.IO
@@ -8,12 +8,12 @@ import Control.Exception
 
 -- <<main
 main = withSocketsDo $ do
-  sock <- listenOn (PortNumber (fromIntegral port))              -- <1>
-  printf "Listening on port %d\n" port
-  forever $ do                                                   -- <2>
-     (handle, host, port) <- accept sock                         -- <3>
-     printf "Accepted connection from %s: %s\n" host (show port)
-     forkFinally (talk handle) (\_ -> hClose handle)             -- <4>
+    printf "Listening on port %d\n" port
+    listenOn port $ \sock ->                                      -- <1>
+      forever $                                                   -- <2>
+        accept sock $ \(handle, peer) -> do
+          printf "Accepted connection from %s\n" (show peer)
+          forkFinally (talk handle) (\_ -> hClose handle)             -- <4>
 
 port :: Int
 port = 44444

@@ -17,7 +17,7 @@ import qualified Data.Map as Map
 import Data.Map (Map)
 import System.IO
 import Control.Exception
-import Network
+import NetworkUtils
 import Control.Monad
 import Text.Printf
 
@@ -56,12 +56,12 @@ could try.
 main :: IO ()
 main = withSocketsDo $ do
   server <- newServer
-  sock <- listenOn (PortNumber (fromIntegral port))
-  printf "Listening on port %d\n" port
-  forever $ do
-      (handle, host, port) <- accept sock
-      printf "Accepted connection from %s: %s\n" host (show port)
-      forkFinally (talk handle server) (\_ -> hClose handle)
+  listenOn port $ \sock -> do
+    printf "Listening on port %d\n" port
+    forever $
+      accept sock $ \(handle, peer) -> do
+        printf "Accepted connection from %s\n" (show peer)
+        forkFinally (talk handle server) (\_ -> hClose handle)
 
 port :: Int
 port = 44444
