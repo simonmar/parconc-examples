@@ -110,7 +110,7 @@ common network
                    , network-uri >= 2.6 && < 2.7
   else
       build-depends: network >= 2.3 && < 2.6
-  build-depends: network-run >= 0.4 && < 0.5
+  build-depends: network-run >= 0.4.4 && < 0.5
 
 common http
   build-depends:
