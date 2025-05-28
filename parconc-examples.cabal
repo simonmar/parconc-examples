@@ -1,6 +1,6 @@
 cabal-version:       2.2
 name:                parconc-examples
-version:             0.4.9
+version:             0.4.10
 synopsis:            Examples to accompany the book "Parallel and Concurrent Programming in Haskell"
 description:         Examples to accompany the book "Parallel and Concurrent Programming in Haskell"
 license:             BSD-3-Clause
