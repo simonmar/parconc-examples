@@ -3,13 +3,14 @@ module NetworkUtils (
   ) where
 
 import Control.Exception
+import qualified Data.List.NonEmpty as NE
 import Network.Run.TCP
 import Network.Socket as Socket
 import System.IO
 
 listenOn :: Int -> (Socket -> IO a) -> IO a
 listenOn port server = do
-  addr <- resolve Stream Nothing (show port) [AI_PASSIVE]
+  addr <- resolve Stream Nothing (show port) [AI_PASSIVE] NE.head
   bracket (openTCPServerSocket addr) close server
 
 accept :: Socket -> ((Handle, SockAddr) -> IO a) -> IO a
